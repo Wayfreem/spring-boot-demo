@@ -55,6 +55,7 @@ public class DynamicTask {
                 new CustomizeTask("任务二", "0/3 * * * * ?"));
     }
 
+    // 对执行的任务进行封装
     private class CustomizeTask implements Runnable {
         private String name;    // 任务名字
         private String cron;    // 触发条件
