@@ -37,28 +37,28 @@ public class TestController {
 
     @RequestMapping("start")
     public void startTask() {
-        task.startCron();
+        com.demo.task.startCron();
     }
 
     // 测试访问： http://localhost:8080/stopById?taskId=任务一
     @RequestMapping("stopById")
     public void stopById(String taskId) {
-        task.stop(taskId);
+        com.demo.task.stop(taskId);
     }
 
     @RequestMapping("stopAll")
     public void stopAll() {
-        task.stopAll();
+        com.demo.task.stopAll();
     }
 }
 ```
 
 **核心逻辑**
 
-在这里当在执行 `threadPoolTaskScheduler.schedule()` 时，会传入一个自定义的 task，以及一个 trigger。
+在这里当在执行 `threadPoolTaskScheduler.schedule()` 时，会传入一个自定义的 com.demo.task，以及一个 trigger。
 调用完成之后会返回一个 scheduledFuture，这个就是当前的任务调度器，停止的时候需要找到这个调度器，用这个调用器来终止。
 
-`threadPoolTaskScheduler.schedule(task, cron)` 用来调度任务
+`threadPoolTaskScheduler.schedule(com.demo.task, cron)` 用来调度任务
 
 `boolean cancelled = scheduledFuture.isCancelled();` 用来判断是否已经取消
 
@@ -67,25 +67,6 @@ public class TestController {
 
 下面是核心代码逻辑：
 ```java
-package com.example.task;
-
-import com.example.task.config.ScheduleConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-
-/**
- * @author wuq
- * @Time 2022-5-26 17:13
- * @Description
- */
 @Component
 public class DynamicTask {
     private final static Logger logger = LoggerFactory.getLogger(DynamicTask.class);
@@ -150,3 +131,5 @@ public class DynamicTask {
     }
 }
 ```
+
+对于上面的任务类 `CustomizeTask` 可以自定义进行封装，可以增加成员属性调用的 服务方法类，在 run 方法上面就可以去调用对应的服务方法了

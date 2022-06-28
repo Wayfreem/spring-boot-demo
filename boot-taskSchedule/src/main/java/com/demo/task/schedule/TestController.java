@@ -1,4 +1,4 @@
-package task.schedule;
+package com.demo.task.schedule;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

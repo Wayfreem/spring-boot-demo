@@ -1,4 +1,4 @@
-package task.schedule;
+package com.demo.task.schedule;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 /**
  * @author wuq
  * @Time 2022-5-26 17:13
- * @Description
+ * @Description 任务处理类，包含任务的启动以及停止
  */
 @Component
 public class DynamicTask {
