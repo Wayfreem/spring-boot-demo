@@ -8,9 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
 
-    <artifactId>boot-orm-mybatis</artifactId>
+    <groupId>com.demo</groupId>
+    <artifactId>boot-customizeEvent</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -28,29 +28,15 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!--    mybatis 依赖    -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>mysql</groupId>-->
-<!--            <artifactId>mysql-connector-java</artifactId>-->
-<!--            <version>8.0.29</version>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
     <build>
-        <finalName>boot-orm-mybatis</finalName>
+        <finalName>boot-orm-customizeEvent</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -58,5 +44,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

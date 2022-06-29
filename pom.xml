@@ -11,6 +11,7 @@
         <module>boot-taskSchedule</module>
         <module>boot-orm-mybatis</module>
         <module>boot-orm-jpa</module>
+        <module>boot-customizeEvent</module>
     </modules>
 
     <packaging>pom</packaging>
