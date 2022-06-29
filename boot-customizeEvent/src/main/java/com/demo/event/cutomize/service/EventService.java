@@ -28,12 +28,12 @@ public class EventService {
     }
 
     @EventListener
-    private void doMsg(SimpleEvent<String> simpleEvent){
+    public void doMsg(SimpleEvent<String> simpleEvent){
         System.out.println("EventService 接收：" + simpleEvent.getEventData());
     }
 
     @EventListener
-    private void doMsgAndBackData(SimpleEvent<String> simpleEvent){
+    public void doMsgAndBackData(SimpleEvent<String> simpleEvent){
         if (simpleEvent.getTopic() != "event#doMsg") return;
         System.out.println("EventService 接收并返回：" + simpleEvent.getEventData());
         simpleEvent.setResult(Arrays.asList("返回参数"));

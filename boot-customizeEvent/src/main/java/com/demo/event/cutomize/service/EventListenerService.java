@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class EventListenerService {
 
     @EventListener
-    private void eventListener(SimpleEvent simpleEvent){
+    public void eventListener(SimpleEvent simpleEvent){
         System.out.println("EventListenerService 接收：" + simpleEvent.getEventData());
     }
 }
