@@ -192,3 +192,23 @@ public void doMsgAndBackData(SimpleEvent<String> simpleEvent){
 对于事件监听有几个点需要说明下：
 - `@EventListener` 标注的方法，可以是 private，这个是可以通过，虽然程序没有报错，但是是需要改为 public 的
 - 对于事件的监听，可以不在同一个类中，可以分散到不同的类中，这里可以看下我项目中的 `EventListenerService` 就知道了
+
+**事件监听的顺序**
+
+在 `@EventListener` 标注的方法上面增加一个注解 `@Order` 注解就可以实现
+
+```java
+@Order(0)
+@EventListener
+public void doMsg(SimpleEvent<String> simpleEvent){
+    System.out.println("EventService 接收："+simpleEvent.getEventData());
+}
+
+@Order(1)
+@EventListener
+public void doMsgAndBackData(SimpleEvent<String> simpleEvent){
+    if(simpleEvent.getTopic()!="event#doMsg") return;       // 这里可以用于区分和判断是否是自己需要接受的 topic
+    System.out.println("EventService 接收并返回："+simpleEvent.getEventData());
+    simpleEvent.setResult(Arrays.asList("返回参数"));       // 由于传入的事件与前面发布的事件内存地址指向的是同一个，这里可以设置值用于返回
+}
+```
