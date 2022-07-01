@@ -1,22 +1,13 @@
 package com.demo.orm.mybatis.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class User {
 
-    private Integer id;
-
+    private String id;
     private String name;
-
-    private String origin; //操作帐号
-
-    private String password; //密码
-
-    private String email;   // 邮件
-
+    private String sex;
+    private String email;
+    private String lastname;
 }
