@@ -18,7 +18,6 @@ public class User {
     @GeneratedValue(strategy= GenerationType.AUTO)  //  设置主键自增
     private String id;
     private String name;
-    private String sex;
     private String email;
     private String lastname;
 

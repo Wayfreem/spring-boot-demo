@@ -1,5 +1,9 @@
 package com.demo.orm.jpa.controller;
 
+import com.demo.orm.jpa.model.User;
+import com.demo.orm.jpa.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -10,8 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    public void find(){
+    @Autowired
+    UserService userService;
 
+    @RequestMapping("save")
+    public User save(){
+        return userService.save();
     }
 
 

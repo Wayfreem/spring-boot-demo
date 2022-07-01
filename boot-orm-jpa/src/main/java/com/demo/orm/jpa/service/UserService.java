@@ -1,5 +1,8 @@
 package com.demo.orm.jpa.service;
 
+import com.demo.orm.jpa.model.User;
+import com.demo.orm.jpa.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,7 +13,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    public void test(){
+    @Autowired
+    UserRepository userRepository;
 
+    public User save(){
+        User user = new User();
+        user.setId("0001");
+        user.setEmail("wuq@google.com");
+        user.setName("wuq");
+        user.setLastname("Q");
+        return userRepository.saveAndFlush(user);
     }
 }
