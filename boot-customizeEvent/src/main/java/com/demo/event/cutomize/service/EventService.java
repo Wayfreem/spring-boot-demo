@@ -24,16 +24,16 @@ public class EventService {
     public void sendAndReceive() {
         Map map = Map.of("id", "1", "name", "测试 event");
         List list = simpleEventPublisher.publishAndReceive(map.toString(), "event#doMsg");
-        System.out.println(list.get(0));
+        System.out.println("接收到事件的返回参数为：" + list.get(0));
     }
 
     @EventListener
-    public void doMsg(SimpleEvent<String> simpleEvent){
+    public void doMsg(SimpleEvent<String> simpleEvent) {
         System.out.println("EventService 接收：" + simpleEvent.getEventData());
     }
 
     @EventListener
-    public void doMsgAndBackData(SimpleEvent<String> simpleEvent){
+    public void doMsgAndBackData(SimpleEvent<String> simpleEvent) {
         if (simpleEvent.getTopic() != "event#doMsg") return;
         System.out.println("EventService 接收并返回：" + simpleEvent.getEventData());
         simpleEvent.setResult(Arrays.asList("返回参数"));

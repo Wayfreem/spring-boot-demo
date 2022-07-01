@@ -1,6 +1,5 @@
 package com.demo.orm.mybatis.entity;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
