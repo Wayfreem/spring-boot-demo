@@ -13,6 +13,7 @@
         <module>boot-orm-jpa</module>
         <module>boot-customizeEvent</module>
         <module>boot-email</module>
+        <module>boot-redis</module>
     </modules>
 
     <packaging>pom</packaging>
