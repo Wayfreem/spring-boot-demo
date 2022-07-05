@@ -214,4 +214,4 @@ public class EmailUtils {
 
 ## 测试
 
-具体看下 test 包下面的 EmailDemoTest
+具体看下 controller 中的代码
