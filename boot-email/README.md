@@ -1,3 +1,6 @@
+
+[文档地址](https://blog.csdn.net/qq_18948359/article/details/103635325?spm=1001.2014.3001.5501)
+
 ## 简介
 
 Spring Email 抽象的核心是 MailSender 接口，MailSender 的实现能够把 Email 发送给邮件服务器，由邮件服务器实现邮件发送的功能。
@@ -209,3 +212,6 @@ public class EmailUtils {
 }
 ```
 
+## 测试
+
+具体看下 test 包下面的 EmailDemoTest
