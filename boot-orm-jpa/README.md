@@ -69,7 +69,6 @@ logging.level.org.hibernate.type.descriptor.sql=TRACE
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)  //  设置主键自增
     private String id;
     private String name;
     private String sex;
@@ -80,7 +79,6 @@ public class User {
     private Long version;
 
 }
-
 ```
 
 **repository 类**
@@ -89,6 +87,44 @@ public class User {
 public interface UserRepository extends JpaRepository<User, String> {
 }
 ```
+
+### 第四步：创建 controller 以及 service
+
+controller 层
+```java
+@RestController
+public class UserController {
+
+    @Autowired
+    UserService userService;
+
+    @RequestMapping("save")
+    public User save(){
+        return userService.save();
+    }
+    
+}
+```
+service 层
+
+```java
+@Service
+public class UserService {
+
+    @Autowired
+    UserRepository userRepository;
+
+    public User save(){
+        User user = new User();
+        user.setId("0001");
+        user.setEmail("wuq@google.com");
+        user.setName("wuq");
+        user.setLastname("Q");
+        return userRepository.saveAndFlush(user);
+    }
+}
+```
+
 
 ## 启动程序
 

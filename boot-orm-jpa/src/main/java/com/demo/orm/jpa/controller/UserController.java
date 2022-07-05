@@ -22,5 +22,10 @@ public class UserController {
         return userService.save();
     }
 
+    // http://localhost:8080/findByName?name=wuq
+    @RequestMapping("findByName")
+    public User findByName(String name){
+        return userService.findByName(name);
+    }
 
 }

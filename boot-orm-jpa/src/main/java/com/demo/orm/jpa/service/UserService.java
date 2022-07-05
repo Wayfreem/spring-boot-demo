@@ -24,4 +24,8 @@ public class UserService {
         user.setLastname("Q");
         return userRepository.saveAndFlush(user);
     }
+
+    public User findByName(String name){
+        return userRepository.findByNameEquals(name);
+    }
 }

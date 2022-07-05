@@ -15,7 +15,6 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)  //  设置主键自增
     private String id;
     private String name;
     private String email;

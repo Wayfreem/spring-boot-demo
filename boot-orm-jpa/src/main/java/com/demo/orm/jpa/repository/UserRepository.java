@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Description
  */
 public interface UserRepository extends JpaRepository<User, String> {
+
+    User findByNameEquals(String name);
 }
