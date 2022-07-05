@@ -3,17 +3,17 @@
 <mapper namespace="com.demo.orm.mybatis.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.demo.orm.mybatis.entity.User">
-        <result column="id" jdbcType="INTEGER" property="id"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="NAME" jdbcType="VARCHAR" property="name"/>
+        <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
     </resultMap>
 
     <select id="selectById" resultType="com.demo.orm.mybatis.entity.User">
-        select * from aut_users where id = #{id}
+        select * from user where id = #{id}
     </select>
 
     <select id="selectByName" resultType="com.demo.orm.mybatis.entity.User">
-        select * from aut_users where name = #{name}
+        select * from user where name = #{name}
     </select>
 
 

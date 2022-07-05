@@ -18,7 +18,7 @@ public class UserService {
     @Autowired
     UserMapper userMapper;
 
-    public User selectById(int id) {
+    public User selectById(String id) {
         return userMapper.selectById(id);
     }
 
@@ -26,7 +26,7 @@ public class UserService {
         return userMapper.selectByName(name);
     }
 
-    public List<User> selectByPwd(String pwd){
-        return userMapper.selectByPwd(pwd);
+    public List<User> getUserByLastname(String lastName){
+        return userMapper.getUserByLastname(lastName);
     }
 }

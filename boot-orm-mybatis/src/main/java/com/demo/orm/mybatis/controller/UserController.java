@@ -21,15 +21,15 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping("getUser/{id}")
-    public String GetUser(@PathVariable int id){
+    public String GetUser(@PathVariable String id){
         return userService.selectById(id).toString();
     }
 
     /**
      * 访问地址
-     * http://localhost:6060/getUserByName?name=管理员
-     * @param name
-     * @return
+     * http://localhost:8080/getUserByName?name=管理员
+     * @param name name
+     * @return List<User>
      */
     @RequestMapping("getUserByName")
     public List<User> getUserByName(String name) {
@@ -38,12 +38,12 @@ public class UserController {
 
     /**
      * 访问地址
-     * http://localhost:6060/getUserByPwd?pwd=123456
-     * @param pwd
-     * @return
+     * http://localhost:8080/getUserByLastname?lastname=Q
+     * @param lastname
+     * @return List<User>
      */
-    @RequestMapping("getUserByPwd")
-    public List<User> getUserByPwd(String pwd){
-        return userService.selectByPwd(pwd);
+    @RequestMapping("getUserByLastname")
+    public List<User> getUserByLastname(String lastname){
+        return userService.getUserByLastname(lastname);
     }
 }

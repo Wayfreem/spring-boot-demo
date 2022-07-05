@@ -16,10 +16,10 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    User selectById(int id);
+    User selectById(String id);
 
     List<User> selectByName(String name);
 
-    @Select("select * from aut_users where password = #{pwd}")
-    List<User> selectByPwd(@Param("pwd") String pwd);
+    @Select("select * from user where lastname = #{lastname}")
+    List<User> getUserByLastname(@Param("lastname") String lastname);
 }
