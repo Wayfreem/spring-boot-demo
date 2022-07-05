@@ -12,6 +12,7 @@
         <module>boot-orm-mybatis</module>
         <module>boot-orm-jpa</module>
         <module>boot-customizeEvent</module>
+        <module>boot-email</module>
     </modules>
 
     <packaging>pom</packaging>
