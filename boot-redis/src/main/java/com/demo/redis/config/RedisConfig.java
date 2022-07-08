@@ -1,54 +1,24 @@
+package com.demo.redis.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-## 简介
+import java.util.Objects;
 
-使用 spring boot 与 redis 集成的例子，具体集成相关操作如下：
-- 实现集成的redis 操作
-- 集成有 redis 分布式锁的操作
-- 使用 redis 作为消息消息队列操作
-
-**相关文档**
-- [Redis 发布订阅操作](https://blog.csdn.net/qq_18948359/article/details/119797418?spm=1001.2014.3001.5501)
-- [SpringBoot 2.x 整合Redis](https://blog.csdn.net/qq_18948359/article/details/119780556?spm=1001.2014.3001.5501)
-
-
-## 具体实现
-
-### 第一步：引入依赖
-
-pom 文件中核心依赖
-
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-redis</artifactId>
-</dependency>
-```
-
-### 第二步：修改配置文件
-```properties
-# 服务端口
-server.port=8080
- 
-# redis 配置
-spring.redis.host=127.0.0.1
-spring.redis.port=6379
-spring.redis.password=
-```
-
-### 第三步：自定义 redisTemplate
-
-由于发现 enableDefaultTyping 方法过期，这里需要替换写法
-```java
-
-om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-
-替换为
-
-om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_ARRAY);
-```
-
-```java
+/**
+ * @author wuq
+ * @Time 2022-7-8 14:13
+ * @Description
+ */
 @Configuration
 public class RedisConfig {
 
@@ -68,8 +38,9 @@ public class RedisConfig {
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Objects.class);
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        // 这个方法过期了        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+//        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_ARRAY);
+
 
         jackson2JsonRedisSerializer.setObjectMapper(om);
 
@@ -86,26 +57,3 @@ public class RedisConfig {
         return template;
     }
 }
-```
-
-### 第四步：RedisOperator
-
-创建一个用于操作 redis 的类
-
-```java
-@Service
-public class RedisOperator {
-
-    @Autowired
-    private RedisTemplate redisTemplate;
-
-    public String getKey(String key){
-        return (String) redisTemplate.opsForValue().get(key);
-    }
-
-    public void setKey(String key, String value){
-        redisTemplate.opsForValue().set(key, value);
-    }
-
-}
-```
