@@ -1,5 +1,7 @@
 package com.demo.redis.controller;
 
+import com.demo.redis.config.RedisOperator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,8 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RedisController {
 
+    @Autowired
+    RedisOperator redisOperator;
+
+    @RequestMapping("setKey")
+    public void setKey(){
+        redisOperator.setKey("tempKey", "value");
+    }
+
     @RequestMapping("getKey")
     public String getKey(){
-        return "";
+        return redisOperator.getKey("tempKey");
     }
 }
