@@ -35,4 +35,9 @@ public class RedisController {
     public Boolean lockWithSecond(){
         return redisOperator.lock("tempKey", 3);
     }
+
+    @RequestMapping("sendMsg")
+    public void sendMsg(String msg){
+        redisOperator.sendMsg(msg);
+    }
 }

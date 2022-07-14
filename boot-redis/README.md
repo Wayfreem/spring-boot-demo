@@ -167,3 +167,113 @@ public class DistributedLock {
     }
 }
 ```
+
+## 使用 redis 队列做发布订阅
+[博客地址](https://blog.csdn.net/qq_18948359/article/details/119806041?spm=1001.2014.3001.5501)
+
+为了方便于程序开发，使用**注解的方式**实现发布订阅，大致的逻辑是：
+
+用注解标注出需要加入到 redis 容器中的方法，然后通过 redis 进行发布消息，加入了注解的方法可以接受到消息
+
+### 第一步：添加自定义注解
+
+```java
+import java.lang.annotation.*;
+ 
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface RedisMessageListener {
+ 
+    String topic(); // 事件主题
+}
+```
+
+### 第二步：增加 redis `RedisMessageListenerContainer` 容器 bean
+```java
+@Configuration
+public class RedisConfig {
+    @Bean
+    public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        return container;
+    }
+}
+```
+
+### 第三步：增加注解方法注册中心
+
+这里的注册服务是将程序中所有的对象在启动的时候全部扫描一边，如果是有注解在，就添加到容器中。
+
+```java
+@Component
+public class RedisMessageListenerRegistry implements ApplicationRunner {
+    // AtomicLong 可以理解为加了 synchronized 的 long 类型
+    private AtomicLong counter = new AtomicLong(0);
+
+    @Autowired
+    private ApplicationContext context;
+    
+    @Override
+    public void run(ApplicationArguments args) {
+        // 获取Redis的消息监听容器
+        RedisMessageListenerContainer container = context.getBean(RedisMessageListenerContainer.class);
+
+        // 扫描注册所有的 @RedisMessageListener 的方法，添加到容器中
+        for (String beanName : context.getBeanNamesForType(Object.class)) {
+            ReflectionUtils.doWithMethods(Objects.requireNonNull(context.getType(beanName)),
+                    method -> {
+                        ReflectionUtils.makeAccessible(method);
+                        Object target = context.getBean(beanName);
+                        RedisMessageListener annotation = AnnotationUtils.findAnnotation(method, RedisMessageListener.class);
+                        MessageListenerAdapter adapter = registerBean((GenericApplicationContext) context, target, method);
+                        container.addMessageListener(adapter, new PatternTopic(annotation.topic()));
+                    },
+                    method -> !method.isSynthetic() && method.getParameterTypes().length == 1
+                            && AnnotationUtils.findAnnotation(method, RedisMessageListener.class) != null);
+        }
+
+    }
+
+    private MessageListenerAdapter registerBean(GenericApplicationContext context, Object target, Method method) {
+        String containerBeanName = String.format("%s_%s", MessageListenerAdapter.class.getName(), counter.incrementAndGet());
+        context.registerBean(containerBeanName, MessageListenerAdapter.class, () -> new MessageListenerAdapter(target, method.getName()));
+        return context.getBean(containerBeanName, MessageListenerAdapter.class);
+    }
+}
+```
+
+### 第四步：增加监听类，以及发送消息的方法
+
+消息的监听类，用于接受处理 redis 发送过来的消息
+```java
+@Service
+public class OrderListener {
+
+    @RedisMessageListener(topic = "order::getState")
+    public void getState(String msg){
+        System.out.println("OrderListener --->  getState ---->" + msg);
+    }
+
+    @RedisMessageListener(topic = "order::getState")
+    public void onMessage(String msg){
+        System.out.println("OrderListener --->  onMessage ---->" + msg);
+    }
+}
+```
+
+消息发送类，通过这个方法发送消息到 redis 中
+```java
+public void sendMsg(String msg){
+    redisTemplate.convertAndSend("order::getState", msg);
+}
+```
+
+### 第五步：测试
+```java
+@RequestMapping("sendMsg")
+public void sendMsg(String msg){
+    redisOperator.sendMsg(msg);
+}
+```

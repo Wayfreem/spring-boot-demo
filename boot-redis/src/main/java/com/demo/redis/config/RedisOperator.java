@@ -40,4 +40,8 @@ public class RedisOperator {
         return success != null && success;
     }
 
+    // 测试发送消息
+    public void sendMsg(String msg){
+        redisTemplate.convertAndSend("order::getState", msg);
+    }
 }
