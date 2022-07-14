@@ -25,4 +25,14 @@ public class RedisController {
     public String getKey(){
         return redisOperator.getKey("tempKey");
     }
+
+    @RequestMapping("lock")
+    public Boolean lock(){
+        return redisOperator.lock("tempKey");
+    }
+
+    @RequestMapping("lockWithSecond")
+    public Boolean lockWithSecond(){
+        return redisOperator.lock("tempKey", 3);
+    }
 }

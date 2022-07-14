@@ -109,3 +109,61 @@ public class RedisOperator {
 
 }
 ```
+
+### 第五步：创建 controller 访问测试
+```java
+@RestController
+public class RedisController {
+
+    @Autowired
+    RedisOperator redisOperator;
+
+    @RequestMapping("setKey")
+    public void setKey(){
+        redisOperator.setKey("tempKey", "value");
+    }
+
+    @RequestMapping("getKey")
+    public String getKey(){
+        return redisOperator.getKey("tempKey");
+    }
+}
+```
+
+## 使用 redis 作为分布式锁操作
+
+对于 redis 分布式锁操作对应于 redis 的命令为：
+- setex: set with expire  设置一个值的过期时间
+- setnx: set if not exist 不存在的时候设置值
+
+```java
+@Component
+public class DistributedLock {
+
+    // 由于是直接操作 String, 这里就直接使用 StringRedisTemplate
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    /**
+     * 如果成功加上锁就返回为 true
+     * @param lockId 锁的编码
+     * @return Boolean 加锁是否成功
+     */
+    public boolean lock(String lockId, long millisecond) {
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(lockId, "lock", millisecond, TimeUnit.MILLISECONDS);
+        return success != null && success;
+    }
+
+    public boolean lock(String lockId) {
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(lockId, "lock");
+        return success != null && success;
+    }
+
+    /**
+     * 释放锁
+     */
+    public void unlock(String lockId) {
+        redisTemplate.delete(lockId);
+    }
+}
+```
