@@ -15,6 +15,7 @@
         <module>boot-email</module>
         <module>boot-redis</module>
         <module>boot-mongoDB</module>
+        <module>boot-es</module>
     </modules>
 
     <packaging>pom</packaging>
