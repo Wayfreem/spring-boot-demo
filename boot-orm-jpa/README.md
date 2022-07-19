@@ -138,3 +138,30 @@ Hibernate: create table hibernate_sequence (next_val bigint) engine=InnoDB
 Hibernate: insert into hibernate_sequence values ( 1 )
 Hibernate: create table user (id varchar(255) not null, email varchar(255), lastname varchar(255), name varchar(255), sex varchar(255), version bigint, primary key (id)) engine=InnoDB
 ```
+
+## 关于日志输出
+
+需要引入依赖包
+
+pom.xml
+
+```xml
+ <dependency>
+   <groupId>com.integralblue</groupId>
+   <artifactId>log4jdbc-spring-boot-starter</artifactId>
+   <version>1.0.2</version>
+   <scope>runtime</scope>
+</dependency>
+```
+
+application.properties
+
+```properties
+logging.level.com.demo=debug
+logging.level.jdbc.sqlonly=WARN
+logging.level.jdbc.sqltiming=INFO
+logging.level.jdbc.resultsettable=WARN
+logging.level.jdbc.resultset=WARN
+logging.level.jdbc.connection=WARN
+logging.level.jdbc.audit=WARN
+```
