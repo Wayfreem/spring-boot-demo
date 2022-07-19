@@ -3,10 +3,14 @@ package com.demo.mongoDB.service;
 import com.demo.mongoDB.model.User;
 import com.demo.mongoDB.model.UserRepository;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wuq
@@ -31,7 +35,16 @@ public class UserService {
     }
 
 
-    public FindIterable<Document> findAll(){
-       return mongoTemplate.getCollection("user").find();
+    public List<Document> findAll(){
+        // 经过测试这里不能返回 iterable，如果直接返回 iterable， 是获取不到值的
+        FindIterable<Document> iterable = mongoTemplate.getCollection("user").find();
+        MongoCursor<Document> cursor =  iterable.iterator();
+        List<Document> result = new ArrayList<>();
+        while (cursor.hasNext()){
+            Document document = cursor.next();
+            result.add(document);
+        }
+        return result;
     }
+
 }

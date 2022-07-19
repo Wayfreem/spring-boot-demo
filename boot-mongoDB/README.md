@@ -22,6 +22,9 @@ spring.data.mongodb.password=123456
 spring.data.mongodb.host=192.168.152.129
 spring.data.mongodb.port=27017
 spring.data.mongodb.database=admin
+
+# MongoDB logging MongoDB 日志输出
+logging.level.org.springframework.data.mongodb.core=DEBUG
 ```
 
 ### 第三步：增加对应的模型实体类以及 repository
@@ -90,6 +93,29 @@ public class UserService {
 
     public User findById(String id){
         return userRepository.findById(id).get();
+    }
+}
+```
+
+## 使用 MongoTemplate 操作 MongoDB
+
+```java
+@Service
+public class UserService {
+    
+    @Autowired
+    MongoTemplate mongoTemplate;
+
+    public List<Document> findAll(){
+        // 经过测试这里不能返回 iterable，如果直接返回 iterable， 是获取不到值的
+        FindIterable<Document> iterable = mongoTemplate.getCollection("user").find();
+        MongoCursor<Document> cursor =  iterable.iterator();
+        List<Document> result = new ArrayList<>();
+        while (cursor.hasNext()){
+            Document document = cursor.next();
+            result.add(document);
+        }
+        return result;
     }
 }
 ```

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author wuq
  * @Time 2022-7-15 14:37
@@ -30,7 +32,7 @@ public class TestController {
     }
 
     @RequestMapping("findAll")
-    public FindIterable<Document> findAll() {
+    public List<Document> findAll() {
         return userService.findAll();
     }
 }
