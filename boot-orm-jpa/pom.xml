@@ -46,6 +46,13 @@
            <artifactId>lombok</artifactId>
            <scope>provided</scope>
        </dependency>
+
+       <dependency>
+           <groupId>com.integralblue</groupId>
+           <artifactId>log4jdbc-spring-boot-starter</artifactId>
+           <version>1.0.2</version>
+           <scope>runtime</scope>
+       </dependency>
    </dependencies>
 
     <build>
