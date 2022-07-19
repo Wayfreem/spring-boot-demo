@@ -6,7 +6,9 @@ Spring boot 集成 MongoDB 的例子
 
 ## 集成的步骤
 
-### 第一步：增加依赖
+### 使用 MongoRepository 操作MongoDB
+
+#### 第一步：增加依赖
 增加对应的 MongoDB 依赖包
 ```xml
 <dependency>
@@ -15,7 +17,7 @@ Spring boot 集成 MongoDB 的例子
 </dependency>
 ```
 
-### 第二步：增加配置文件
+#### 第二步：增加配置文件
 ```properties
 spring.data.mongodb.username=admin
 spring.data.mongodb.password=123456
@@ -27,7 +29,7 @@ spring.data.mongodb.database=admin
 logging.level.org.springframework.data.mongodb.core=DEBUG
 ```
 
-### 第三步：增加对应的模型实体类以及 repository
+#### 第三步：增加对应的模型实体类以及 repository
 
 这里我们新建一个模型实体类，使用JPA 的 repository 接口来进行 MongoDB 的访问
 
@@ -57,7 +59,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 }
 ```
 
-### 第四步：创建 controller 以及 service 用于测试
+#### 第四步：创建 controller 以及 service 用于测试
 TestController
 
 ```java
@@ -97,7 +99,7 @@ public class UserService {
 }
 ```
 
-## 使用 MongoTemplate 操作 MongoDB
+### 使用 MongoTemplate 操作 MongoDB
 
 ```java
 @Service
