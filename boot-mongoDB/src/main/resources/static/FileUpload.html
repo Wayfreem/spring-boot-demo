@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+</head>
+<body>
+
+<form action="http://127.0.0.1:8080/upload" method="post" enctype="multipart/form-data">
+
+    <div>
+        <label for="value">文件名路径：</label>
+        <input id="value" name="value" type="text" placeholder="请输入文件路径"/>
+    </div>
+
+    <div style="margin-top: 20px">
+        <img src="http://127.0.0.1:8080/view/62d67b971c1a322e613fb7ba">
+    </div>
+
+    <div style="margin-top: 20px">
+        <input type="file" name="files" />
+    </div>
+    <div style="margin-top: 20px">
+        <input type="submit" value="提交"/>
+    </div>
+</form>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.demo.mongoDB.model;
 
+import com.demo.mongoDB.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
