@@ -125,8 +125,8 @@ public class GridFsController {
     /**
      * 打包下载多个文件
      *
-     * @param body
-     * @return
+     * @param body [{"id":""}]
+     * @return ResponseEntity<Object>
      */
     @PostMapping(value = "/download", produces = {"text/html;charset=utf-8"})
     @ResponseBody
