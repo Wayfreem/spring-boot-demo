@@ -3,6 +3,7 @@ package com.demo.orm.jpa.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * @author wuq
@@ -22,5 +23,8 @@ public class User {
 
     @Version
     private Long version;
+
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 
 }
