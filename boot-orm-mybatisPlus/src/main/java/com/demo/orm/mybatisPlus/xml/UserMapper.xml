@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 指向于对应实体的 Mapper 接口-->
+<mapper namespace="com.demo.orm.mybatisPlus.mapper.UserMapper">
+
+    <select id="selectCustomSqlByXML" resultType="com.demo.orm.mybatisPlus.model.User">
+        select * from User ${ew.customSqlSegment}
+    </select>
+
+    <!-- 会报错 -->
+    <select id="selectCustomPage" resultType="com.demo.orm.mybatisPlus.model.User">
+        select * from aut_users ${ew.customSqlSegment}
+    </select>
+</mapper>
