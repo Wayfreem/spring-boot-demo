@@ -10,13 +10,13 @@
     <modules>
         <module>boot-taskSchedule</module>
         <module>boot-orm-mybatis</module>
+        <module>boot-orm-mybatisPlus</module>
         <module>boot-orm-jpa</module>
         <module>boot-customizeEvent</module>
         <module>boot-email</module>
         <module>boot-redis</module>
         <module>boot-mongoDB</module>
         <module>boot-es</module>
-        <module>boot-orm-mybatisPlus</module>
         <module>boot-websocket</module>
     </modules>
 
