@@ -18,6 +18,7 @@
         <module>boot-mongoDB</module>
         <module>boot-es</module>
         <module>boot-websocket</module>
+        <module>boot-ureport2</module>
     </modules>
 
     <packaging>pom</packaging>
