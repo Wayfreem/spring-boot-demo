@@ -10,7 +10,7 @@
 
 ### 第一步：引入依赖
 
-pom 文件
+pom 文件，在官方找到的最新的版本就是这个 2.2.9, 后面没有再更新了
 ```xml
 <dependency>
     <groupId>com.bstek.ureport</groupId>
