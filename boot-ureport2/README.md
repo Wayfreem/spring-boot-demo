@@ -19,7 +19,23 @@ pom 文件，在官方找到的最新的版本就是这个 2.2.9, 后面没有�
 </dependency>
 ```
 
-### 第二步：
+### 第二步：增加对应的配置文件
+需要使用 `ServletRegistrationBean` 注入一个 `servlet` 到 spring中
+```java
+@Configuration
+@ImportResource("classpath:ureport-console-context.xml")
+public class UReport2Config {
+
+    /**
+     * 这里是采用 ServletRegistrationBean 向 spring 容器创建一个 servlet 服务
+     * @return
+     */
+    @Bean
+    public ServletRegistrationBean buildUReportServlet() {
+        return new ServletRegistrationBean(new UReportServlet(), "/ureport/*");
+    }
+}
+```
 
 ### 第三步：
 
