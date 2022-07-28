@@ -12,7 +12,7 @@ public class UReport2Config {
 
     /**
      * 这里是采用 ServletRegistrationBean 向 spring 容器创建一个 servlet 服务
-     * @return
+     * @return ServletRegistrationBean
      */
     @Bean
     public ServletRegistrationBean buildUReportServlet() {
