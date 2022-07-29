@@ -10,12 +10,30 @@
 
 ### 第一步：引入依赖
 
-pom 文件，在官方找到的最新的版本就是这个 2.2.9, 后面没有再更新了
+**pom 文件**
+
+我们使用数据库来存储打印模板，这里使用 jpa 的方式连接数据库，方便于数据库操作
+
+在官方找到的最新的 ureport2 版本就是这个 2.2.9, 后面没有再更新了
 ```xml
 <dependency>
     <groupId>com.bstek.ureport</groupId>
     <artifactId>ureport2-console</artifactId>
     <version>2.2.9</version>
+</dependency>
+
+<!--    引入 Jpa    -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+        
+ <!--    数据库链接    -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.29</version>
+    <scope>runtime</scope>
 </dependency>
 ```
 
