@@ -133,10 +133,8 @@ public interface UReportFileRepository extends JpaRepository<UReportFile, Long> 
 
 ### 创建服务类
 ```java
-
 ```
 
 ### 增加 ureport 扩展
 ```java
-
 ```
