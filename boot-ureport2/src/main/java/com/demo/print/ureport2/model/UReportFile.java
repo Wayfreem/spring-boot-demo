@@ -24,10 +24,8 @@ public class UReportFile {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "context", columnDefinition = "CLOB")
-    private byte[] content; // 模板内容
+    @Column(name = "content", columnDefinition = "CLOB")
+    private String content; // 模板内容，由于在 ReportProvider 中保存方法传递的是 String，这里就用String
 
     private Date createTime;
-
-    private Date updateTime;
 }

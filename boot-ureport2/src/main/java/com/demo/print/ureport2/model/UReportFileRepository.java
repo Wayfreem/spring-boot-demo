@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Description
  */
 public interface UReportFileRepository extends JpaRepository<UReportFile, Long> {
+
+    UReportFile findByName(String name);
 }

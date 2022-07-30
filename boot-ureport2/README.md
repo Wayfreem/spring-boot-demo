@@ -115,7 +115,7 @@ public class UReportFile {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "context", columnDefinition = "CLOB")
+    @Column(name = "content", columnDefinition = "CLOB")
     private byte[] content; // 模板内容
 
     private Date createTime;
@@ -132,9 +132,12 @@ public interface UReportFileRepository extends JpaRepository<UReportFile, Long> 
 ```
 
 ### 创建服务类
+主要是为对 ureport 扩展保存到数据库中增加对应的逻辑
 ```java
+
 ```
 
 ### 增加 ureport 扩展
 ```java
+
 ```
