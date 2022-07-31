@@ -99,7 +99,7 @@ pom 文件
 </dependency>
 ```
 
-### 增加对应的实体类
+### 增加对应的实体类以及 repository
 ```java
 @Data
 @Table(name = "U_Report_File")
@@ -132,12 +132,114 @@ public interface UReportFileRepository extends JpaRepository<UReportFile, Long> 
 ```
 
 ### 创建服务类
+UReportFileService.java
+
 主要是为对 ureport 扩展保存到数据库中增加对应的逻辑
 ```java
+@Service
+public class UReportFileService {
 
+    @Autowired
+    private UReportFileRepository uReportFileRepository;
+
+    public UReportFile findByName(String fileName) {
+        return uReportFileRepository.findByName(fileName);
+    }
+
+    public List<UReportFile> findAll() {
+        return uReportFileRepository.findAll();
+    }
+
+    public UReportFile save(String fileName,String content){
+        UReportFile uReportFile = new UReportFile();
+        uReportFile.setName(fileName);
+        uReportFile.setContent(content);
+        uReportFile.setCreateTime(new Date());
+        return uReportFileRepository.saveAndFlush(uReportFile);
+    }
+
+    public void deleteByName(String fileName){
+        UReportFile uReportFile = uReportFileRepository.findByName(fileName);
+        if (uReportFile != null) {
+            uReportFileRepository.delete(uReportFile);
+        }
+    }
+    
+}
 ```
 
 ### 增加 ureport 扩展
-```java
 
+由于是需要保存到数据库中，所以需要实现 ReportProvider 接口，我们按照要求写出具体的实现就好
+
+```java
+@Component
+public class SqlReportProvider implements ReportProvider {
+
+    @Autowired
+    private UReportFileService reportService;
+
+    // 增加头部信息
+    private String prefix = "report:";
+
+    @Override
+    public String getName() {
+        // 返回存储器的名称
+        return "报表模板保存到数据库";
+    }
+
+    @Override
+    public boolean disabled() {
+        // 返回是否禁用, 默认为非禁用, 不需要的打印模板就删除掉
+        return false;
+    }
+
+    @Override
+    public String getPrefix() {
+        return prefix;
+    }
+
+    /**
+     * 根据报表名加载报表文件
+     * @param fileName 报表名称
+     * @return
+     */
+    @Override
+    public InputStream loadReport(String fileName) {
+        try {
+            UReportFile uReportFile= reportService.findByName(removePrefix(fileName));
+            if (uReportFile==null) return null;
+            return IOUtils.toInputStream(uReportFile.getContent(),"utf-8");
+        } catch (Exception e) {
+            throw new ReportException(e);
+        }
+    }
+
+    @Override
+    public void deleteReport(String fileName) {
+        reportService.deleteByName(fileName);
+    }
+
+    @Override
+    public List<ReportFile> getReportFiles() {
+        List<UReportFile> uReportFiles = reportService.findAll();
+        return uReportFiles.stream()
+                .map( uReportFile -> new ReportFile(getPrefix()+uReportFile.getContent(), uReportFile.getCreateTime()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 保存打印模板
+     * @param fileName 报表名称
+     * @param content 报表的XML内容
+     */
+    @Override
+    public void saveReport(String fileName, String content) {
+        reportService.save(fileName, content);
+    }
+
+    private String removePrefix(String file){
+        return file.replace("report:","");
+    }
+}
 ```
