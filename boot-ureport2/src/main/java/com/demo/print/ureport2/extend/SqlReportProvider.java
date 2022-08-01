@@ -19,7 +19,7 @@ public class SqlReportProvider implements ReportProvider {
     @Autowired
     private UReportFileService reportService;
 
-    // 增加头部信息
+    // 特定前缀，ureport 底层会调用 getPrefix 方法来获取报表操作的 Provier 类
     private String prefix = "report:";
 
     @Override
@@ -47,7 +47,7 @@ public class SqlReportProvider implements ReportProvider {
     @Override
     public InputStream loadReport(String fileName) {
         try {
-            UReportFile uReportFile= reportService.findByName(removePrefix(fileName));
+            UReportFile uReportFile= reportService.findByName(getCorrectName(fileName));
             if (uReportFile==null) return null;
             return IOUtils.toInputStream(uReportFile.getContent(),"utf-8");
         } catch (Exception e) {
@@ -57,14 +57,14 @@ public class SqlReportProvider implements ReportProvider {
 
     @Override
     public void deleteReport(String fileName) {
-        reportService.deleteByName(fileName);
+        reportService.deleteByName(getCorrectName(fileName));
     }
 
     @Override
     public List<ReportFile> getReportFiles() {
         List<UReportFile> uReportFiles = reportService.findAll();
         return uReportFiles.stream()
-                .map( uReportFile -> new ReportFile(getPrefix()+uReportFile.getContent(), uReportFile.getCreateTime()))
+                .map( uReportFile -> new ReportFile(uReportFile.getName(), uReportFile.getCreateTime()))
                 .collect(Collectors.toList());
     }
 
@@ -75,10 +75,19 @@ public class SqlReportProvider implements ReportProvider {
      */
     @Override
     public void saveReport(String fileName, String content) {
+        deleteReport(fileName);
         reportService.save(fileName, content);
     }
 
-    private String removePrefix(String file){
-        return file.replace("report:","");
+    /**
+     * file
+     * @param name 文件名
+     * @return name
+     */
+    private String getCorrectName(String name){
+        if(name.startsWith(prefix)){
+            name = name.substring(prefix.length());
+        }
+        return name;
     }
 }

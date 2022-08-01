@@ -15,7 +15,7 @@ import java.util.List;
 public class UReportFileService {
 
     @Autowired
-    private UReportFileRepository uReportFileRepository;
+    UReportFileRepository uReportFileRepository;
 
     public UReportFile findByName(String fileName) {
         return uReportFileRepository.findByName(fileName);

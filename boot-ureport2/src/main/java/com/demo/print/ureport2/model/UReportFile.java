@@ -1,6 +1,9 @@
 package com.demo.print.ureport2.model;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +14,10 @@ import java.util.Date;
  * @Description 打印模板表
  */
 @Data
+@Entity
+@SelectBeforeUpdate
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "U_Report_File")
 public class UReportFile {
 
@@ -24,7 +31,7 @@ public class UReportFile {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "content", columnDefinition = "CLOB")
+    @Column(name = "content")
     private String content; // 模板内容，由于在 ReportProvider 中保存方法传递的是 String，这里就用String
 
     private Date createTime;
