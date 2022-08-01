@@ -102,6 +102,10 @@ pom 文件
 ### 增加对应的实体类以及 repository
 ```java
 @Data
+@Entity
+@SelectBeforeUpdate
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "U_Report_File")
 public class UReportFile {
 
@@ -140,7 +144,7 @@ UReportFileService.java
 public class UReportFileService {
 
     @Autowired
-    private UReportFileRepository uReportFileRepository;
+    UReportFileRepository uReportFileRepository;
 
     public UReportFile findByName(String fileName) {
         return uReportFileRepository.findByName(fileName);
@@ -164,13 +168,15 @@ public class UReportFileService {
             uReportFileRepository.delete(uReportFile);
         }
     }
-    
+
 }
 ```
 
 ### 增加 ureport 扩展
 
-由于是需要保存到数据库中，所以需要实现 ReportProvider 接口，我们按照要求写出具体的实现就好
+由于是需要保存到数据库中，所以需要实现 ReportProvider 接口，我们按照要求写出具体的实现就好。
+
+对于这里的 prefix，发现是必须要加上去的。不然在保存了打印模板的设置之后，这里会出现打开存到数据库中的文件报错。
 
 ```java
 @Component
@@ -179,7 +185,7 @@ public class SqlReportProvider implements ReportProvider {
     @Autowired
     private UReportFileService reportService;
 
-    // 增加头部信息
+    // 特定前缀，ureport 底层会调用 getPrefix 方法来获取报表操作的 Provier 类
     private String prefix = "report:";
 
     @Override
@@ -207,7 +213,7 @@ public class SqlReportProvider implements ReportProvider {
     @Override
     public InputStream loadReport(String fileName) {
         try {
-            UReportFile uReportFile= reportService.findByName(removePrefix(fileName));
+            UReportFile uReportFile= reportService.findByName(getCorrectName(fileName));
             if (uReportFile==null) return null;
             return IOUtils.toInputStream(uReportFile.getContent(),"utf-8");
         } catch (Exception e) {
@@ -217,14 +223,14 @@ public class SqlReportProvider implements ReportProvider {
 
     @Override
     public void deleteReport(String fileName) {
-        reportService.deleteByName(fileName);
+        reportService.deleteByName(getCorrectName(fileName));
     }
 
     @Override
     public List<ReportFile> getReportFiles() {
         List<UReportFile> uReportFiles = reportService.findAll();
         return uReportFiles.stream()
-                .map( uReportFile -> new ReportFile(getPrefix()+uReportFile.getContent(), uReportFile.getCreateTime()))
+                .map( uReportFile -> new ReportFile(uReportFile.getName(), uReportFile.getCreateTime()))
                 .collect(Collectors.toList());
     }
 
@@ -235,11 +241,20 @@ public class SqlReportProvider implements ReportProvider {
      */
     @Override
     public void saveReport(String fileName, String content) {
+        deleteReport(fileName);
         reportService.save(fileName, content);
     }
 
-    private String removePrefix(String file){
-        return file.replace("report:","");
+    /**
+     * file
+     * @param name 文件名
+     * @return name
+     */
+    private String getCorrectName(String name){
+        if(name.startsWith(prefix)){
+            name = name.substring(prefix.length());
+        }
+        return name;
     }
 }
 ```
