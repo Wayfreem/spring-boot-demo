@@ -2,11 +2,13 @@
 
 ## 简介
 
-Spring boot 集成 MongoDB 的例子
+Spring boot 集成 MongoDB 的例子。
+
+由于 spring data mongoDB 有一套规范，可以让我们使用类似于 hibernate 的操作，所以这里会记录两种连接操作 MongoDB 的方式。
 
 ## 集成的步骤
 
-### 使用 MongoRepository 操作MongoDB
+### 使用 MongoRepository 操作 MongoDB
 
 #### 第一步：增加依赖
 增加对应的 MongoDB 依赖包
@@ -40,9 +42,7 @@ public class User implements Serializable {
 
     @Id
     private String id;
-
     private String userId;
-
     private String fileName;
 
     public User(String id, String userId, String fileName) {
@@ -353,7 +353,7 @@ public class GridFsService {
 }
 ```
 
-#### 第五步：创建一个页面，用于测试文件提交
+#### 第五步：创建一个页面，用于测试文件上传
 ```html
 <!DOCTYPE html>
 <html lang="en">
