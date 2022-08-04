@@ -27,7 +27,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!--   flyway 依赖     -->
+        <!--   flyway 依赖  -->
         <!--https://blog.csdn.net/su2231595742/article/details/123780700-->
         <dependency>
             <groupId>org.flywaydb</groupId>
