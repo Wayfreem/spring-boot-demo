@@ -31,3 +31,16 @@
 | boot-es               | spring boot 集成 elasticsearch，对搜索引擎的相关操作 |
 | boot-ureport2         | spring boot 集成 ureport2，实现打印报表          |
 
+上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目
+
+| 模块                              | 说明                                           |
+|:--------------------------------|:---------------------------------------------|
+| boot-mybatis-dynamic-datasource | 在 Spring boot 中基于 mybatis 实现多数据源操作           |
+| boot-jpa-dynamic-datasource     | 在 Spring boot 中基于 spring data jpa 实现多数据源操作   |
+| boot-customizeStarter           | 实现 Spring boot 自定义一个 starter                 |
+| boot-autoConfiguration          | 在 Spring boot 基于  `@Configuration` 实现自定义注解注入 |
+| boot-rocketMQ                   | 在 Spring boot 集成 RocketMQ                    |
+| boot-annotationSchedule         | 在 Spring boot 使用 `@Schedule` 注解实现定时任务        |
+| boot-flyway                     | 在 Spring boot 集成 flyway 实现管理数据库版本问题          |
+| boot-actuator                   | 在 Spring boot 集成 actuator 实现应用监控             |
+| boot-https                      | 在 Spring boot 项目中实现 https 进行接口调用             |
