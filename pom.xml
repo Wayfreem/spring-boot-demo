@@ -19,6 +19,7 @@
         <module>boot-es</module>
         <module>boot-websocket</module>
         <module>boot-ureport2</module>
+        <module>boot-flyway</module>
     </modules>
 
     <packaging>pom</packaging>
