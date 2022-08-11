@@ -17,7 +17,7 @@ SQL文件的命名需要遵从一定的规范，否则运行的时候会报错�
 1. 仅需要执行一次的SQL： V开头，后面跟上数字，数字之间可以是"."或者“_"分开。然后再以两个下划线分割。eg: `V1.0.2__init_Data.sql`
 2. 可重复运行的SQL，以”R“开头，后面再跟两个下划线。eg: `R__init_redo.sql`
 
-其中，V 开头的 SQL 执行优先级比 R 开头的 SQL 执行优先级高。
+其中，V 开头的 SQL 执行优先级比 R 开头的 SQL 执行优先级高。我们要特别注意这文件的命名方式。
 
 ## 集成的步骤
 
@@ -86,12 +86,19 @@ spring:
 
 ### 第四步：增加 sql 文件，执行
 
-在 `db/migration/` 路径下，增加我们需要执行的 sql 脚本，
-
+在 `db/migration/` 路径下，增加我们需要执行的 sql 脚本
+```
+db
+├── migration
+   ├── V1.0.1__init_DB.sql
+   └── V1.0.2__init_Data.sql
+```
 
 ### 测试
 
-程序启动完了之后，我们再去查询下数据库中表的数据
+程序启动完了之后，我们再去查询下数据库中表的数据。
+
+下面第一条记录是 `<< Flyway Baseline >>`， 叫做基线。就是表示初始版本。
 
 ```sql
 mysql> SELECT * FROM flyway_schema_history;
@@ -106,7 +113,6 @@ mysql> SELECT * FROM flyway_schema_history;
 
 mysql> 
 ```
-
 
 ### 错误记录
 
