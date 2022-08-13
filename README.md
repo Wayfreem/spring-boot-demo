@@ -38,9 +38,11 @@
 |:--------------------------------|:---------------------------------------------|
 | boot-mybatis-dynamic-datasource | 在 Spring boot 中基于 mybatis 实现多数据源操作           |
 | boot-jpa-dynamic-datasource     | 在 Spring boot 中基于 spring data jpa 实现多数据源操作   |
-| boot-customizeStarter           | 实现 Spring boot 自定义一个 starter                 |
+| boot-customizeStarter           | 实现 Spring boot 自定义一个 starter  实现自动装配         |
+| boot-conditionStarter           | 实现 Spring boot 基于 condition 注解实现的自动装配        |
 | boot-autoConfiguration          | 在 Spring boot 基于  `@Configuration` 实现自定义注解注入 |
 | boot-rocketMQ                   | 在 Spring boot 集成 RocketMQ                    |
 | boot-annotationSchedule         | 在 Spring boot 使用 `@Schedule` 注解实现定时任务        |
 | boot-actuator                   | 在 Spring boot 集成 actuator 实现应用监控             |
 | boot-https                      | 在 Spring boot 项目中实现 https 进行接口调用             |
+| boot-enableAsync                | 在 Spring boot 项目中基于注解 `@EnableAsync` 实现异步操作  |
