@@ -43,6 +43,6 @@
 | boot-conditionStarter           | 实现 Spring boot 基于 condition 注解实现的自动装配        |
 | boot-autoConfiguration          | 在 Spring boot 基于  `@Configuration` 实现自定义注解注入 |
 | boot-rocketMQ                   | 在 Spring boot 集成 RocketMQ                    |
-| boot-annotationSchedule         | 在 Spring boot 使用 `@Schedule` 注解实现定时任务        |
+| boot-taskAnnotationSchedule     | 在 Spring boot 使用 `@Schedule` 注解实现定时任务        |
 | boot-actuator                   | 在 Spring boot 集成 actuator 实现应用监控             |
 | boot-https                      | 在 Spring boot 项目中实现 https 进行接口调用             |
