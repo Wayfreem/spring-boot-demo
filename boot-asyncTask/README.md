@@ -38,6 +38,8 @@ public class TaskExecutorConfig implements AsyncConfigurer {
 }
 ```
 
+注意：上面的例子中，ThreadPoolTaskExecutor并没有被Spring容器管理，可以在getAsyncExecutor() 上添加@Bean注解让它变成Spring管理的Bean。如果加入到Spring容器，那么就不需要手动调用executor.initialize() 做初始化了，因为在Bean初始化的时候会自动调用这个方法。
+
 
 **任务执行类**
 
@@ -64,24 +66,24 @@ public class AsyncTaskService {
 **任务运行类**
 
 ```
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+@RestController
+public class TestController {
 
-public class Main {
+    @Autowired
+    private AsyncTaskService asyncTaskService;
 
-    public static void main(String[] args) {
-        AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext(TaskExecutorConfig.class);
-
-        AsyncTaskService asyncTaskService = context.getBean(AsyncTaskService.class);
-
+    @RequestMapping("test")
+    public Map test(){
         for(int i =0 ;i<10;i++){
             asyncTaskService.executeAsyncTask(i);
             asyncTaskService.executeAsyncTaskPlus(i);
         }
-        context.close();
+        return Map.of("msg", "success");
     }
 }
 ```
+
+**通过访问测试**
 
 执行结果如下：
 ```
@@ -106,3 +108,38 @@ public class Main {
 执行异步任务+1: 3
 执行异步任务+1: 1
 ```
+
+
+## 观察异步执行情况
+
+目的：为了更好的观察到是异步执行，所在程序上面增加 `sleep()` ，方便于观察
+
+在 `AsyncTaskService` 的方法中增加 `sleep()`
+
+```java
+@Service
+public class AsyncTaskService {
+
+    @Async // 通过 Async 注解表明该方法是一个异步的方法，如果注解在类级别，则表明该类下的所有方法都是 异步
+    public void executeAsyncTask(Integer i) {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("执行异步任务: "+i);
+    }
+
+    @Async
+    public void executeAsyncTaskPlus(Integer i) {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("执行异步任务+1: "+(i+1));
+    }
+}
+```
+
+我们再次访问的时候，就可以看到前端已经返回对应的消息，控制台就慢慢的打印执行消息。
