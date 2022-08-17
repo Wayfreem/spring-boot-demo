@@ -24,6 +24,7 @@
         <module>boot-taskAsync</module>
         <module>boot-taskAnnotationSchedule</module>
         <module>boot-customizeErrorPage</module>
+        <module>boot-actuator</module>
     </modules>
 
     <packaging>pom</packaging>
