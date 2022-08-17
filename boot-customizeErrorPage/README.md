@@ -30,3 +30,6 @@ resources
 </body>
 </html>
 ```
+
+## 原理部分
+当没有配置错误页面显示时，会出现一个默认的报错页面，这里的逻辑是在 `BasicErrorController` 类中
