@@ -1,6 +1,12 @@
-
 management:
   endpoints:
     web:
       exposure:
-        include: *
+        include: "*"
+
+  ## 通过开发指定的端点
+  ### 开放  management.endpoint.<NAME>.enabled=true
+  ### 关闭  management.endpoint.<NAME>.enabled=false
+  endpoint:
+    info:
+      enabled: true
