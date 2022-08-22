@@ -199,6 +199,8 @@ management:
       enabled: false
 ```
 
+当设置 info 断点为关闭的时候，再去访问下 `localhost:8080/actuator/info` 可以发现，已经访问不了了。
+
 ### 服务信息
 
 我们可以通过实现 `InfoContributor` 接口来实现自定义的服务信息返回
@@ -217,7 +219,6 @@ public class ServerInfoContributor implements InfoContributor {
 ```
 
 访问
-
 ```http request
 localhost:8080/actuator/info
 ```
