@@ -270,5 +270,28 @@ SpringBoot程序运行在JVM上，是JVM的一个执行线程，Actuator提供�
 打开 VisualVm，点击左上角 `file -> load` 导入 dump 文件即可查看 jvm 运行信息（导出 dump 文件时刻的 jvm 信息）。
 
 
+### 自定义 Endpoint
 
+Actuator 提供有 @Endpoint 注解帮助开发者定义自己的 Endpoint，自定义端点的请求方式也分为以下三种：
 
+| No.  | 注解                 | 请求方式     | 描述     |
+|:-----|:-------------------|:---------|:-------|
+| 1    | @ReadOperation     | get      | 读取数据   |
+| 2    | @WriteOperation    | get      | 写入数据   |
+| 3    | @DeleteOperation   | get      | 删除数据   |
+
+新建 SelfEndpoint 类，添加 @Endpoint 注解声明 endpoint 并命名。
+```java
+@Configuration
+@Endpoint(id = "self")
+public class SelfEndpoint {
+
+    @ReadOperation
+    public Map<String, Object> endpoint(@Selector String selector) { // 接收参数
+        Map<String, Object> endpointMap = new HashMap<>();
+        endpointMap.put("author", "NicholasGUB");
+        endpointMap.put("selector", selector);
+        return endpointMap;
+    }
+}
+```
