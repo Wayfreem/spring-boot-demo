@@ -201,7 +201,9 @@ management:
 
 当设置 info 断点为关闭的时候，再去访问下 `localhost:8080/actuator/info` 可以发现，已经访问不了了。
 
-### 服务信息
+### 服务信息  InfoContributor
+
+这里需要在开放 info 断点的前提下测试。
 
 我们可以通过实现 `InfoContributor` 接口来实现自定义的服务信息返回
 
@@ -219,6 +221,54 @@ public class ServerInfoContributor implements InfoContributor {
 ```
 
 访问
+
 ```http request
 localhost:8080/actuator/info
 ```
+
+### 健康检查 HealthIndicator
+
+actuator 提供了健康断言接口 HealthIndicator，实现此接口可以编写服务健康的判断逻辑。
+
+```java
+@Component
+public class DefaultHealthIndicator implements HealthIndicator {
+
+    @Override
+    public Health health() {
+        boolean isHealth = true;
+        // 此处应判断各个组件是否连接正常,其中一个连接异常则设置isHealth = false
+        isHealth = false; // 假如redis连接异常
+        String errorMsg = "redis连接异常";
+        if(!isHealth) {
+            return Health.down().withDetail("message",errorMsg).build();
+        }
+        return Health.up().build();
+    }
+}
+```
+
+修改application.yml文件，显示不健康时的异常信息。
+
+```yml
+management:
+  endpoint:
+    health:
+      show-details: always # 总是显示异常信息
+```
+
+访问：`http://localhost:8080/actuator/health`, 此时 status 的值为down，服务是不健康的并且在details中显示了异常原因。
+
+
+### heapdump 信息
+SpringBoot程序运行在JVM上，是JVM的一个执行线程，Actuator提供了 heapdump 端点可以获取到 Springboot 所运行 JVM 的实时情况。
+
+访问：`http://localhost:8080/actuator/heapdump`, 可进行 dump 文件的下载。
+
+使用 VisualVm 可以打开dump文件，在 jdk6 到 jdk8 中，VisualVm 是默认集成的，从jdk9开始，jdk 默认不再集成 VisualVm，需要到 github下载安装[（下载地址）](https://visualvm.github.io/download.html)。
+
+打开 VisualVm，点击左上角 `file -> load` 导入 dump 文件即可查看 jvm 运行信息（导出 dump 文件时刻的 jvm 信息）。
+
+
+
+
