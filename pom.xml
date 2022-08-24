@@ -25,6 +25,8 @@
         <module>boot-taskAnnotationSchedule</module>
         <module>boot-customizeErrorPage</module>
         <module>boot-actuator</module>
+        <module>boot-autoConfig</module>
+        <module>boot-enableAutowire</module>
     </modules>
 
     <packaging>pom</packaging>

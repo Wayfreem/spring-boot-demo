@@ -1,0 +1,9 @@
+# standout logging
+# logging.level.com.demo.orm.mybatis=debug
+
+logging:
+  level:
+    com:
+      demo:
+        autoConfig: debug
+

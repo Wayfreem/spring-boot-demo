@@ -37,15 +37,16 @@
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目
 
-| 模块                                  | 说明                                           |
-|:------------------------------------|:---------------------------------------------|
-| boot-orm-mybatis-dynamic-datasource | 在 Spring boot 中基于 mybatis 实现多数据源操作           |
-| boot-orm-jpa-dynamic-datasource     | 在 Spring boot 中基于 spring data jpa 实现多数据源操作   |
-| boot-customizeStarter               | 实现 Spring boot 自定义一个 starter  实现自动装配         |
-| boot-conditionStarter               | 实现 Spring boot 基于 condition 注解实现的自动装配        |
-| boot-autoConfiguration              | 在 Spring boot 基于  `@Configuration` 实现自定义注解注入 |
-| boot-rocketMQ                       | 在 Spring boot 集成 RocketMQ                    |
-| boot-actuator                       | 在 Spring boot 集成 actuator 实现应用监控             |
-| boot-https                          | 在 Spring boot 项目中实现 https 进行接口调用             |
-| boot-undertow                       | 在 Spring boot 项目中使用 undertow 作为 web 化的容器     |
-| boot-webFlux                        | 在 Spring boot 项目中集成 Web flux                 |
+| 模块                                         | 说明                                                       |
+|:-------------------------------------------|:---------------------------------------------------------|
+| boot-orm-mybatis-dynamic-datasource        | 在 Spring boot 中基于 mybatis 实现多数据源操作                       |
+| boot-orm-jpa-dynamic-datasource            | 在 Spring boot 中基于 spring data jpa 实现多数据源操作               |
+| boot-customizeAutowire                     | 实现 Spring boot 自定义一个 starter  实现自动装配                     |
+| boot-conditionAutowire                     | 实现 Spring boot 基于 condition 注解实现的自动装配                    |
+| boot-autoConfig                            | 在 Spring boot 中配置文件使用 include 属性导入配置文件                   |
+| boot-enableAutowire                        | 在 Spring boot 基于  `@Configuration` 与 `@Enable` 实现自定义注解装配 |
+| boot-rocketMQ                              | 在 Spring boot 集成 RocketMQ                                |
+| boot-actuator                              | 在 Spring boot 集成 actuator 实现应用监控                         |
+| boot-https                                 | 在 Spring boot 项目中实现 https 进行接口调用                         |
+| boot-undertow                              | 在 Spring boot 项目中使用 undertow 作为 web 化的容器                 |
+| boot-webFlux                               | 在 Spring boot 项目中集成 Web flux                             |
