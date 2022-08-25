@@ -27,6 +27,7 @@
         <module>boot-actuator</module>
         <module>boot-autoConfig</module>
         <module>boot-enableAutowire</module>
+        <module>boot-conditionAutowire</module>
     </modules>
 
     <packaging>pom</packaging>
