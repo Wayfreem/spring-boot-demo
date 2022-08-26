@@ -19,3 +19,18 @@
 | @ConditionalOnWebApplication	  | OnWebApplicationCondition | 应用程序是否是Web程序，没有提供属性，只是一个标识。会从判断Web程序特有的类是否存在，环境是否是Servlet环境，容器是否是Web容器等                                                                                                                      |
 
 ### 举例
+| 例子                                                                                                        | 说明                                                                                     |
+|:----------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------|
+| @ConditionalOnBean(javax.sql.DataSource.class)	                                                           | Spring容器或者所有父容器中需要存在至少一个javax.sql.DataSource类的实例                                       |
+| @ConditionalOnClass({ Configuration.class,FreeMarkerConfigurationFactory.class })	                        | 类加载器中必须存在Configuration和FreeMarkerConfigurationFactory这两个类                              |
+| @ConditionalOnExpression(“’${server.host}’==’localhost’”)	                                                | server.host配置项的值需要是localhost                                                           |
+| ConditionalOnJava(JavaVersion.EIGHT)	                                                                     | Java版本至少是8                                                                             |
+| @ConditionalOnMissingBean(value = ErrorController.class, search = SearchStrategy.CURRENT)	                | Spring当前容器中不存在ErrorController类型的bean                                                   |
+| @ConditionalOnMissingClass(“GenericObjectPool”)	                                                          | 类加载器中不能存在GenericObjectPool这个类                                                          |
+| @ConditionalOnNotWebApplication	                                                                          | 必须在非Web应用下才会生效                                                                         |
+| @ConditionalOnProperty(prefix = “spring.aop”, name = “auto”, havingValue = “true”, matchIfMissing = true) | 应用程序的环境中必须有spring.aop.auto这项配置，且它的值是true或者环境中不存在spring.aop.auto配置(matchIfMissing为true) |
+| @ConditionalOnResource(resources=”mybatis.xml”)                                                           | 类加载路径中必须存在mybatis.xml文件                                                                |
+| @ConditionalOnSingleCandidate(PlatformTransactionManager.class)                                           | Spring当前或父容器中必须存在PlatformTransactionManager这个类型的实例，且只有一个实例                             |
+| @ConditionalOnWebApplication	                                                                             | 必须在Web应用下才会生效                                                                          |
+
+### 自定义注解
