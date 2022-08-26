@@ -33,4 +33,169 @@
 | @ConditionalOnSingleCandidate(PlatformTransactionManager.class)                                           | Spring当前或父容器中必须存在PlatformTransactionManager这个类型的实例，且只有一个实例                             |
 | @ConditionalOnWebApplication	                                                                             | 必须在Web应用下才会生效                                                                          |
 
+
+### 相关知识点
+
+**@Conditional 的定义**
+
+`@Conditional` 可以标注在类和方法上
+
+```java
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME) 
+@Documented
+public @interface Conditional {
+    Class<? extends Condition>[] value();   // 这里是一个 Condition 数组
+}
+```
+
+**Condition 接口**
+
+`Condition` 接口，对应的实现类，需要实现 matches 方法
+
+```java
+public interface Condition {
+    boolean matches(ConditionContext var1, AnnotatedTypeMetadata var2);
+}
+```
+
+
 ### 自定义注解
+
+使用条件注入需要两部分操作
+- 创建一个实现 Condition 接口的实现类 XxxCondition
+- 自定义一个 Condition 注解，在自定义的注解上面标注 `@Conditional(XxxCondition.class)`
+
+
+#### 第一步：新增自定义注解
+
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Documented
+@Conditional(MyOnPropertyCondition.class)   // 导入具体的判断类
+public @interface MyConditionalOnProperty{
+    // 这里定义几个注解的信息
+    String value();
+
+    String name();
+}
+```
+
+#### 第二步：Condition 实现类
+
+创建 MyOnPropertyCondition 类
+```java
+public class MyOnPropertyCondition implements Condition {
+
+    /**
+     * 匹配出对应的 bean
+     * @param context 可以获取 spring 中一些基本的信息
+     * @param metadata 可以获取到 注解上面对应的信息
+     * @return boolean
+     */
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+
+        /** 这块这里没有用到，但是可以通过 context 获取到相关的额外信息，这里补充记录下 **/
+        // 获取到 ioc 容器中的 beanFactory
+        ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+        //获取类加载器
+        ClassLoader classLoader = context.getClassLoader();
+        //获取当前环境信息
+        Environment environment = context.getEnvironment();
+        //获取bean定义的注册类
+        BeanDefinitionRegistry registry = context.getRegistry();
+        /****/
+
+        // 通过 metadata 来获取值
+        Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(MyConditionalOnProperty.class.getName());
+        String propertyName = (String) annotationAttributes.get("name");
+        String value = (String) annotationAttributes.get("value");
+
+        if ("test".equals(propertyName) && "123".equals(value)) {
+            return true;
+        }
+
+        return false;
+    }
+}
+```
+
+#### 第三步：启动类
+
+```java
+public class ConditionAutowireApplication {
+
+    @Bean
+    @MyConditionalOnProperty(value = "123", name = "test")
+    public String conditionHello(){
+        return "condition 装配成功。";
+    }
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext content = new SpringApplicationBuilder(ConditionAutowireApplication.class)
+                .web(WebApplicationType.NONE).run(args);
+
+        String hellWorld  =content.getBean("conditionHello", String.class);
+        System.out.println("hello world" + hellWorld);
+        content.close();
+    }
+}
+```
+
+#### 程序启动测试
+
+程序启动之后，就可以看到控制台有对应的输出了
+
+```java
+hello worldcondition 装配成功。
+```
+
+#### 额外说明
+
+上面是在启动类这里是增加了这块
+
+```java
+@Bean
+@MyConditionalOnProperty(value = "123", name = "test")
+public String conditionHello(){
+    return "condition 装配成功。";
+}
+```
+
+如果是单独新增一类，类中的方法使用上述的源码，就需要指定包扫描的路径，我们再看看如何修改
+
+首先，我们在启动类中移除上面的代码
+
+```java
+@ComponentScan("com.demo")
+public class ConditionAutowireApplication {
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext content = new SpringApplicationBuilder(ConditionAutowireApplication.class)
+                .web(WebApplicationType.NONE).run(args);
+
+        String hellWorld  =content.getBean("conditionHello", String.class);
+        System.out.println("hello world" + hellWorld);
+        content.close();
+    }
+}
+```
+
+其次，我们增加一个 bean 
+
+```java
+@Component
+public class ConditionTypeBean {
+
+    @Bean
+    @MyConditionalOnProperty(value = "123", name = "test")
+    public String conditionHello(){
+        return "condition 装配成功。";
+    }
+}
+```
+
+然后重新启动就好，源码里面是已经修改完了的。
