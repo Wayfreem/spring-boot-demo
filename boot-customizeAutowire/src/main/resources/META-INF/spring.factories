@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.demo.customizeAutowire.config.HelloWorldConfiguration,\
+com.demo.customizeAutowire.config.HelloConditionConfiguration
