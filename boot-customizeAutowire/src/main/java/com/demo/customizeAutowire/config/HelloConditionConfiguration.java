@@ -1,5 +1,6 @@
 package com.demo.customizeAutowire.config;
 
+import com.demo.customizeAutowire.condition.MyConditionalOnProperty;
 
 /**
  * @author wuq
