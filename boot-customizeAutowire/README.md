@@ -5,7 +5,7 @@
 
 ## 原理
 
-在Spring 框架中有一个 `SpringFactoriesLoader.class`, 这个类会去加载项目工程路径 `META-INF` 下的 `spring.factories` 文件， 
+在Spring 框架中有一个 `SpringFactoriesLoader.class`, 这个类会去加载项目工程路径 `META-INF` 下的 `spring.factories` 文件，
 
 ```java
 public final class SpringFactoriesLoader {
@@ -22,14 +22,12 @@ public final class SpringFactoriesLoader {
 
 通过上面的 `loadFactories` 的方法进行装载我们需要的配置 bean
 
-
 ## 集成说明
 
 这里采用最简单的集成方式来说明
 
 - 增加一个配置类，配置类中使用 `@Bean` 注解
 - 增加 `META-INF/spring.factories` 文件
-
 
 ## 第一步：创建配置类
 
@@ -55,7 +53,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.demo.customizeAutowire.HelloWorldConfiguration
 ```
 
-
 ### 第三步：启动类修改
 
 在启动类中需要增加注解 `@EnableAutoConfiguration`，开启自动装配
@@ -67,10 +64,11 @@ public class CustomizeAutowireApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = new SpringApplicationBuilder(CustomizeAutowireApplication.class)
                 .web(WebApplicationType.NONE).run(args);
-        
+
+
         // 获取 Bean
         String hellworld = context.getBean("helloWorld", String.class);
-        System.out.println("hello world " + hellworld);
+        System.out.println("自动装配 " + hellworld);
 
         context.close();
     }
@@ -82,3 +80,64 @@ public class CustomizeAutowireApplication {
 #### 补充
 
 对于自动装配机制，其实是可以和 条件注入 `boot-conditionAutowire` 与 `boot-enableAutowire` 里面的内容相结合的，这样子实现的自动注入更加灵活。
+
+这里使用 `boot-conditionAutowire` 中的内容来做集成说明
+
+### 第一步： 创建条件类
+
+这里将 condition 模块中的下面内容全部 copy 过来，copy 之后的工程目录参考工程项目
+
+```
+condition
+├── conditionTypeBean
+├── MyConditionalOnProperty
+└── MyOnPropertyCondition
+```
+
+### 第二步：创建配置类
+
+`HelloConditionConfiguration` 类
+
+```java
+@MyConditionalOnProperty(value = "123", name = "test")
+public class HelloConditionConfiguration {
+}
+```
+
+
+### 第三步：增加 `spring.factories` 文件内容
+
+多个配置可以用 `,\` 作为区分
+
+```factoies
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.demo.customizeAutowire.config.HelloWorldConfiguration,\
+com.demo.customizeAutowire.config.HelloConditionConfiguration
+```
+
+### 第四步：修改启动类
+
+```java
+@EnableAutoConfiguration
+@ComponentScan("com.demo")
+public class CustomizeAutowireApplication {
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = new SpringApplicationBuilder(CustomizeAutowireApplication.class)
+                .web(WebApplicationType.NONE).run(args);
+
+
+        // 获取 Bean
+        String hellworld = context.getBean("helloWorld", String.class);
+        System.out.println("自动装配：" + hellworld);
+        System.out.println("-------------------------");
+
+        String condition = context.getBean("conditionHello", String.class);
+        System.out.println("自动条件装配：" + condition);
+
+        context.close();
+    }
+}
+```
+
+后面测试就好。

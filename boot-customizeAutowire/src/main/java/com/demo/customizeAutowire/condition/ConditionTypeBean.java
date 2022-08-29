@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
+ * 条件注入的具体 bean
  * @author wuq
  * @Time 2022-8-26 10:48
  * @Description
