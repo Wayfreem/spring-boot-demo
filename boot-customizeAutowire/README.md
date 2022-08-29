@@ -67,8 +67,7 @@ public class CustomizeAutowireApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = new SpringApplicationBuilder(CustomizeAutowireApplication.class)
                 .web(WebApplicationType.NONE).run(args);
-
-
+        
         // 获取 Bean
         String hellworld = context.getBean("helloWorld", String.class);
         System.out.println("hello world " + hellworld);
