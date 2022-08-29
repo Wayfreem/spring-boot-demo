@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.demo</groupId>
-    <artifactId>boot-customizeStarter</artifactId>
+    <artifactId>boot-customizeAutowire</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -30,7 +29,7 @@
     </dependencies>
 
     <build>
-        <finalName>boot-customizeStarter</finalName>
+        <finalName>boot-customizeAutowire</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -38,4 +37,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

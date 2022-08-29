@@ -20,7 +20,6 @@
         <module>boot-websocket</module>
         <module>boot-ureport2</module>
         <module>boot-flyway</module>
-        <module>boot-customizeStarter</module>
         <module>boot-taskAsync</module>
         <module>boot-taskAnnotationSchedule</module>
         <module>boot-customizeErrorPage</module>
@@ -28,6 +27,7 @@
         <module>boot-autoConfig</module>
         <module>boot-enableAutowire</module>
         <module>boot-conditionAutowire</module>
+        <module>boot-customizeAutowire</module>
     </modules>
 
     <packaging>pom</packaging>
