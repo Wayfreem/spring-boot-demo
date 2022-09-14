@@ -15,8 +15,9 @@ import java.util.List;
 public class SwaggerController {
 
     @ApiOperation(value="保存用户", notes="根据传入的值，保存")
-//    @ApiImplicitParams({@ApiImplicitParam(name = "User", value = "员工信息")})
-//    @ApiImplicitParam(name = "User", value = "用户详细实体user", required = true, dataTypeClass = User.class)
+//    @ApiImplicitParams({@ApiImplicitParam(name = "user", value = "员工信息")})
+    @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User",
+            dataTypeClass = User.class, paramType = "path") // 这里不加  paramType = "path" 访问界面会报错
     @RequestMapping("/save")
     public User save(User user) {
         return user;
