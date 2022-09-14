@@ -28,6 +28,7 @@
         <module>boot-enableAutowire</module>
         <module>boot-conditionAutowire</module>
         <module>boot-customizeAutowire</module>
+        <module>boot-swagger2</module>
     </modules>
 
     <packaging>pom</packaging>

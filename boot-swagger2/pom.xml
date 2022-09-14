@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>boot-redis</artifactId>
+    <artifactId>boot-swagger2</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -28,19 +28,20 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-ui</artifactId>
+            <version>3.0.3</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>boot-redis</finalName>
+        <finalName>boot-swagger</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
