@@ -39,6 +39,7 @@
 | boot-enableAutowire                 | 在 Spring boot 基于 `@Configuration` 与 `@Enable` 实现自定义注解装配 |
 | boot-conditionAutowire              | 实现 Spring boot 基于 `@conditional` 注解实现的自动装配              |
 | boot-customizeAutowire              | 实现 Spring boot 通过自定义一个 `spring.factories`  实现自动装配       |
+| boot-swagger2                       | 在 Spring boot 项目中集成 swagger2 构建 API 文档                  |
 
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目
@@ -53,5 +54,4 @@
 | boot-webFlux                        | 在 Spring boot 项目中集成 Web flux               |
 | boot-quartz                         | 在 Spring boot 项目中集成 quartz 实现任务调度          |
 | boot-filter                         | 在 Spring boot 项目中使用传统 filter 实现任务调度        |
-| boot-swagger2                       | 在 Spring boot 项目中集成 swagger2 构建 API 文档     |
 | boot-druid                          | 在 Spring boot 项目中集成 druid 进行数据连接监控         |
