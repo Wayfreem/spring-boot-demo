@@ -135,9 +135,32 @@ http://127.0.0.1:8080/doc.html#/home
 
 ### 整理报错相关
 
-- for input "" 报错
-处理方案
+**for input "" 报错**
 
-- 访问页面报错
+```console
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67) ~[na:na]
+	at java.base/java.lang.Long.parseLong(Long.java:721) ~[na:na]
+	at java.base/java.lang.Long.valueOf(Long.java:1163) ~[na:na]
+```
 
-处理方案
+通过报错可以发现是类型转换的问题。这个是由于我们在模型配置中设置了类型为 Integer，需要增加一个默认值
+
+```java
+@ApiModelProperty(value = "用户id", example = "1000")     // 这里增加一个 example 是因为在进入界面的时候会报错  For input string: ""
+private Integer id;
+```
+
+**访问页面报错**
+
+在访问界面的时候，会发现有报错，那是因为我们在注解  @ApiImplicitParam 中配置的内容有误，需要增加对应的配置就好
+
+```java
+@ApiOperation(value="保存用户", notes="根据传入的值，保存")
+    @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User",
+            dataTypeClass = User.class, paramType = "path") // 这里不加  paramType = "path" 访问界面会报错
+    @RequestMapping("/save")
+    public User save(User user) {
+        return user;
+    }
+```
