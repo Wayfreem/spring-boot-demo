@@ -55,3 +55,4 @@
 | boot-quartz                         | 在 Spring boot 项目中集成 quartz 实现任务调度          |
 | boot-filter                         | 在 Spring boot 项目中使用传统 filter 实现任务调度        |
 | boot-druid                          | 在 Spring boot 项目中集成 druid 进行数据连接监控         |
+| boot-retry                          | 在 Spring boot 项目中集成 retry 内部报错之后重试         |
