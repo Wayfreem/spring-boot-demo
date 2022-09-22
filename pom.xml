@@ -29,6 +29,7 @@
         <module>boot-conditionAutowire</module>
         <module>boot-customizeAutowire</module>
         <module>boot-swagger2</module>
+        <module>boot-orm-mybatis-dynamic-datasource</module>
     </modules>
 
     <packaging>pom</packaging>
