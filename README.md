@@ -56,3 +56,7 @@
 | boot-filter                         | 在 Spring boot 项目中使用传统 filter 实现任务调度        |
 | boot-druid                          | 在 Spring boot 项目中集成 druid 进行数据连接监控         |
 | boot-retry                          | 在 Spring boot 项目中集成 retry 内部报错之后重试         |
+
+
+- https://mp.weixin.qq.com/s/0d6cMyWqXmjCkNxdZ15NGw
+- https://mp.weixin.qq.com/s/Ic5YH76ZtR71JjcXyMtozw
