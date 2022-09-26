@@ -63,7 +63,7 @@ server:
     # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
     # 每块buffer的空间大小,越小的空间被利用越充分
     buffer-size: 1024
-    # 是否分配的直接内存
+    # 是否分配的直接内存(NIO直接分配的堆外内存)
     direct-buffers: true
     threads:
       # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
