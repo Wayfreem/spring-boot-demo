@@ -30,6 +30,7 @@
         <module>boot-customizeAutowire</module>
         <module>boot-swagger2</module>
         <module>boot-orm-mybatis-dynamic-datasource</module>
+        <module>boot-undertow</module>
     </modules>
 
     <packaging>pom</packaging>
