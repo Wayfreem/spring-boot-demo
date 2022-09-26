@@ -72,8 +72,66 @@ server:
       worker: 256
 ```
 
-到此呢，程序就可以正常启动了。后面介绍下其他的配置相关：
+到此呢，程序就可以正常启动了。后面介绍下其他的配置相关.
 
+### 额外的配置信息
+
+我们创建一个 config 类来做自定义配置
+
+```java
+@Configuration
+public class UndertowServletWebServerConfig implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {
+
+    /**
+     * 缓存区设置
+     * @param factory UndertowServletWebServerFactory
+     */
+    @Override
+    public void customize(UndertowServletWebServerFactory factory) {
+        factory.addDeploymentInfoCustomizers(deploymentInfo -> {
+            WebSocketDeploymentInfo webSocketDeploymentInfo = new WebSocketDeploymentInfo();
+            webSocketDeploymentInfo.setBuffers(new DefaultByteBufferPool(false, 1024));
+            deploymentInfo.addServletContextAttribute("io.undertow.websockets.jsr.WebSocketDeploymentInfo", webSocketDeploymentInfo);
+        });
+    }
+
+    /**
+     * 增加额外的配置
+     * @return UndertowServletWebServerFactory
+     */
+    @Bean
+    public UndertowServletWebServerFactory undertowServletWebServerFactory() {
+        UndertowServletWebServerFactory factory = new UndertowServletWebServerFactory();
+        factory.addBuilderCustomizers(
+                // 这里可以增加其他的配置信息
+                builder -> builder.setServerOption(UndertowOptions.ENABLE_HTTP2, true)
+                        .setServerOption(UndertowOptions.HTTP2_SETTINGS_ENABLE_PUSH, true));
+
+        return factory;
+    }
+}
+```
+
+
+### 通过 web 访问
+
+由于是 web 容器，我们肯定是想通过链接访问，所以增加一个 controller
+```java
+@RestController
+public class TestController {
+
+    @RequestMapping("get")
+    public Map get(){
+        return Map.of("key", "No.1");
+    }
+}
+```
+
+**访问**
+
+```http request
+http://localhost:8080/get
+```
 
 
 ### 参考连接
