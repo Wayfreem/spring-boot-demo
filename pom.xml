@@ -31,6 +31,8 @@
         <module>boot-swagger2</module>
         <module>boot-orm-mybatis-dynamic-datasource</module>
         <module>boot-undertow</module>
+        <module>boot-orm-mybatis-multi-datasource</module>
+        <module>boot-orm-jpa-dynamic-datasource</module>
     </modules>
 
     <packaging>pom</packaging>
