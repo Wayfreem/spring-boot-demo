@@ -96,7 +96,7 @@ spring:
       ddl-auto: update
   datasource:
     primary:
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://127.0.0.1:3306/db01?characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
       username: root
       password: root
@@ -150,7 +150,7 @@ PrimaryConfig数据源
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactoryPrimary",
                         transactionManagerRef = "transactionManagerPrimary",
-                        basePackages = {"com.olive.repository.primary"})
+                        basePackages = {"com.demo.orm.jpa.multi.datasource.repository.primary"})
 public class PrimaryConfig {
 
     @Autowired
@@ -174,7 +174,7 @@ public class PrimaryConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryPrimary (EntityManagerFactoryBuilder builder) {
         return builder.dataSource(primaryDataSource)
                 .properties(getHibernateProperties())
-                .packages("com.olive.entity.primary")     //换成你自己的实体类所在位置
+                .packages("com.demo.orm.jpa.multi.datasource.repository.primary")     //换成自己的实体类所在位置
                 .persistenceUnit("primaryPersistenceUnit")
                 .build();
     }
@@ -202,7 +202,7 @@ SecondConfig 数据源源
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactorySecond",
                         transactionManagerRef = "transactionManagerSecond",
-                        basePackages = {"com.olive.repository.second"})
+                        basePackages = {"com.demo.orm.jpa.multi.datasource.repository.second"})
 public class SecondConfig {
 
     @Autowired
@@ -225,7 +225,7 @@ public class SecondConfig {
 
         return builder.dataSource(secondDataSource)
                 .properties(getHibernateProperties())
-                .packages("com.olive.entity.second")     //换成你自己的实体类所在位置
+                .packages("com.demo.orm.jpa.multi.datasource.repository.second")     //换成你自己的实体类所在位置
                 .persistenceUnit("secondaryPersistenceUnit")
                 .build();
     }

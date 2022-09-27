@@ -27,7 +27,7 @@ import java.util.Map;
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactoryPrimary",
         transactionManagerRef = "transactionManagerPrimary",
-        basePackages = {"com.olive.repository.primary"})    // 此处的包需要修改下
+        basePackages = {"com.demo.orm.jpa.multi.datasource.repository.primary"})    // 此处的包需要修改下
 public class PrimaryConfig {
 
     @Autowired
@@ -51,7 +51,7 @@ public class PrimaryConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryPrimary (EntityManagerFactoryBuilder builder) {
         return builder.dataSource(primaryDataSource)
                 .properties(getHibernateProperties())
-                .packages("com.olive.entity.primary")     //换成你自己的实体类所在位置
+                .packages("com.demo.orm.jpa.multi.datasource.repository.primary")     //换成你自己的实体类所在位置
                 .persistenceUnit("primaryPersistenceUnit")
                 .build();
     }

@@ -26,7 +26,7 @@ import java.util.Map;
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactorySecond",
         transactionManagerRef = "transactionManagerSecond",
-        basePackages = {"com.olive.repository.second"})     // 对应的包名需要修改
+        basePackages = {"com.demo.orm.jpa.multi.datasource.repository.second"})     // 对应的包名需要修改
 public class SecondConfig {
 
     @Autowired
@@ -49,7 +49,7 @@ public class SecondConfig {
 
         return builder.dataSource(secondDataSource)
                 .properties(getHibernateProperties())
-                .packages("com.olive.entity.second")     //换成你自己的实体类所在位置
+                .packages("com.demo.orm.jpa.multi.datasource.repository.second")     //换成你自己的实体类所在位置
                 .persistenceUnit("secondaryPersistenceUnit")
                 .build();
     }
