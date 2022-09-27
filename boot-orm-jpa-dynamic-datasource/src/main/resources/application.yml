@@ -1,0 +1,26 @@
+# 基本配置
+server:
+  port: 8080
+
+# 数据库
+spring:
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    primary:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://192.168.152.129:3306/study?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF8
+      username: admin
+      password: 123456
+    second:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://192.168.152.129:3306/db02?characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
+      username: admin
+      password: 123456
+
+  jackson:
+    serialization:
+      indent-output: true

@@ -2,7 +2,44 @@
 
 使用 JPA 链接MySQL 数据库，并且实现多数据源对数据库做操作。
 
+微服务推崇单服务单数据库；但是还是免不了存在一个微服务连接多个数据库的情况，今天介绍一下如何使用 JPA 的多数据源。
+
+主要采用将不同数据库的 Repository 接口分别存放到不同的 package，Spring 去扫描不同的包，注入不同的数据源来实现多数据源。
+
 ## 具体实现
+
+### 前提步骤
+
+创建两个数据库 db01 和 db02 
+
+**学生表 t_student**
+
+```sql
+CREATE TABLE `t_student` (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+`sex`  int(1) NULL DEFAULT NULL ,
+`grade`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
+AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
+```
+
+**教师表 t_teacher**
+```sql
+CREATE TABLE `t_teacher` (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+`sex`  int(1) NULL DEFAULT NULL ,
+`office`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
+AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
+```
 
 ### 第一步：集成相关依赖
 
@@ -45,21 +82,167 @@
 
 ### 第二步：增加配置文件内容
 
-```properties
-server.port=8080
+```yaml
+# 基本配置
+server:
+  port: 8080
 
-# jpa config
-spring.datasource.url=jdbc:mysql://192.168.152.129:3306/study?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF8
-spring.datasource.username=admin
-spring.datasource.password=123456
-spring.jpa.generate-ddl=true
-spring.jpa.show-sql=true
+# 数据库
+spring:
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    primary:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/db01?characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
+      username: root
+      password: root
+    second:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/db02?characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true
+      username: root
+      password: root
 
-logging.level.com.demo.orm.jpa=debug
-logging.level.org.hibernate.type.descriptor.sql=TRACE
+  jackson:
+    serialization:
+      indent-output: true
 ```
 
-### 第三步：创建模型以及 repository
+### 第三步：配置数据源
+
+DataSourceConfig 配置
+
+```java
+/**
+ * @Description: 数据源配置
+ */
+@Configuration
+public class DataSourceConfig {
+
+    @Bean(name = "primaryDataSource")
+    @Qualifier("primaryDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    @Primary
+    public DataSource primaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = "secondDataSource")
+    @Qualifier("secondDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.second")
+    public DataSource secondDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+}
+```
+
+PrimaryConfig数据源
+
+```java
+/**
+ * @Description: 主数据源配置
+ * @date
+ */
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactoryPrimary",
+                        transactionManagerRef = "transactionManagerPrimary",
+                        basePackages = {"com.olive.repository.primary"})
+public class PrimaryConfig {
+
+    @Autowired
+    @Qualifier("primaryDataSource")
+    private DataSource primaryDataSource;
+
+    @Autowired
+    private HibernateProperties hibernateProperties;
+
+    @Autowired
+    private JpaProperties jpaProperties;
+
+    @Primary
+    @Bean(name = "entityManagerPrimary")
+    public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
+        return entityManagerFactoryPrimary(builder).getObject().createEntityManager();
+    }
+
+    @Primary
+    @Bean(name = "entityManagerFactoryPrimary")    //primary实体工厂
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryPrimary (EntityManagerFactoryBuilder builder) {
+        return builder.dataSource(primaryDataSource)
+                .properties(getHibernateProperties())
+                .packages("com.olive.entity.primary")     //换成你自己的实体类所在位置
+                .persistenceUnit("primaryPersistenceUnit")
+                .build();
+    }
+
+    @Primary
+    @Bean(name = "transactionManagerPrimary")
+    public PlatformTransactionManager transactionManager(EntityManagerFactoryBuilder builder) {
+        return new JpaTransactionManager(entityManagerFactoryPrimary(builder).getObject());
+    }
+
+    private Map<String, Object> getHibernateProperties() {
+        return hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings());
+    }
+
+}
+```
+
+SecondConfig 数据源源
+
+```java
+/**
+ * @Description: 第二个数据源配置
+ */
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactorySecond",
+                        transactionManagerRef = "transactionManagerSecond",
+                        basePackages = {"com.olive.repository.second"})
+public class SecondConfig {
+
+    @Autowired
+    @Qualifier("secondDataSource")
+    private DataSource secondDataSource;
+
+    @Resource
+    private JpaProperties jpaProperties;
+
+    @Resource
+    private HibernateProperties hibernateProperties;
+
+    @Bean(name = "entityManagerSecond")
+    public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
+        return entityManagerFactorySecond(builder).getObject().createEntityManager();
+    }
+
+    @Bean(name = "entityManagerFactorySecond")    //primary实体工厂
+    public LocalContainerEntityManagerFactoryBean entityManagerFactorySecond (EntityManagerFactoryBuilder builder) {
+
+        return builder.dataSource(secondDataSource)
+                .properties(getHibernateProperties())
+                .packages("com.olive.entity.second")     //换成你自己的实体类所在位置
+                .persistenceUnit("secondaryPersistenceUnit")
+                .build();
+    }
+
+    @Bean(name = "transactionManagerSecond")
+    public PlatformTransactionManager transactionManager(EntityManagerFactoryBuilder builder) {
+        return new JpaTransactionManager(entityManagerFactorySecond(builder).getObject());
+    }
+
+    private Map<String, Object> getHibernateProperties() {
+        return hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings());
+    }
+
+}
+```
+
+### 第四步：创建模型以及 repository
 
 **模型类**
 ```java
