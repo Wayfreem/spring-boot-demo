@@ -1,6 +1,6 @@
 ## 简介
 
-使用 JPA 链接MySQL 数据库，并且实现动态数据源对数据库做操作。
+使用 JPA 链接MySQL 数据库，并且实现多数据源对数据库做操作。
 
 微服务推崇单服务单数据库；但是还是免不了存在一个微服务连接多个数据库的情况，今天介绍一下如何使用 JPA 的多数据源。
 
@@ -395,3 +395,19 @@ public class JpaMultiDatasourceTest {
     }
 }
 ```
+
+控制台部分输出，可以看到在初始化数据库连接池
+```console
+2022-09-28 08:15:21.012  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-09-28 08:15:21.503  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-09-28 08:15:21.523  INFO 5580 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2022-09-28 08:15:22.367  INFO 5580 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-09-28 08:15:22.377  INFO 5580 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'primaryPersistenceUnit'
+2022-09-28 08:15:22.415  INFO 5580 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: secondaryPersistenceUnit]
+2022-09-28 08:15:22.422  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2022-09-28 08:15:22.454  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2022-09-28 08:15:22.455  INFO 5580 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2022-09-28 08:15:22.505  INFO 5580 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+```
+
+最后去数据库检查下是否有数据写入就好

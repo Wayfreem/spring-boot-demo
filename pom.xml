@@ -33,6 +33,7 @@
         <module>boot-undertow</module>
         <module>boot-orm-mybatis-multi-datasource</module>
         <module>boot-orm-jpa-dynamic-datasource</module>
+        <module>boot-orm-jpa-multi-datasource</module>
     </modules>
 
     <packaging>pom</packaging>
