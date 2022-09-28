@@ -59,6 +59,12 @@ AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
        <artifactId>spring-boot-starter-web</artifactId>
    </dependency>
 
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
    <!--  jpa 依赖     -->
    <dependency>
        <groupId>org.springframework.boot</groupId>
@@ -174,7 +180,7 @@ public class PrimaryConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryPrimary (EntityManagerFactoryBuilder builder) {
         return builder.dataSource(primaryDataSource)
                 .properties(getHibernateProperties())
-                .packages("com.demo.orm.jpa.multi.datasource.repository.primary")     //换成自己的实体类所在位置
+                .packages("com.demo.orm.jpa.multi.datasource.model.primary")     //换成自己的实体类所在位置
                 .persistenceUnit("primaryPersistenceUnit")
                 .build();
     }
@@ -225,7 +231,7 @@ public class SecondConfig {
 
         return builder.dataSource(secondDataSource)
                 .properties(getHibernateProperties())
-                .packages("com.demo.orm.jpa.multi.datasource.repository.second")     //换成你自己的实体类所在位置
+                .packages("com.demo.orm.jpa.multi.datasource.model.second")     //换成你自己的实体类所在位置
                 .persistenceUnit("secondaryPersistenceUnit")
                 .build();
     }
@@ -244,30 +250,74 @@ public class SecondConfig {
 
 ### 第四步：创建模型以及 repository
 
-**模型类**
+**Student 模型类**
 ```java
+package com.demo.orm.jpa.multi.datasource.model.primary;
+
 @Data
-@Entity
-@Table(name = "User")
-public class User {
+@Table
+@Entity(name = "Student")
+public class Student implements Serializable {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_name") // 若实体属性和表字段名称一致时，可以不用加@Column注解
     private String name;
-    private String sex;
-    private String email;
-    private String lastname;
 
-    @Version
-    private Long version;
+    @Column(name = "sex")
+    private int sex;
 
+    @Column(name = "grade")
+    private String grade;
+}
+
+```
+
+**Student repository 类**
+
+```java
+package com.demo.orm.jpa.multi.datasource.repository.primary;
+
+import com.demo.orm.jpa.multi.datasource.model.primary.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentRepository extends JpaRepository<Student, Long> {
 }
 ```
 
-**repository 类**
+**Teacher 模型类**
+```java
+@Data
+@Table
+@Entity
+public class Teacher implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_name") // 若实体属性和表字段名称一致时，可以不用加@Column注解
+    private String name;
+
+    @Column(name = "sex")
+    private int sex;
+
+    @Column(name = "office")
+    private String office;
+}
+```
+
+**Teacher repository 类**
 
 ```java
-public interface UserRepository extends JpaRepository<User, String> {
+package com.demo.orm.jpa.multi.datasource.repository.primary;
+
+import com.demo.orm.jpa.multi.datasource.model.primary.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TeacherRepository extends JpaRepository<second, Long> {
 }
 ```
 
@@ -308,43 +358,56 @@ public class UserService {
 }
 ```
 
+到此处，就已经配置完成了，后面我们测试下：
+```java
+package com.demo.orm.jpa.multi.datasource;
 
-## 启动程序
+import com.demo.orm.jpa.multi.datasource.model.primary.Student;
+import com.demo.orm.jpa.multi.datasource.model.second.Teacher;
+import com.demo.orm.jpa.multi.datasource.repository.primary.StudentRepository;
+import com.demo.orm.jpa.multi.datasource.repository.second.TeacherRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-**关于JPA 使用的 dialect**
+@SpringBootTest
+public class JpaMultiDatasourceTest {
 
-项目启动的时候可以看到控制台输出了具体的使用 方言 dialect 的类 为 `MySQL8Dialect`，以及创建表的SQL 语句。
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    TeacherRepository teacherRepository;
+
+    @Test
+    public void userSave() {
+        Student studentDO = new Student();
+        studentDO.setName("bug creator");
+        studentDO.setSex(1);
+        studentDO.setGrade("一年级");
+        studentRepository.save(studentDO);
+
+        Teacher teacherDO = new Teacher();
+        teacherDO.setName("Java乐园");
+        teacherDO.setSex(2);
+        teacherDO.setOffice("语文");
+        teacherRepository.save(teacherDO);
+    }
+}
 ```
-2022-07-01 17:40:28.685  INFO 15048 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
 
-Hibernate: create table hibernate_sequence (next_val bigint) engine=InnoDB
-Hibernate: insert into hibernate_sequence values ( 1 )
-Hibernate: create table user (id varchar(255) not null, email varchar(255), lastname varchar(255), name varchar(255), sex varchar(255), version bigint, primary key (id)) engine=InnoDB
+控制台部分输出，可以看到在初始化数据库连接池
+```console
+2022-09-28 08:15:21.012  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-09-28 08:15:21.503  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-09-28 08:15:21.523  INFO 5580 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2022-09-28 08:15:22.367  INFO 5580 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-09-28 08:15:22.377  INFO 5580 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'primaryPersistenceUnit'
+2022-09-28 08:15:22.415  INFO 5580 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: secondaryPersistenceUnit]
+2022-09-28 08:15:22.422  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2022-09-28 08:15:22.454  INFO 5580 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2022-09-28 08:15:22.455  INFO 5580 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2022-09-28 08:15:22.505  INFO 5580 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
 ```
 
-## 关于日志输出
-
-需要引入依赖包
-
-pom.xml
-
-```xml
- <dependency>
-   <groupId>com.integralblue</groupId>
-   <artifactId>log4jdbc-spring-boot-starter</artifactId>
-   <version>1.0.2</version>
-   <scope>runtime</scope>
-</dependency>
-```
-
-application.properties
-
-```properties
-logging.level.com.demo=debug
-logging.level.jdbc.sqlonly=WARN
-logging.level.jdbc.sqltiming=INFO
-logging.level.jdbc.resultsettable=WARN
-logging.level.jdbc.resultset=WARN
-logging.level.jdbc.connection=WARN
-logging.level.jdbc.audit=WARN
-```
+最后去数据库检查下是否有数据写入就好

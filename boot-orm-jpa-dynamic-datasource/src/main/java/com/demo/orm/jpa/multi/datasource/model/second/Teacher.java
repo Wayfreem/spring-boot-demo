@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
-@Table
 @Entity
+@Table
 public class Teacher implements Serializable {
 
     @Id
