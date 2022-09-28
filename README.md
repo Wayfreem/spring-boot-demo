@@ -41,6 +41,7 @@
 | boot-customizeAutowire              | 实现 Spring boot 通过自定义一个 `spring.factories`  实现自动装配       |
 | boot-swagger2                       | 在 Spring boot 项目中集成 swagger2 构建 API 文档                  |
 | boot-undertow                       | 在 Spring boot 项目中使用 undertow 作为 web 化的容器                |
+| boot-orm-jpa-multi-datasource       | 在 Spring boot 中基于 spring data jpa 实现多数据源操作              |
 
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目
@@ -49,7 +50,6 @@
 |:------------------------------------|:-----------------------------------------------|
 | boot-orm-mybatis-multi-datasource   | 在 Spring boot 中基于 mybatis 实现多数据源               |
 | boot-orm-mybatis-dynamic-datasource | 在 Spring boot 中基于 mybatis 实现多数据源动态切换操作         |
-| boot-orm-jpa-multi-datasource       | 在 Spring boot 中基于 spring data jpa 实现多数据源操作     |
 | boot-orm-jpa-dynamic-datasource     | 在 Spring boot 中基于 spring data jpa 实现多数据源动态切换操作 |
 | boot-rocketMQ                       | 在 Spring boot 集成 RocketMQ                      |
 | boot-https                          | 在 Spring boot 项目中实现 https 进行接口调用               |
