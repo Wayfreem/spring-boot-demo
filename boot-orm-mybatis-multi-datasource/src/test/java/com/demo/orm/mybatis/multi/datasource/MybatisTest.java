@@ -28,7 +28,7 @@ public class MybatisTest {
         Teacher teacherDO = new Teacher();
         teacherDO.setName("Mybatis");
         teacherDO.setSex(2);
-        teacherDO.setGrade("语文");
+        teacherDO.setOffice("语文");
         teacherMapper.save(teacherDO);
     }
 }

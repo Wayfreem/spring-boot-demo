@@ -5,10 +5,10 @@
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="sex" jdbcType="INTEGER" property="sex" />
-        <result column="grade" jdbcType="VARCHAR" property="grade" />
+        <result column="office" jdbcType="VARCHAR" property="office" />
     </resultMap>
 
     <insert id="save">
-        INSERT INTO teacher ( user_name, sex, office) VALUES (#{teacherDO.name}, #{teacherDO.sex}, #{teacherDO.office});
+        INSERT INTO teacher ( name, sex, office) VALUES (#{teacherDO.name}, #{teacherDO.sex}, #{teacherDO.office});
     </insert>
 </mapper>

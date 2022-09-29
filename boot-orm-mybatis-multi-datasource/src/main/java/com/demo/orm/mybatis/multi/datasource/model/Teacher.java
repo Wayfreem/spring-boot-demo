@@ -13,5 +13,5 @@ public class Teacher implements Serializable{
 
     private int sex;
 
-    private String grade;
+    private String office;
 }

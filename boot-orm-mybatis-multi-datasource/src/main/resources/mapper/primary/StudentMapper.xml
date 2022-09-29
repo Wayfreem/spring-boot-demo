@@ -9,6 +9,6 @@
     </resultMap>
 
     <insert id="save">
-        INSERT INTO tudent (user_name, sex, grade) VALUES (#{studentDO.name}, #{studentDO.sex}, #{studentDO.grade});
+        INSERT INTO student (user_name, sex, grade) VALUES (#{studentDO.name}, #{studentDO.sex}, #{studentDO.grade});
     </insert>
 </mapper>
