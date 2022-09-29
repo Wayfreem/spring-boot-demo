@@ -20,13 +20,13 @@ public class MybatisTest {
     @Test
     public void userSave() {
         Student studentDO = new Student();
-        studentDO.setName("BUG弄潮儿");
+        studentDO.setName("Mybatis");
         studentDO.setSex(1);
         studentDO.setGrade("一年级");
         studentMapper.save(studentDO);
 
         Teacher teacherDO = new Teacher();
-        teacherDO.setName("Java乐园");
+        teacherDO.setName("Mybatis");
         teacherDO.setSex(2);
         teacherDO.setGrade("语文");
         teacherMapper.save(teacherDO);
