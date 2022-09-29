@@ -9,6 +9,6 @@
     </resultMap>
 
     <insert id="save">
-        INSERT INTO t_teacher ( user_name, sex, office) VALUES (#{teacherDO.name}, #{teacherDO.sex}, #{teacherDO.office});
+        INSERT INTO teacher ( user_name, sex, office) VALUES (#{teacherDO.name}, #{teacherDO.sex}, #{teacherDO.office});
     </insert>
 </mapper>
