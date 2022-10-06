@@ -11,6 +11,9 @@ Spring Retry 为 Spring 应用程序提供了声明性重试支持。
 
 常用的方法就是使用 `try{}catch{}` 或者 `while` 循环之类的语法来进行相应的操作。但是这个不是一个好的处理方案，不能做到统一管理。这时，我们可以使用 `Spring Retry` 来实现。
 
+
+项目这里主要是使用注解 `@Retryable` 方式实现 
+
 ## 集成说明
 
 ### 第一步：引入依赖
@@ -20,4 +23,17 @@ Spring Retry 为 Spring 应用程序提供了声明性重试支持。
     <groupId>org.springframework.retry</groupId>
     <artifactId>spring-retry</artifactId>
 </dependency>
+```
+
+### 第二步：启用 `@Retryable`
+
+```java
+@Retryable
+@SpringBootApplication
+public class RetryApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(RetryApplication.class, args);
+    }
+}
 ```
