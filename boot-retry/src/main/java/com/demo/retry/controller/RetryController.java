@@ -12,7 +12,7 @@ public class RetryController {
     private RetryService retryService;
 
     @RequestMapping("test")
-    public int test(int code){
+    public int test(int code) {
         return retryService.retry(code);
     }
 }

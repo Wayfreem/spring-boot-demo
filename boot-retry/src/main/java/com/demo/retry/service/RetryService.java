@@ -10,14 +10,9 @@ import java.time.LocalTime;
 @Service
 public class RetryService {
 
-    public int retry(int code) {
-
-        return 0;
-    }
-
     /**
      * value：抛出指定异常才会重试
-     * include：和value一样，默认为空，当exclude也为空时，默认所有异常
+     * include：和 value 一样，默认为空，当 exclude 也为空时，默认所有异常
      * exclude：指定不处理的异常
      * maxAttempts：最大重试次数，默认3次
      * backoff：重试等待策略，
@@ -28,11 +23,11 @@ public class RetryService {
      * @return code
      * @throws Exception
      */
-    @Retryable(value = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 1.5))
-    public int testRetry(int code) throws Exception {
+    @Retryable(value = RuntimeException.class, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 1.5))
+    public int retry(int code) {
         System.out.println("test被调用,时间：" + LocalTime.now());
         if (code == 0) {
-            throw new Exception("情况不对头！");
+            throw new RuntimeException("情况不对头！");
         }
         System.out.println("test被调用,情况对头了！");
 
@@ -42,7 +37,7 @@ public class RetryService {
     /**
      * Spring-Retry 还提供了 @Recover 注解，用于 @Retryable 重试失败后处理方法。
      * 如果不需要回调方法，可以直接不写回调方法，那么实现的效果是，重试次数完了后，如果还是没成功没符合业务判断，就抛出异常。
-     * 可以看到传参里面写的是 Exception e，这个是作为回调的接头暗号（重试次数用完了，还是失败，我们抛出这个 Exception e通知触发这个回调方法）。
+     * 可以看到传参里面写的是 RuntimeException e，这个是作为回调的接头暗号（重试次数用完了，还是失败，我们抛出这个 RuntimeException e通知触发这个回调方法）。
      * 注意事项：
      * 方法的返回值必须与 @Retryable 方法一致
      * 方法的第一个参数，必须是 Throwable 类型的，建议是与 @Retryable 配置的异常一致，其他的参数，需要哪个参数，写进去就可以了（ @Recover方 法中有的）
