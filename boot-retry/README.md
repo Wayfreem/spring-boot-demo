@@ -37,3 +37,20 @@ public class RetryApplication {
     }
 }
 ```
+
+
+### 第三步: 创建一个 controller
+
+```java
+@RestController
+public class RetryController {
+
+    @Autowired
+    private RetryService retryService;
+
+    @RequestMapping("test")
+    public int test(int code){
+        return retryService.retry(code);
+    }
+}
+```
