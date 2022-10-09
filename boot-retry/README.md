@@ -18,11 +18,7 @@ Spring Retry 为 Spring 应用程序提供了声明性重试支持。
 - 注解方式：使用 `@Retryable`
 - 声明方式：使用 `RetryTemplate`
 
-## `@Retryable` 集成说明
-
-项目这里主要是使用注解 `@Retryable` 方式实现
-
-### 第一步：引入依赖
+## 依赖包
 
 ```xml
 <dependency>
@@ -35,7 +31,11 @@ Spring Retry 为 Spring 应用程序提供了声明性重试支持。
 </dependency>
 ```
 
-### 第二步：启用 `@Retryable`
+## `@Retryable` 集成说明
+
+项目这里主要是使用注解 `@Retryable` 方式实现
+
+### 第一步：启用 `@Retryable`
 
 ```java
 @EnableRetry
@@ -48,8 +48,7 @@ public class RetryApplication {
 }
 ```
 
-
-### 第三步: 创建一个 controller
+### 第二步: 创建一个 controller
 
 ```java
 @RestController
@@ -65,7 +64,7 @@ public class RetryController {
 }
 ```
 
-### 第四步：创建 service
+### 第三步：创建 service
 
 ```java
 @Service
@@ -141,4 +140,61 @@ http://localhost:8080/test?code=0
 异常信息:调用失败！
 ```
 
+## `RetryTemplate` 集成
 
+### 第一步：增加监听器
+
+增加监听是为了监听整个调用过程（生命周期）
+
+```java
+
+```
+
+### 第二步：注册 `RetryTemplate` 到 Spring Bean 中
+
+```java
+
+```
+
+### 第三步：增加访问的 controller 以及 Service
+
+**RetryController**
+
+```java
+
+```
+
+**RetryTemplateService**
+
+```java
+
+```
+
+### 测试
+
+```http request
+http://localhost:8080/testTemplate?code=0
+```
+
+
+## 直接使用 `RetryTemplate`
+
+使用 `RetryTemplate` 最简单的使用方式
+
+```java
+RetryTemplate template = new RetryTemplate();
+ 
+TimeoutRetryPolicy policy = new TimeoutRetryPolicy();
+policy.setTimeout(30000L);
+ 
+template.setRetryPolicy(policy);
+ 
+Foo result = template.execute(new RetryCallback<Foo>() {
+ 
+    public Foo doWithRetry(RetryContext context) {
+        // Do stuff that might fail, e.g. webservice operation
+        return result;
+    }
+ 
+});
+```
