@@ -30,5 +30,4 @@ public class SimpleRetryListener extends RetryListenerSupport {
          System.out.println("监听到重试过程错误了");
     }
 
-
 }

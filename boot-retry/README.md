@@ -174,8 +174,27 @@ public class SimpleRetryListener extends RetryListenerSupport {
 
 ### 第二步：注册 `RetryTemplate` 到 Spring Bean 中
 
-```java
+增加对应的配置，将 RetryTemplate 注入到 Spring 容器中
 
+```java
+@Configuration
+public class RetryConfig {
+
+    @Bean
+    public RetryTemplate retryTemplate() {
+
+        // 定义简易重试策略，最大重试次数为3次,重试间隔为3s
+        RetryTemplate retryTemplate = RetryTemplate.builder()
+                .maxAttempts(3)
+                .fixedBackoff(3000)
+                .retryOn(RuntimeException.class)
+                .build();
+        retryTemplate.registerListener(new SimpleRetryListener());  // 添加监听
+        // 这里还可以增加 重试策略 以及 回退策略
+        return retryTemplate;
+    }
+
+}
 ```
 
 ### 第三步：增加访问的 controller 以及 Service
@@ -183,12 +202,57 @@ public class SimpleRetryListener extends RetryListenerSupport {
 **RetryController**
 
 ```java
+@RestController
+public class RetryController {
+
+    @Autowired
+    private RetryTemplateService retryTemplateService;
+    
+    @RequestMapping("testTemplate")
+    public int testTemplate(int code) {
+        return retryTemplateService.retry(code);
+    }
+}
 
 ```
 
 **RetryTemplateService**
 
+这里就是声明试调用，我们自己定义出调用的方法，以及报错之后回调的方式
+
 ```java
+@Service
+public class RetryTemplateService {
+
+    @Autowired
+    private RetryTemplate retryTemplate;
+
+    public int retry(final int code) {
+       return retryTemplate.execute(
+                retry -> {
+                   return test(code);
+                },
+                recovery -> {
+                   return recover(code);
+                }
+        );
+    }
+    
+    private int test(int code){
+        System.out.println("调用 retry() ，时间：" + LocalTime.now());
+        if (code == 0) {
+            throw new RuntimeException("调用失败！");
+        }
+        System.out.println("正常调用成功");
+        return 200;
+    }
+
+
+    private int recover(int code){
+        System.out.println("最后调用还是失败了，参数："+ code +"，时间：" + LocalTime.now());
+        return 500;
+    }
+}
 
 ```
 
@@ -197,6 +261,8 @@ public class SimpleRetryListener extends RetryListenerSupport {
 ```http request
 http://localhost:8080/testTemplate?code=0
 ```
+
+在控制台中可以看到对应的输出
 
 
 ## 直接使用 `RetryTemplate`
