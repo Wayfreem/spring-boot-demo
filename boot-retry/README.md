@@ -146,8 +146,30 @@ http://localhost:8080/test?code=0
 
 增加监听是为了监听整个调用过程（生命周期）
 
-```java
+**SimpleRetryListener**
 
+```java
+public class SimpleRetryListener extends RetryListenerSupport {
+
+    @Override
+    public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
+        System.out.println("=======================================================================");
+         System.out.println("监听到重试过程开启了");
+        return true;
+    }
+
+    @Override
+    public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback, Throwable throwable) {
+         System.out.println("监听到重试过程关闭了");
+         System.out.println("=======================================================================");
+    }
+
+    @Override
+    public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback, Throwable throwable) {
+         System.out.println("监听到重试过程错误了");
+    }
+    
+}
 ```
 
 ### 第二步：注册 `RetryTemplate` 到 Spring Bean 中
