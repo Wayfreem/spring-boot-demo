@@ -21,15 +21,14 @@ public class RetryService {
      *
      * @param code 调用参数
      * @return code
-     * @throws Exception
      */
-    @Retryable(value = RuntimeException.class, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 1.5))
+    @Retryable(value = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 1.5))
     public int retry(int code) {
-        System.out.println("test被调用,时间：" + LocalTime.now());
+        System.out.println("调用 retry() ，时间：" + LocalTime.now());
         if (code == 0) {
-            throw new RuntimeException("情况不对头！");
+            throw new RuntimeException("调用失败！");
         }
-        System.out.println("test被调用,情况对头了！");
+        System.out.println("正常调用成功");
 
         return 200;
     }

@@ -1,9 +1,11 @@
+
+## 链接收集
+
+- [官网地址](https://github.com/spring-projects/spring-retry)
+
+- [博文视点 CSDN](https://blog.csdn.net/broadview2006/article/details/80129764?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-80129764-blog-106751310.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-80129764-blog-106751310.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=2)
+
 ## 说明
-
-- https://blog.csdn.net/weixin_41307800/article/details/124604598
-- https://mp.weixin.qq.com/s/0d6cMyWqXmjCkNxdZ15NG
-- https://blog.csdn.net/qq_44981526/article/details/125657331
-
 
 Spring Retry 为 Spring 应用程序提供了声明性重试支持。
 
@@ -11,10 +13,14 @@ Spring Retry 为 Spring 应用程序提供了声明性重试支持。
 
 常用的方法就是使用 `try{}catch{}` 或者 `while` 循环之类的语法来进行相应的操作。但是这个不是一个好的处理方案，不能做到统一管理。这时，我们可以使用 `Spring Retry` 来实现。
 
+在项目中使用 `Spring Retry` 框架，有两种方式
 
-项目这里主要是使用注解 `@Retryable` 方式实现 
+- 注解方式：使用 `@Retryable`
+- 声明方式：使用 `RetryTemplate`
 
-## 集成说明
+## `@Retryable` 集成说明
+
+项目这里主要是使用注解 `@Retryable` 方式实现
 
 ### 第一步：引入依赖
 
@@ -23,12 +29,16 @@ Spring Retry 为 Spring 应用程序提供了声明性重试支持。
     <groupId>org.springframework.retry</groupId>
     <artifactId>spring-retry</artifactId>
 </dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
 ```
 
 ### 第二步：启用 `@Retryable`
 
 ```java
-@Retryable
+@EnableRetry
 @SpringBootApplication
 public class RetryApplication {
 
@@ -72,15 +82,14 @@ public class RetryService {
      *
      * @param code 调用参数
      * @return code
-     * @throws Exception
      */
-    @Retryable(value = RuntimeException.class, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 1.5))
+    @Retryable(value = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 1.5))
     public int retry(int code) {
-        System.out.println("test被调用,时间：" + LocalTime.now());
+        System.out.println("调用 retry() ，时间：" + LocalTime.now());
         if (code == 0) {
-            throw new RuntimeException("情况不对头！");
+            throw new RuntimeException("调用失败！");
         }
-        System.out.println("test被调用,情况对头了！");
+        System.out.println("正常调用成功");
 
         return 200;
     }
@@ -117,3 +126,19 @@ public class RetryService {
 ### 测试
 
 启动服务之后测试
+
+```http request
+http://localhost:8080/test?code=0
+```
+
+控制台输出
+
+```console
+调用 retry() ，时间：11:50:32.170148
+调用 retry() ，时间：11:50:34.181175700
+调用 retry() ，时间：11:50:37.194717100
+回调方法执行！！！！
+异常信息:调用失败！
+```
+
+
