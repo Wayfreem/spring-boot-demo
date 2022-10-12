@@ -55,7 +55,7 @@
 | boot-https                          | 在 Spring boot 项目中实现 https 进行接口调用               |
 | boot-webFlux                        | 在 Spring boot 项目中集成 Web flux                   |
 | boot-quartz                         | 在 Spring boot 项目中集成 quartz 实现任务调度              |
-| boot-filter                         | 在 Spring boot 项目中使用传统 filter 实现任务调度            |
+| boot-servlet-filter                 | 在 Spring boot 项目中使用传统 filter 实现请求过滤            |
 | boot-druid                          | 在 Spring boot 项目中集成 druid 进行数据连接监控             |
 
 
