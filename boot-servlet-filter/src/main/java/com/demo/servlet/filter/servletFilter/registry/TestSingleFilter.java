@@ -11,6 +11,7 @@ public class TestSingleFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
         System.out.println("自定义过滤器 TestSingleFilter 加载，拦截 init。。。" );
     }
 
@@ -23,6 +24,7 @@ public class TestSingleFilter implements Filter {
 
     @Override
     public void destroy() {
+        Filter.super.destroy();
     }
 }
 
