@@ -152,3 +152,44 @@ public class FilterController {
 
 ## 使用 `@WebFilter` 注解方式
 
+### 第一步：新增注解式的 Filter
+```java
+@WebFilter(filterName = "annotationFilter", urlPatterns = "/*")
+public class AnnotationFilter implements Filter{
+
+    @Override
+    public void init(FilterConfig filterConfig){
+        System.out.println("WebFilter   ------------>>>   init");
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("WebFilter   ------------>>>   doFilter");
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @Override
+    public void destroy(){
+        System.out.println("WebFilter   ------------>>>   destroy");
+    }
+}
+```
+
+### 第二步：开启对 webServlet 的支持
+
+增加 `@ServletComponentScan` 支持
+
+```java
+@ServletComponentScan       // 开启对 webServlet 支持
+@SpringBootApplication
+public class FilterApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(FilterApplication.class, args);
+    }
+}
+```
+
+### 测试
+
+按照上面的请求测试就好
