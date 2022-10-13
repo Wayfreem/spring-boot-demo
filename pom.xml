@@ -36,6 +36,7 @@
         <module>boot-orm-jpa-multi-datasource</module>
         <module>boot-retry</module>
         <module>boot-servlet-filter</module>
+        <module>boot-servlet-listener</module>
     </modules>
 
     <packaging>pom</packaging>
