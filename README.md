@@ -56,6 +56,7 @@
 | boot-webFlux                        | 在 Spring boot 项目中集成 Web flux                   |
 | boot-quartz                         | 在 Spring boot 项目中集成 quartz 实现任务调度              |
 | boot-servlet-filter                 | 在 Spring boot 项目中使用传统 filter 实现请求过滤            |
+| boot-servlet-listener               | 在 Spring boot 项目中使用传统 listener 监听              |
 | boot-druid                          | 在 Spring boot 项目中集成 druid 进行数据连接监控             |
 
 
