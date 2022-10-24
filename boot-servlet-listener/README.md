@@ -25,31 +25,11 @@
 
 ## FilterRegistrationBean 集成
 
-### 第一步：增加 自定义的 Filter
+### 第一步：增加 自定义的 Listener
 
-**TestAllFilter**  用于作为通用的拦截器
+由于监听听 listener 有不同的作用环境，所以我们就建立多个监听器
 
 ```java
-public class TestAllFilter implements Filter {
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
-        System.out.println("自定义过滤器 TestAllFilter 加载，拦截 init。。。" );
-    }
-
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        System.out.println("自定义过滤器 TestAllFilter 触发，拦截url:" + request.getRequestURI());
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
-
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
-    }
-}
 ```
 
 **TestSingleFilter** 用作为单个请求的拦截器
