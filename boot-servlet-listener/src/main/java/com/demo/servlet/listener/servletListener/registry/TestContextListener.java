@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+/**
+ * 用于监听程序的启动与销毁
+ */
 public class TestContextListener implements ServletContextListener {
     private static final Logger logger = LoggerFactory.getLogger(TestContextListener.class);
 
@@ -17,6 +20,6 @@ public class TestContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        logger.info("程序加载中 。。。。");
+        logger.info("程序销毁中 。。。。");
     }
 }

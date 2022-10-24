@@ -5,6 +5,9 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
+/**
+ * 对当前的请求监听
+ */
 public class TestRequestListener implements ServletRequestListener {
 
     @Override

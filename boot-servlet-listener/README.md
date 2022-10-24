@@ -4,8 +4,8 @@
 
 在具体的集成中有两种方式可以做集成：
 
-- 继承 ServletRequestListener、ServletContextListener、HttpSessionListener 接口来实现
-- 使用 `@WebLisenter` 注解方式
+- 继承 ServletRequestListener、ServletContextListener、HttpSessionListener 接口来实现，然后通过 `ServletListenerRegistrationBean` 注入到 Spring 容器中
+- 使用 `@WebListener` 注解方式
 
 ## 依赖包
 
@@ -27,32 +27,86 @@
 
 ### 第一步：增加 自定义的 Listener
 
-由于监听听 listener 有不同的作用环境，所以我们就建立多个监听器
+由于监听听 listener 有不同的作用域，
+- request 当前的请求的访问内可以访问
+- session 当前的会话可以访问
+- servlet 就是存在服务端中，服务端可以访问
+这个感觉和我们之前在学习 JSP 的时候一样，作用域的范围不同，所以我们就建立多个监听器
+
+**TestContextListener**  用于监听程序加载与销毁
 
 ```java
+public class TestContextListener implements ServletContextListener {
+    private static final Logger logger = LoggerFactory.getLogger(TestContextListener.class);
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        logger.info("程序加载中 。。。。");
+
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        logger.info("程序销毁中 。。。。");
+    }
+}
 ```
 
-**TestSingleFilter** 用作为单个请求的拦截器
+**TestRequestListener** 用于监听当前的请求
 
 ```java
-public class TestSingleFilter implements Filter {
+public class TestRequestListener implements ServletRequestListener {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
-        System.out.println("自定义过滤器 TestSingleFilter 加载，拦截 init。。。" );
+    public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
+        System.out.println("requestDestroyed" + "," + new Date());
+        System.out.println("当前訪问次数：" + servletRequestEvent.getServletContext().getAttribute("count"));
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        System.out.println("自定义过滤器 TestSingleFilter 触发，拦截 url:" + request.getRequestURI());
-        filterChain.doFilter(servletRequest, servletResponse);  // 执行后续的 filter
+    public void requestInitialized(ServletRequestEvent servletRequestEvent) {
+        System.out.println("requestInitialized" + "," + new Date());
+        Object count = servletRequestEvent.getServletContext().getAttribute("count");
+
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequestEvent.getServletRequest();
+        httpServletRequest.getSession();        // 触发 session 操作
+
+        Integer cInteger = 0;
+        if (count != null) {
+            cInteger = Integer.valueOf(count.toString());
+        }
+        System.out.println("历史訪问次数：：" + count);
+        cInteger++;
+        servletRequestEvent.getServletContext().setAttribute("count", cInteger);
+    }
+}
+```
+
+**TestSessionListener** 用于当前会话监听
+
+```java
+public class TestSessionListener implements HttpSessionListener {
+
+    public void sessionCreated(HttpSessionEvent arg0) {
+        System.out.println("sessionCreated" + "," + new Date());
+        Object lineCount = arg0.getSession().getServletContext().getAttribute("lineCount");
+        Integer count = 0;
+        if (lineCount == null) {
+            lineCount = "0";
+        }
+        count = Integer.valueOf(lineCount.toString());
+        count++;
+        System.out.println("新上线一人，历史在线人数：" + lineCount + "个,当前在线人数有： " + count + " 个");
+        arg0.getSession().getServletContext().setAttribute("lineCount", count);
     }
 
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
+    public void sessionDestroyed(HttpSessionEvent arg0) {
+        System.out.println("sessionDestroyed" + "," + new Date());
+        Object lineCount = arg0.getSession().getServletContext().getAttribute("lineCount");
+        Integer count = Integer.valueOf(lineCount.toString());
+        count--;
+        System.out.println("一人下线。历史在线人数：" + lineCount + "个，当前在线人数: " + count + " 个");
+        arg0.getSession().getServletContext().setAttribute("lineCount", count);
     }
 }
 ```
@@ -61,30 +115,28 @@ public class TestSingleFilter implements Filter {
 
 ```java
 @Configuration
-public class ServletRegistry {
+public class ListenerRegistry {
 
     @Bean
-    public FilterRegistrationBean<TestAllFilter> userFilterRegistry() {
-        FilterRegistrationBean<TestAllFilter> bean = new FilterRegistrationBean<>();
-
-        bean.setFilter(new TestAllFilter());       //注册自定义过滤器
-        bean.setName("TestAllFilter");     //过滤器名称
-        bean.addUrlPatterns("/*");  //过滤所有路径
-        bean.setOrder(1);           //优先级，最顶级
+    public ServletListenerRegistrationBean<?> userContextListener(){
+        ServletListenerRegistrationBean<TestContextListener> bean = new ServletListenerRegistrationBean<>();
+        bean.setListener(new TestContextListener());
         return bean;
     }
 
     @Bean
-    public FilterRegistrationBean<TestSingleFilter> userTestFilterRegistry() {
-        FilterRegistrationBean<TestSingleFilter> bean = new FilterRegistrationBean<>();
-
-        bean.setFilter(new TestSingleFilter());       //注册自定义过滤器
-        bean.setName("TestSingleFilter");     //过滤器名称
-        bean.addUrlPatterns("/getUser/*");      //过滤所有路径
-        bean.setOrder(6);               //优先级，越低越优先
+    public ServletListenerRegistrationBean<TestRequestListener> userRequestListener(){
+        ServletListenerRegistrationBean<TestRequestListener> bean = new ServletListenerRegistrationBean<>();
+        bean.setListener(new TestRequestListener());
         return bean;
     }
 
+    @Bean
+    public ServletListenerRegistrationBean <TestSessionListener> userSessionListener(){
+        ServletListenerRegistrationBean<TestSessionListener> bean = new ServletListenerRegistrationBean<>();
+        bean.setListener(new TestSessionListener());
+        return bean;
+    }
 }
 ```
 
@@ -92,7 +144,7 @@ public class ServletRegistry {
 
 ```java
 @RestController
-public class FilterController {
+public class ListenerController {
 
     @RequestMapping("find")
     public String find(){
@@ -101,7 +153,7 @@ public class FilterController {
 
     @RequestMapping("getUser")
     public Map getUser(String id){
-       return Map.of("id", id);
+        return Map.of("id", id);
     }
 }
 ```
@@ -111,51 +163,27 @@ public class FilterController {
 **程序启动时** 控制台中输出如下
 
 ```console
-自定义过滤器 TestAllFilter 加载，拦截 init。。。
-自定义过滤器 TestSingleFilter 加载，拦截 init。。。
+
 ```
 
-**请求访问时** 控制台输出
+## 使用 `@WebListener` 注解方式
 
-当请求地址为：`http://localhost:8080/getUser?id=2`
-
-```console
-自定义过滤器 TestAllFilter 触发，拦截url:/getUser
-自定义过滤器 TestSingleFilter 触发，拦截 url:/getUser
-```
-
-当请求地址为：`http://localhost:8080/find`
-
-```console
-自定义过滤器 TestAllFilter 触发，拦截url:/find
-```
-
-## 使用 `@WebFilter` 注解方式
-
-### 第一步：新增注解式的 Filter
+### 第一步：新增注解式的 Listener
 ```java
-@WebFilter(filterName = "annotationFilter", urlPatterns = "/*")
-public class AnnotationFilter implements Filter{
+@WebListener
+public class AnnotationServletListener implements ServletContextListener {
 
-    @Override
-    public void init(FilterConfig filterConfig){
-        System.out.println("WebFilter   ------------>>>   init");
+    public void contextInitialized(ServletContextEvent sce) {
+        System.out.println("WebListener.UserListener ---->>>  ServletContext 初始化 ");
     }
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("WebFilter   ------------>>>   doFilter");
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
-
-    @Override
-    public void destroy(){
-        System.out.println("WebFilter   ------------>>>   destroy");
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println("WebListener.UserListener ---->>>  ServletContext 销毁 ");
     }
 }
 ```
 
-### 第二步：开启对 webServlet 的支持
+### 第二步：开启对 `webServlet` 的支持
 
 增加 `@ServletComponentScan` 支持
 
