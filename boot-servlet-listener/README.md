@@ -4,8 +4,8 @@
 
 在具体的集成中有两种方式可以做集成：
 
-- 使用 FilterRegistrationBean 将我们自定义的 listener 注入进去
-- 使用 `@WebFilter` 注解方式
+- 继承 ServletRequestListener、ServletContextListener、HttpSessionListener 接口来实现
+- 使用 `@WebLisenter` 注解方式
 
 ## 依赖包
 
