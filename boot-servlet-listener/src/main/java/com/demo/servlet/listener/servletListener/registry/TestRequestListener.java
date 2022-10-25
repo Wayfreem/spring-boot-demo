@@ -12,13 +12,13 @@ public class TestRequestListener implements ServletRequestListener {
 
     @Override
     public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
-        System.out.println("requestDestroyed" + "," + new Date());
+        System.out.println("request   Destroyed:" + "," + new Date());
         System.out.println("当前訪问次数：" + servletRequestEvent.getServletContext().getAttribute("count"));
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent servletRequestEvent) {
-        System.out.println("requestInitialized" + "," + new Date());
+        System.out.println("request   Initialized:" + "," + new Date());
         Object count = servletRequestEvent.getServletContext().getAttribute("count");
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequestEvent.getServletRequest();
@@ -28,7 +28,7 @@ public class TestRequestListener implements ServletRequestListener {
         if (count != null) {
             cInteger = Integer.valueOf(count.toString());
         }
-        System.out.println("历史訪问次数：：" + count);
+        System.out.println("历史訪问次数：" + count);
         cInteger++;
         servletRequestEvent.getServletContext().setAttribute("count", cInteger);
     }

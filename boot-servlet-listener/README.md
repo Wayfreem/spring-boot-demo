@@ -59,13 +59,13 @@ public class TestRequestListener implements ServletRequestListener {
 
     @Override
     public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
-        System.out.println("requestDestroyed" + "," + new Date());
+        System.out.println("request   Destroyed:" + "," + new Date());
         System.out.println("当前訪问次数：" + servletRequestEvent.getServletContext().getAttribute("count"));
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent servletRequestEvent) {
-        System.out.println("requestInitialized" + "," + new Date());
+        System.out.println("request   Initialized:" + "," + new Date());
         Object count = servletRequestEvent.getServletContext().getAttribute("count");
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequestEvent.getServletRequest();
@@ -75,7 +75,7 @@ public class TestRequestListener implements ServletRequestListener {
         if (count != null) {
             cInteger = Integer.valueOf(count.toString());
         }
-        System.out.println("历史訪问次数：：" + count);
+        System.out.println("历史訪问次数：" + count);
         cInteger++;
         servletRequestEvent.getServletContext().setAttribute("count", cInteger);
     }
@@ -163,7 +163,8 @@ public class ListenerController {
 **程序启动时** 控制台中输出如下
 
 ```console
-
+WebListener.UserListener ---->>>  ServletContext 初始化 
+2022-10-25 13:40:15.068  INFO 19404 --- [           main] c.d.s.l.s.registry.TestContextListener   : 程序加载中 。。。。
 ```
 
 ## 使用 `@WebListener` 注解方式
@@ -201,3 +202,18 @@ public class FilterApplication {
 ### 测试
 
 按照上面的请求测试就好
+
+```http request
+http://localhost:8080/find
+
+// 控制台输出
+request   Initialized:,Tue Oct 25 13:50:28 CST 2022
+session  Created:,Tue Oct 25 13:50:28 CST 2022
+新上线一人，历史在线人数：0个,当前在线人数有： 1 个
+历史訪问次数：null
+2022-10-25 13:50:28.880  INFO 26176 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2022-10-25 13:50:28.880  INFO 26176 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2022-10-25 13:50:28.881  INFO 26176 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+request   Destroyed:,Tue Oct 25 13:50:28 CST 2022
+当前訪问次数：1
+```

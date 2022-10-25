@@ -8,7 +8,7 @@ import java.util.Date;
 public class TestSessionListener implements HttpSessionListener {
 
     public void sessionCreated(HttpSessionEvent arg0) {
-        System.out.println("sessionCreated" + "," + new Date());
+        System.out.println("session  Created:" + "," + new Date());
         Object lineCount = arg0.getSession().getServletContext().getAttribute("lineCount");
         Integer count = 0;
         if (lineCount == null) {
@@ -21,7 +21,7 @@ public class TestSessionListener implements HttpSessionListener {
     }
 
     public void sessionDestroyed(HttpSessionEvent arg0) {
-        System.out.println("sessionDestroyed" + "," + new Date());
+        System.out.println("session  Destroyed:" + "," + new Date());
         Object lineCount = arg0.getSession().getServletContext().getAttribute("lineCount");
         Integer count = Integer.valueOf(lineCount.toString());
         count--;

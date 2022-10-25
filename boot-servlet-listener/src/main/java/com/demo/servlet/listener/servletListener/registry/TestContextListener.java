@@ -15,7 +15,6 @@ public class TestContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         logger.info("程序加载中 。。。。");
-
     }
 
     @Override
