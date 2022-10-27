@@ -37,6 +37,7 @@
         <module>boot-retry</module>
         <module>boot-servlet-filter</module>
         <module>boot-servlet-listener</module>
+        <module>boot-orm-jpa-domainEvents</module>
     </modules>
 
     <packaging>pom</packaging>
