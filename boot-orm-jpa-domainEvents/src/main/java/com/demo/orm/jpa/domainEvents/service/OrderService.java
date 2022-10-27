@@ -1,7 +1,7 @@
 package com.demo.orm.jpa.domainEvents.service;
 
-import com.demo.test.jpa.model.Order;
-import com.demo.test.jpa.repository.OrderRepository;
+import com.demo.orm.jpa.domainEvents.model.Order;
+import com.demo.orm.jpa.domainEvents.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

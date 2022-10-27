@@ -1,7 +1,7 @@
 package com.demo.orm.jpa.domainEvents.service;
 
-import com.demo.test.jpa.model.Employee;
-import com.demo.test.jpa.repository.EmployeeRepository;
+import com.demo.orm.jpa.domainEvents.model.Employee;
+import com.demo.orm.jpa.domainEvents.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
