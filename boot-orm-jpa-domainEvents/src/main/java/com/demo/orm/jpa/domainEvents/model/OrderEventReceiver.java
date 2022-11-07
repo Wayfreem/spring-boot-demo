@@ -29,7 +29,7 @@ public class OrderEventReceiver {
         }
         System.out.println(event.toString());
         service.save();
-        throw new RuntimeException("测试事务是否回滚");
+//        throw new RuntimeException("测试事务是否回滚");
     }
 
     /* condition 中的格式是需要以 #开头，后面的名称就是参数列表的名称 */
@@ -41,6 +41,6 @@ public class OrderEventReceiver {
         }
         System.out.println(event);
         service.save();
-        throw new RuntimeException("测试事务是否回滚");
+//        throw new RuntimeException("测试事务是否回滚");
     }
 }
