@@ -1,0 +1,21 @@
+# 基本配置
+server:
+  port: 8080
+
+# 数据库
+spring:
+  datasource:
+    primary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://192.168.1.103:3306/study_main?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF8
+      username: admin
+      password: 123456
+    second:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://192.168.1.103:3306/study_dev?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF8
+      username: admin
+      password: 123456
+
+  jackson:
+    serialization:
+      indent-output: true
