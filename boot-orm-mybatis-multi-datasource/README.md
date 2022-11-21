@@ -6,6 +6,38 @@
 
 ## 集成的步骤
 
+
+创建两个数据库 db01 和 db02
+
+**学生表 t_student**
+
+```sql
+CREATE TABLE `t_student` (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+`sex`  int(1) NULL DEFAULT NULL ,
+`grade`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
+AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
+```
+
+**教师表 t_teacher**
+```sql
+CREATE TABLE `t_teacher` (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+`sex`  int(1) NULL DEFAULT NULL ,
+`office`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
+AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
+```
+
 ### 第一步：引入依赖
 
 **pom 文件**
@@ -17,13 +49,17 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter</artifactId>
 </dependency>
-
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
-        
-<!--    mybatis 依赖    -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+        <!--    mybatis 依赖    -->
 <dependency>
     <groupId>org.mybatis.spring.boot</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -47,143 +83,161 @@
 
 application.properties
 
-```properties
-# server port config
-server.port=8080
+```yaml
+# 基本配置
+server:
+  port: 8080
 
-# mysql config
-spring.jpa.database=MYSQL
-spring.datasource.url=jdbc:mysql://192.168.152.129:3306/study?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF8
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.username=admin
-spring.datasource.password=123456
+# 数据库
+spring:
+  datasource:
+    primary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://192.168.1.103:3306/study_main?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF8
+      username: admin
+      password: 123456
+    second:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://192.168.1.103:3306/study_dev?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF8
+      username: admin
+      password: 123456
 
-#mybatis xml Mapping path
-mybatis.mapper-locations=classpath:mapping/*Mapper.xml
-mybatis.type-aliases-package=com.demo.orm.mybatis.*
-
-# standout logging
-logging.level.com.demo.orm.mybatis=debug
+  jackson:
+    serialization:
+      indent-output: true
 ```
 
-### 第三步：创建 实体类 以及 mapper
+### 第三步：数据源配置
 
-**实体类 user**
+因为配置数据库的 key 变化了，导致上述配置无法被 Spring Boot 自动加载，需要我们自己去加载。
+增加 DataSourceConfig 数据源配置类，使用 Spring Boot 提供的类型安全的属性注入方式来加载上述配置，并创建对应的两个数据源 DataSource 实例，如下：
 
 ```java
-import lombok.Data;
+@Configuration
+public class DataSourceConfig {
 
-@Data
-public class User {
+    @Bean(name = "primaryDataSource")
+    @Qualifier("primaryDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    @Primary
+    public DataSource primaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
 
-    private String id;
-    private String name;
-    private String sex;
-    private String email;
-    private String lastname;
+    @Bean(name = "secondDataSource")
+    @Qualifier("secondDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.second")
+    public DataSource secondDataSource() {
+        return DataSourceBuilder.create().build();
+    }
 }
 ```
 
-**Mapper 类**
+### 第四步：Mybatis 配置
 
-mybatis 提供了两种查询的方案，一种就是原始的基于 xml 的查询方式，另外一种是基于 `@Select` 注解的实现方式
+接下来是 MyBatis 的配置，新增 MyBatisConfigOne 和 MyBatisConfigTwo 两个配置类，
+用上述两个数据源分别创建对应的 SqlSessionFactory 和 SqlSessionTemplate 实例（注意 Bean 的名称要不一样），分别如下：
 
 ```java
-@Repository
-@Mapper
-public interface UserMapper {
+@Configuration
+@MapperScan(basePackages = "com.demo.orm.mybatis.dynamic.datasource.mapper.primary",
+        sqlSessionTemplateRef = "primarySqlSessionTemplate")
+public class PrimaryConfig {
 
-    User selectById(String id);
+    // 此时 Spring 容器中有两个 DataSource 类型的 Bean ，所以这里需要按名称 byName 查找
+    @Autowired
+    @Qualifier("primaryDataSource")
+    private DataSource primaryDataSource;
 
-    List<User> selectByName(String name);
+    @Bean(name = "primarySqlSessionFactory")
+    @Primary
+    public SqlSessionFactory primarySqlSessionFactory() throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(primaryDataSource);
+        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+                .getResources("classpath:mapper/primary/*.xml"));
+        return sqlSessionFactoryBean.getObject();
+    }
 
-    @Select("select * from user where lastname = #{lastname}")
-    List<User> getUserByLastname(@Param("lastname") String lastname);
+    @Bean(name = "primaryTransactionManager")
+    @Primary
+    public DataSourceTransactionManager primaryTransactionManager() {
+        return new DataSourceTransactionManager(primaryDataSource);
+    }
+
+    @Bean(name = "primarySqlSessionTemplate")
+    @Primary
+    public SqlSessionTemplate primarySqlSessionTemplate(@Qualifier("primarySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
 }
 ```
 
-Mapper 类是关联了一个对应的 xml 文件，这里需要新增一个 xml 文件,由于在 properties 文件中已经指定了路劲，所有文件地址在 resources/mapping/ 创建
-
-**UserMapper.xml**
-```xml
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.demo.orm.mybatis.mapper.UserMapper">
-
-    <resultMap id="BaseResultMap" type="com.demo.orm.mybatis.entity.User">
-        <result column="ID" jdbcType="VARCHAR" property="id"/>
-        <result column="NAME" jdbcType="VARCHAR" property="name"/>
-        <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
-    </resultMap>
-
-    <select id="selectById" resultType="com.demo.orm.mybatis.entity.User">
-        select * from user where id = #{id}
-    </select>
-
-    <select id="selectByName" resultType="com.demo.orm.mybatis.entity.User">
-        select * from user where name = #{name}
-    </select>
-</mapper>
-```
-
-### 第四步：创建 controller 以及 service
-
-**UserController**
-
 ```java
-@RestController
-public class UserController {
+@Configuration
+@MapperScan(basePackages = "com.demo.orm.mybatis.multi.datasource.mapper.second",
+        sqlSessionTemplateRef = "secondSqlSessionTemplate")
+public class SecondConfig {
 
     @Autowired
-    private UserService userService;
+    @Qualifier("secondDataSource")
+    private DataSource secondDataSource;
 
-    @RequestMapping("getUser/{id}")
-    public String GetUser(@PathVariable String id){
-        return userService.selectById(id).toString();
+    @Bean(name = "secondSqlSessionFactory")
+    public SqlSessionFactory secondSqlSessionFactory() throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(secondDataSource);
+        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+                .getResources("classpath:mapper/second/*.xml"));
+        return sqlSessionFactoryBean.getObject();
     }
 
-    /**
-     * 访问地址
-     * http://localhost:8080/getUserByName?name=管理员
-     * @param name name
-     * @return List<User>
-     */
-    @RequestMapping("getUserByName")
-    public List<User> getUserByName(String name) {
-        return userService.selectByName(name);
+    @Bean(name = "secondTransactionManager")
+    public DataSourceTransactionManager secondTransactionManager() {
+        return new DataSourceTransactionManager(secondDataSource);
     }
 
-    /**
-     * 访问地址
-     * http://localhost:8080/getUserByLastname?lastname=Q
-     * @param lastname
-     * @return List<User>
-     */
-    @RequestMapping("getUserByLastname")
-    public List<User> getUserByLastname(String lastname){
-        return userService.getUserByLastname(lastname);
+    @Bean(name = "secondSqlSessionTemplate")
+    public SqlSessionTemplate secondSqlSessionTemplate(@Qualifier("secondSqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
     }
 }
 ```
 
-**UserService**
+**关于 MyBatis 配置类的说明：**
+
+- 配置 mapper 的位置：通过 basePackages 分别配置了扫描 mapper1 和 mapper2 路径， 之后在这两个路径下放 XxxMapper.java 和 XxxMapper.xml ，所有操作会自动对应着不同的数据源。
+- 通过 sqlSessionFactoryRef 和 sqlSessionTemplateRef 分别指定不同 Bean 的引用名字。
+
+### 第五步：创建对应的 Model 与 Mapper 
+
+这部分就直接看源码，这里就不赘述了
+
+### 测试
+
 ```java
-@Service
-public class UserService {
+@SpringBootTest
+public class MybatisTest {
 
     @Autowired
-    UserMapper userMapper;
+    StudentMapper studentMapper;
 
-    public User selectById(String id) {
-        return userMapper.selectById(id);
-    }
+    @Autowired
+    TeacherMapper teacherMapper;
 
-    public List<User> selectByName(String name){
-        return userMapper.selectByName(name);
-    }
+    @Test
+    public void userSave() {
+        Student studentDO = new Student();
+        studentDO.setName("Mybatis");
+        studentDO.setSex(1);
+        studentDO.setGrade("一年级");
+        studentMapper.save(studentDO);
 
-    public List<User> getUserByLastname(String lastName){
-        return userMapper.getUserByLastname(lastName);
+        Teacher teacherDO = new Teacher();
+        teacherDO.setName("Mybatis");
+        teacherDO.setSex(2);
+        teacherDO.setOffice("语文");
+        teacherMapper.save(teacherDO);
     }
 }
 ```
