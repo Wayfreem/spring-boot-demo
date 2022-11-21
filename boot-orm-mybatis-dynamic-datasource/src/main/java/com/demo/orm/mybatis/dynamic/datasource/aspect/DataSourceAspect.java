@@ -27,7 +27,7 @@ public class DataSourceAspect {
 
         DataSource dataSource = method.getAnnotation(DataSource.class);
         if(dataSource == null){
-            DynamicDataSource.setDataSource("primary-master");  //  获取数据源
+            DynamicDataSource.setDataSource("primary-source");  //  获取数据源
         }else {
             DynamicDataSource.setDataSource(dataSource.name());
         }

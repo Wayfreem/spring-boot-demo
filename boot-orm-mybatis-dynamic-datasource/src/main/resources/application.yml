@@ -22,3 +22,8 @@ spring:
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+
+## logging
+logging:
+  level:
+    com.demo.orm.mybatis.dynamic.datasource : debug
