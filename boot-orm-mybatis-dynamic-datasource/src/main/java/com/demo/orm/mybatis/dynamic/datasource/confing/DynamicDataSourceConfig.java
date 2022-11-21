@@ -1,6 +1,5 @@
 package com.demo.orm.mybatis.dynamic.datasource.confing;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +14,7 @@ import java.util.Map;
  * 多数据源配置类
  */
 @Configuration
-public class DataSourceConfig {
+public class DynamicDataSourceConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.primary")

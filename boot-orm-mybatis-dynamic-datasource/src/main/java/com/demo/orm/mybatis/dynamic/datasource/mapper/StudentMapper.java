@@ -1,4 +1,4 @@
-package com.demo.orm.mybatis.dynamic.datasource.mapper.primary;
+package com.demo.orm.mybatis.dynamic.datasource.mapper;
 
 import com.demo.orm.mybatis.dynamic.datasource.model.Student;
 import org.apache.ibatis.annotations.Param;
