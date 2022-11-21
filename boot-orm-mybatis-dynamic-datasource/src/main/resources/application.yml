@@ -19,3 +19,6 @@ spring:
   jackson:
     serialization:
       indent-output: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
