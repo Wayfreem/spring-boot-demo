@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.orm.mybatis.dynamic.datasource.mapper.StudentMapper">
+    <resultMap id="BaseResultMap" type="com.demo.orm.mybatis.dynamic.datasource.model.Student">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="sex" jdbcType="INTEGER" property="sex" />
+        <result column="grade" jdbcType="VARCHAR" property="grade" />
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO student (user_name, sex, grade) VALUES (#{studentDO.name}, #{studentDO.sex}, #{studentDO.grade});
+    </insert>
+
+    <select id="queryAll" resultType="com.demo.orm.mybatis.dynamic.datasource.model.Student">
+        select * from student;
+    </select>
+</mapper>

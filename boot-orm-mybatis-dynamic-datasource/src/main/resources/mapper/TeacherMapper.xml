@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.orm.mybatis.dynamic.datasource.mapper.TeacherMapper">
+    <resultMap id="BaseResultMap" type="com.demo.orm.mybatis.dynamic.datasource.model.Teacher">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="sex" jdbcType="INTEGER" property="sex" />
+        <result column="office" jdbcType="VARCHAR" property="office" />
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO teacher ( user_name, sex, office) VALUES (#{teacherDO.name}, #{teacherDO.sex}, #{teacherDO.office});
+    </insert>
+
+    <select id="queryAll" resultType="java.util.Map">
+        select * from teacher;
+    </select>
+</mapper>
