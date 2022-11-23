@@ -6,6 +6,9 @@
 
 主要采用将不同数据库的 Repository 接口分别存放到不同的 package，Spring 去扫描不同的包，注入不同的数据源来实现多数据源。
 
+参考连接
+https://blog.csdn.net/qq_42714869/article/details/103731355
+
 ## 具体实现
 
 ### 前提步骤
