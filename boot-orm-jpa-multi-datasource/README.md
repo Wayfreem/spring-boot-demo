@@ -10,12 +10,16 @@
 
 ### 前提步骤
 
-创建两个数据库 db01 和 db02 
+**创建数据库**
 
-**学生表 t_student**
+创建两个数据库 db01 和 db02
+
+**创建对应的表**
+
+**学生表 student**  在数据库 db01 中创建
 
 ```sql
-CREATE TABLE `t_student` (
+CREATE TABLE `student` (
 `id`  int(11) NOT NULL AUTO_INCREMENT ,
 `user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 `sex`  int(1) NULL DEFAULT NULL ,
@@ -27,9 +31,9 @@ DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
 ```
 
-**教师表 t_teacher**
+**教师表 t_teacher** 在数据库 db02 中创建
 ```sql
-CREATE TABLE `t_teacher` (
+CREATE TABLE `teacher` (
 `id`  int(11) NOT NULL AUTO_INCREMENT ,
 `user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 `sex`  int(1) NULL DEFAULT NULL ,
