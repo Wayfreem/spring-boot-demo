@@ -4,21 +4,24 @@
 
 微服务推崇单服务单数据库；但是还是免不了存在一个微服务连接多个数据库的情况，今天介绍一下如何使用 JPA 的多数据源。
 
-主要采用将不同数据库的 Repository 接口分别存放到不同的 package，Spring 去扫描不同的包，注入不同的数据源来实现多数据源。
-
-参考连接
-https://blog.csdn.net/qq_42714869/article/details/103731355
+当我们在做数据迁移或者多库操作的时候，可以使用多数据源的操作。
 
 ## 具体实现
 
+我们需要配置多个数据源，然后使用 注解的方式实现动态切换，
+
 ### 前提步骤
 
-创建两个数据库 db01 和 db02 
+**创建数据库**
 
-**学生表 t_student**
+    创建两个数据库 db01 和 db02
+
+**创建对应的表**
+
+**学生表 student**  在数据库 db01 中创建
 
 ```sql
-CREATE TABLE `t_student` (
+CREATE TABLE `student` (
 `id`  int(11) NOT NULL AUTO_INCREMENT ,
 `user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 `sex`  int(1) NULL DEFAULT NULL ,
@@ -30,9 +33,9 @@ DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
 ```
 
-**教师表 t_teacher**
+**教师表 t_teacher** 在数据库 db02 中创建
 ```sql
-CREATE TABLE `t_teacher` (
+CREATE TABLE `teacher` (
 `id`  int(11) NOT NULL AUTO_INCREMENT ,
 `user_name`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 `sex`  int(1) NULL DEFAULT NULL ,
@@ -44,52 +47,51 @@ DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 AUTO_INCREMENT=1 ROW_FORMAT=DYNAMIC;
 ```
 
-### 第一步：集成相关依赖
+### 第一步： 引入依赖
 
-**pom.xml**
-
-集成JPA、spring boot、mysql 相关的依赖包
-
+POM 文件
 ```xml
-<dependencies>
-   <dependency>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter</artifactId>
-   </dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+</dependency>
 
-   <dependency>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter-web</artifactId>
-   </dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
 
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
-    </dependency>
+<!-- 添加AOP坐标 -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
 
-   <!--  jpa 依赖     -->
-   <dependency>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter-data-jpa</artifactId>
-   </dependency>
+<!--    mybatis 依赖    -->
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+</dependency>
 
-   <dependency>
-       <groupId>mysql</groupId>
-       <artifactId>mysql-connector-java</artifactId>
-       <version>8.0.29</version>
-       <scope>runtime</scope>
-   </dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.29</version>
+    <scope>runtime</scope>
+</dependency>
 
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <scope>provided</scope>
-    </dependency>
-</dependencies>
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <scope>provided</scope>
+</dependency>
 ```
 
-### 第二步：增加配置文件内容
+### 第二步：增加对应的配置
+
+**application.yml**
+
+这里配置多个数据源，以及设置日志输出，便于查看控制台消息
 
 ```yaml
 # 基本配置
@@ -120,182 +122,163 @@ spring:
       indent-output: true
 ```
 
-### 第三步：配置数据源
+### 第三步：对应的数据源配置
 
-DataSourceConfig 配置
+**DynamicDataSource.java**
+
+这里需要集成于 `AbstractRoutingDataSource`, 用于将数据源保存到其中，切换数据源的时候会用到。
 
 ```java
 /**
- * @Description: 数据源配置
+ * 动态数据源类
+ */
+public class DynamicDataSource extends AbstractRoutingDataSource {
+
+    private static final ThreadLocal<String> contextHolder = new ThreadLocal<>();
+
+    public DynamicDataSource(DataSource defaultTargetDataSource, Map<Object, Object> targetDataSources) {
+        super.setDefaultTargetDataSource(defaultTargetDataSource);
+        super.setTargetDataSources(targetDataSources);
+        super.afterPropertiesSet();
+    }
+
+    @Override
+    protected Object determineCurrentLookupKey() {
+        return getDataSource();
+    }
+
+    public static void setDataSource(String dataSource) {
+        contextHolder.set(dataSource);
+    }
+
+    public static String getDataSource() {
+        return contextHolder.get();
+    }
+
+    public static void clearDataSource() {
+        contextHolder.remove();
+    }
+}
+```
+
+**DynamicDataSourceConfig.java**
+
+这里是增加对应的数据源配置类，获取到对应的数据源
+
+```java
+/**
+ * 多数据源配置类
  */
 @Configuration
-public class DataSourceConfig {
+public class DynamicDataSourceConfig {
 
-    @Bean(name = "primaryDataSource")
-    @Qualifier("primaryDataSource")
+    @Bean
     @ConfigurationProperties(prefix = "spring.datasource.primary")
-    @Primary
     public DataSource primaryDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "secondDataSource")
-    @Qualifier("secondDataSource")
+    @Bean
     @ConfigurationProperties(prefix = "spring.datasource.second")
     public DataSource secondDataSource() {
         return DataSourceBuilder.create().build();
     }
+
+    @Bean
+    @Primary
+    public DynamicDataSource dataSource(DataSource primaryDataSource, DataSource secondDataSource) {
+        // 这里新建一个 Map 是将对应的数据源放入其中，然后给后面使用的时候来获取数据源
+        Map<Object, Object> targetDataSources = new HashMap<>();
+        targetDataSources.put("primary-source",primaryDataSource);
+        targetDataSources.put("second-source", secondDataSource);
+        return new DynamicDataSource(primaryDataSource, targetDataSources);
+    }
 }
 ```
 
-PrimaryConfig数据源
+**特殊说明**
+
+由于我们是使用了 JPA，那么这里肯定是有一个问题在，就是我们在配置文件中配置了对应的自动创建表结构时，那么多数据源是怎么操作的呢？
+
+因为我们在这里设置了一个默认的数据源，所以在程序启动的时候，会自动将对应的表初始化到默认的数据源中去。这里需要留意下。
+
+
+### 第四步：增加注解以及切换数据源的操作
+
+定义注解 `@DataSource`
 
 ```java
 /**
- * @Description: 主数据源配置
- * @date
+ * 备注：自定义数据源选择注解
  */
-@Configuration
-@EnableTransactionManagement
-@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactoryPrimary",
-                        transactionManagerRef = "transactionManagerPrimary",
-                        basePackages = {"com.demo.orm.jpa.multi.datasource.repository.primary"})
-public class PrimaryConfig {
-
-    @Autowired
-    @Qualifier("primaryDataSource")
-    private DataSource primaryDataSource;
-
-    @Autowired
-    private HibernateProperties hibernateProperties;
-
-    @Autowired
-    private JpaProperties jpaProperties;
-
-    @Primary
-    @Bean(name = "entityManagerPrimary")
-    public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
-        return entityManagerFactoryPrimary(builder).getObject().createEntityManager();
-    }
-
-    @Primary
-    @Bean(name = "entityManagerFactoryPrimary")    //primary实体工厂
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryPrimary (EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(primaryDataSource)
-                .properties(getHibernateProperties())
-                .packages("com.demo.orm.jpa.multi.datasource.model.primary")     //换成自己的实体类所在位置
-                .persistenceUnit("primaryPersistenceUnit")
-                .build();
-    }
-
-    @Primary
-    @Bean(name = "transactionManagerPrimary")
-    public PlatformTransactionManager transactionManager(EntityManagerFactoryBuilder builder) {
-        return new JpaTransactionManager(entityManagerFactoryPrimary(builder).getObject());
-    }
-
-    private Map<String, Object> getHibernateProperties() {
-        return hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings());
-    }
-
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface DataSource {
+    String name() default "";
 }
 ```
 
-SecondConfig 数据源源
+**DataSourceAspect**
+
+动态切换数据源的切面类，通过这里去获取对应的数据源
 
 ```java
-/**
- * @Description: 第二个数据源配置
- */
-@Configuration
-@EnableTransactionManagement
-@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactorySecond",
-                        transactionManagerRef = "transactionManagerSecond",
-                        basePackages = {"com.demo.orm.jpa.multi.datasource.repository.second"})
-public class SecondConfig {
+@Aspect
+@Component
+public class DataSourceAspect {
 
-    @Autowired
-    @Qualifier("secondDataSource")
-    private DataSource secondDataSource;
-
-    @Resource
-    private JpaProperties jpaProperties;
-
-    @Resource
-    private HibernateProperties hibernateProperties;
-
-    @Bean(name = "entityManagerSecond")
-    public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
-        return entityManagerFactorySecond(builder).getObject().createEntityManager();
+    @Pointcut("@annotation(com.demo.orm.mybatis.dynamic.datasource.annotation.DataSource)")
+    public void dataSourcePointCut() {
     }
 
-    @Bean(name = "entityManagerFactorySecond")    //primary实体工厂
-    public LocalContainerEntityManagerFactoryBean entityManagerFactorySecond (EntityManagerFactoryBuilder builder) {
+    @Around("dataSourcePointCut()")
+    public Object around(ProceedingJoinPoint point) throws Throwable {
+        MethodSignature signature = (MethodSignature) point.getSignature();
+        Method method = signature.getMethod();
 
-        return builder.dataSource(secondDataSource)
-                .properties(getHibernateProperties())
-                .packages("com.demo.orm.jpa.multi.datasource.model.second")     //换成你自己的实体类所在位置
-                .persistenceUnit("secondaryPersistenceUnit")
-                .build();
+        DataSource dataSource = method.getAnnotation(DataSource.class);
+        if(dataSource == null){
+            DynamicDataSource.setDataSource("primary-source");  //  获取数据源
+        }else {
+            DynamicDataSource.setDataSource(dataSource.name());
+        }
+
+        try {
+            return point.proceed();
+        } finally {
+            DynamicDataSource.clearDataSource();
+        }
     }
-
-    @Bean(name = "transactionManagerSecond")
-    public PlatformTransactionManager transactionManager(EntityManagerFactoryBuilder builder) {
-        return new JpaTransactionManager(entityManagerFactorySecond(builder).getObject());
-    }
-
-    private Map<String, Object> getHibernateProperties() {
-        return hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings());
-    }
-
 }
 ```
 
-### 第四步：创建模型以及 repository
 
-**Student 模型类**
+### 第五步：增加相关的模型类
+
+**Student**
 ```java
-package com.demo.orm.jpa.multi.datasource.model.primary;
-
 @Data
-@Table
-@Entity(name = "Student")
-public class Student implements Serializable {
+@Entity
+@Table(name = "Student")
+public class Student implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "user_name") // 若实体属性和表字段名称一致时，可以不用加@Column注解
     private String name;
-
-    @Column(name = "sex")
     private int sex;
-
-    @Column(name = "grade")
     private String grade;
 }
 
 ```
 
-**Student repository 类**
-
-```java
-package com.demo.orm.jpa.multi.datasource.repository.primary;
-
-import com.demo.orm.jpa.multi.datasource.model.primary.Student;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface StudentRepository extends JpaRepository<Student, Long> {
-}
-```
-
-**Teacher 模型类**
+**Teacher**
 ```java
 @Data
-@Table
 @Entity
-public class Teacher implements Serializable {
+@Table(name = "Teacher")
+public class Teacher implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -303,98 +286,62 @@ public class Teacher implements Serializable {
 
     @Column(name = "user_name") // 若实体属性和表字段名称一致时，可以不用加@Column注解
     private String name;
-
-    @Column(name = "sex")
+    
     private int sex;
-
-    @Column(name = "office")
     private String office;
 }
+
 ```
 
-**Teacher repository 类**
+### 第六步：增加对应 repository
+
+**StudentRepository**
 
 ```java
-package com.demo.orm.jpa.multi.datasource.repository.primary;
-
-import com.demo.orm.jpa.multi.datasource.model.primary.Student;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface TeacherRepository extends JpaRepository<second, Long> {
+public interface StudentRepository extends JpaRepository<Student, Long> {
 }
 ```
 
-### 第四步：创建 controller 以及 service
+**TeacherRepository**
+```java
+public interface TeacherRepository extends JpaRepository<Teacher, Long> {
+}
+```
 
-controller 层
+
+### 第七步：增加 controller
+
 ```java
 @RestController
-public class UserController {
+public class TestController {
 
     @Autowired
-    UserService userService;
+    private StudentRepository studentRepository;
 
-    @RequestMapping("save")
-    public User save(){
-        return userService.save();
+    @Autowired
+    private TeacherRepository teacherRepository;
+
+
+    @GetMapping("/{name}/list")
+    public List<Student> list(@PathVariable("name") String name){
+        System.out.println(name);
+        return studentRepository.findAll();
     }
-    
-}
-```
-service 层
 
-```java
-@Service
-public class UserService {
+    @DataSource(name="primary-source")
+    @PostMapping(value="/primary")
+    public Object findAll() {
+        return studentRepository.findAll();
+    }
 
-    @Autowired
-    UserRepository userRepository;
-
-    public User save(){
-        User user = new User();
-        user.setId("0001");
-        user.setEmail("wuq@google.com");
-        user.setName("wuq");
-        user.setLastname("Q");
-        return userRepository.saveAndFlush(user);
+    @DataSource(name="second-source")
+    @PostMapping(value="/second")
+    public Object findAll2() {
+        return teacherRepository.findAll();
     }
 }
 ```
 
-到此处，就已经配置完成了，后面我们测试下：
-```java
-package com.demo.orm.jpa.multi.datasource;
+### 第八步：测试
 
-import com.demo.orm.jpa.multi.datasource.model.primary.Student;
-import com.demo.orm.jpa.multi.datasource.model.second.Teacher;
-import com.demo.orm.jpa.multi.datasource.repository.primary.StudentRepository;
-import com.demo.orm.jpa.multi.datasource.repository.second.TeacherRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-public class JpaMultiDatasourceTest {
-
-    @Autowired
-    StudentRepository studentRepository;
-
-    @Autowired
-    TeacherRepository teacherRepository;
-
-    @Test
-    public void userSave() {
-        Student studentDO = new Student();
-        studentDO.setName("bug creator");
-        studentDO.setSex(1);
-        studentDO.setGrade("一年级");
-        studentRepository.save(studentDO);
-
-        Teacher teacherDO = new Teacher();
-        teacherDO.setName("Java乐园");
-        teacherDO.setSex(2);
-        teacherDO.setOffice("语文");
-        teacherRepository.save(teacherDO);
-    }
-}
-```
+通过 HTTP 请求对应的 controller 接口就可以看到对应的效果了
