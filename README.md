@@ -59,5 +59,3 @@
 | boot-webFlux                        | 在 Spring boot 项目中集成 Web flux                   |
 | boot-quartz                         | 在 Spring boot 项目中集成 quartz 实现任务调度              |
 | boot-druid                          | 在 Spring boot 项目中集成 druid 进行数据连接监控             |
-
-- https://mp.weixin.qq.com/s/Ic5YH76ZtR71JjcXyMtozw
