@@ -38,6 +38,7 @@
         <module>boot-servlet-filter</module>
         <module>boot-servlet-listener</module>
         <module>boot-orm-jpa-domainEvents</module>
+        <module>boot-orm-jpa-completableFuture</module>
     </modules>
 
     <packaging>pom</packaging>
