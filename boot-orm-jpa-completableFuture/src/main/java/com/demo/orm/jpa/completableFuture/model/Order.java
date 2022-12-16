@@ -24,5 +24,4 @@ public class Order implements Serializable {
 
     @Version
     private Integer version;
-
 }
