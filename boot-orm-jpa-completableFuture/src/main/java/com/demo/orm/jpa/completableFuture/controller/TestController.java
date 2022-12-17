@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 
 /**
  * 这里是用于测试 completableFuture 在生产中实践的方式
@@ -84,7 +83,6 @@ public class TestController {
         total -= us * 1000;
         long ns = total; /**纳秒**/
         log.info(String.format("%s耗时：%s ms, %s us, %s ns", "执行耗时", ms, us, ns));
-
     }
 
 }
