@@ -40,6 +40,7 @@
         <module>boot-orm-jpa-domainEvents</module>
         <module>boot-orm-jpa-completableFuture</module>
         <module>boot-webFlux</module>
+        <module>boot-sse</module>
     </modules>
 
     <packaging>pom</packaging>
