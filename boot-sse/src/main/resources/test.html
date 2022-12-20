@@ -5,6 +5,24 @@
     <title>Title</title>
 </head>
 <body>
+<script type="text/javascript">
+    // 初始化，参数为url
+    // 依赖H5
+    var sse = new EventSource("http://localhost:8080/push")
 
+    // 监听消息并打印
+    sse.onmessage = function (evt) {
+        console.log("message", evt.data, evt)
+    }
+
+    // 如果指定了事件标识需要用这种方式来进行监听事件流
+    sse.addEventListener("me", function (evt) {
+        console.log("me event", evt.data)
+        // 事件流如果不关闭会自动刷新请求，所以我们需要根据条件手动关闭
+        if (evt.data == 3) {
+            sse.close()
+        }
+    })
+</script>
 </body>
 </html>
