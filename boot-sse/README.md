@@ -1,3 +1,5 @@
+[博客地址](https://blog.csdn.net/qq_18948359/article/details/128392625?spm=1001.2014.3001.5502)
+
 ## 关于 SSE
 
 sse 全程 Server Send Event，是 HTTP 协议中的一种，`Content-Type` 为 `text/event-stream`，是服务端主动向前端推送数据。类似于 WebSocket。
