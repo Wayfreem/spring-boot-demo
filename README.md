@@ -62,3 +62,4 @@
 | boot-quartz   | 在 Spring boot 项目中集成 quartz 实现任务调度     |
 | boot-okHttp   | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
 | boot-druid    | 在 Spring boot 项目中集成 druid 进行数据连接监控    |
+| boot-kaptcha  | 在 Spring boot 项目中集成 kaptcha 实现验证码功能   |
