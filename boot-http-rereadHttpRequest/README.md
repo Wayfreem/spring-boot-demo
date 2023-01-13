@@ -24,6 +24,12 @@ pom.xml
     <artifactId>lombok</artifactId>
     <scope>provided</scope>
 </dependency>
+
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.11.0</version>
+</dependency>
 ```
 
 ### 第二步：自定义 HttpServletRequestWrapper 包装类
@@ -152,4 +158,90 @@ public class WebConfig {
 
     }
 }
+```
+
+### 测试
+
+#### 增加工具类
+
+将 HttpServletRequest 中的 body 内容转为 string 格式
+
+```java
+public class RequestReadUtils {
+    private static final int BUFFER_SIZE = 1024 * 8;
+
+    public static String read(HttpServletRequest request) throws IOException {
+        BufferedReader bufferedReader = request.getReader();
+        for (Enumeration<String> iterator = request.getHeaderNames(); iterator.hasMoreElements();) {
+            String type = iterator.nextElement();
+            System.out.println(type+" = "+request.getHeader(type));
+        }
+        System.out.println();
+        StringWriter writer = new StringWriter();
+        write(bufferedReader,writer);
+        return writer.getBuffer().toString();
+    }
+
+    public static long write(Reader reader,Writer writer) throws IOException {
+        return write(reader, writer, BUFFER_SIZE);
+    }
+
+    public static long write(Reader reader, Writer writer, int bufferSize) throws IOException {
+        int read;
+        long total = 0;
+        char[] buf = new char[bufferSize];
+        while( ( read = reader.read(buf) ) != -1 ) {
+            writer.write(buf, 0, read);
+            total += read;
+        }
+        return total;
+    }
+}
+```
+
+#### 创建一个 Controller
+
+```java
+@RestController
+public class TestController {
+
+    @RequestMapping("test")
+    public String test(HttpServletRequest request) throws IOException {
+        String body = IOUtils.toString(request.getInputStream(), Charset.defaultCharset());
+        System.out.println(body);
+        return "请求成功";
+    }
+
+    @RequestMapping("testRepeat")
+    public String testRepeat(HttpServletRequest request) throws IOException {
+        // 先读取一次 request 中的内容
+        String body = RequestReadUtils.read(request);
+        System.out.println(body);
+
+        // 使用 IOUtils 包中的方法读取
+        String data = IOUtils.toString(request.getInputStream(), Charset.defaultCharset());
+        System.out.println(data);
+        return "请求成功";
+    }
+}
+```
+
+#### 通过 HTTP 请求
+
+修改下 filter 中的判断，请求就可以看到效果了
+
+```java
+if (requestWrapper == null) {
+    chain.doFilter(request, response);
+} else {
+    chain.doFilter(request, response);
+
+    // 用于测试重复读取 chain.doFilter(request, response);
+}
+```
+
+```http request
+http://localhost:8080/testRepeat
+
+{"orderNo":"0002035","customerId":"125435","status":"1"}
 ```

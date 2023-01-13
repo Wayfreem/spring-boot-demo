@@ -25,11 +25,11 @@ public class RequestBodyReaderFilter implements Filter {
             if (requestWrapper == null) {
                 chain.doFilter(request, response);
             } else {
-                chain.doFilter(requestWrapper, response);
+                chain.doFilter(request, response);
+
+                // 用于测试重复读取 chain.doFilter(request, response);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ServletException e) {
+        } catch (IOException | ServletException e) {
             e.printStackTrace();
         }
     }
