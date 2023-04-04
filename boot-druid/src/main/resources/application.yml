@@ -1,0 +1,50 @@
+# spring 配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/superjson?useUnicode=true&characterEncoding=utf8&useSSL=false
+    # 连接池配置
+    druid:
+      # 初始化大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      # 配置获取连接等待超时的时间
+      max-wait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存时间
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM user
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 打开 PSCache，并且指定每个连接上 PSCache 的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 配置监控统计拦截的 Filter，去掉后监控界面 SQL 无法统计，wall 用于防火墙
+      filters: stat,wall,slf4j
+      # 通过 connection-properties 属性打开 mergeSql 功能；慢 SQL 记录
+      connection-properties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+      # 配置 DruidStatFilter
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: .js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*
+      # 配置 DruidStatViewServlet
+      stat-view-servlet:
+        url-pattern: /druid/*
+        # IP 白名单，没有配置或者为空，则允许所有访问
+        allow: 127.0.0.1
+        # IP 黑名单，若白名单也存在，则优先使用
+        deny: 192.168.31.253
+        # 禁用 HTML 中 Reset All 按钮
+        reset-enable: false
+        # 登录用户名/密码
+        login-username: root
+        login-password: 123456
+        # 需要设置enabled=true,否则会报出There was an unexpected error (type=Not Found, status=404).错误，或者将druid-spring-boot-starter的版本降低到1.1.10及以下
+        # 是否启用StatViewServlet（监控页面）默认值为false（考虑到安全问题默认并未启动，如需启用建议设置密码或白名单以保障安全）
+        enabled: true

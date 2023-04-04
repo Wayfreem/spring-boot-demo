@@ -42,6 +42,7 @@
         <module>boot-webFlux</module>
         <module>boot-sse</module>
         <module>boot-http-rereadHttpRequest</module>
+        <module>boot-druid</module>
     </modules>
 
     <packaging>pom</packaging>
