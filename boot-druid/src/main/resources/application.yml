@@ -2,9 +2,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
+    username: admin
     password: 123456
-    url: jdbc:mysql://localhost:3306/superjson?useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://192.168.152.129:3306/study?useUnicode=true&characterEncoding=utf8&useSSL=false
     # 连接池配置
     druid:
       # 初始化大小，最小，最大
@@ -17,9 +17,12 @@ spring:
       time-between-eviction-runs-millis: 60000
       # 配置一个连接在池中最小生存时间
       min-evictable-idle-time-millis: 300000
+      # 配置自定义的查询 SQL
       validation-query: SELECT 1 FROM user
       test-while-idle: true
+      # 借用连接时执行 validationQuery 检测连接是否有效，做了这个配置会降低性能
       test-on-borrow: false
+      # 归还连接时执行 validationQuery 检测连接是否有效，做了这个配置会降低性能
       test-on-return: false
       # 打开 PSCache，并且指定每个连接上 PSCache 的大小
       pool-prepared-statements: true
