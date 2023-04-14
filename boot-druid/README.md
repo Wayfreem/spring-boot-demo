@@ -2,6 +2,8 @@
 
 在 Spring Boot 中集成 druid 实现 SQL 监控。[参考文档](https://mp.weixin.qq.com/s/bXuy7lkPJYtcWhbrXQPnjg)
 
+另外参考：[springboot下使用druid-spring-boot-starter](https://blog.csdn.net/yzh_1346983557/article/details/117673280)
+
 ## 具体集成步骤
 
 ### 第一步： POM 文件依赖

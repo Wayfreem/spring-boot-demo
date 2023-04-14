@@ -41,6 +41,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!--   这里需要引入持久化的框架包，不然在控制台会报错：Error creating bean with name 'dataSource': Unsatisfied dependency expressed through field 'basicProperties';     -->
+        <!--    mybatis 依赖    -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+
         <!--    引入 druid 的依赖包    -->
         <dependency>
             <groupId>com.alibaba</groupId>
