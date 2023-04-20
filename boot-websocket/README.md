@@ -1,6 +1,6 @@
 ## 简介
 
-spring boot集成 websocket 项目。
+spring boot集成 websocket 项目。 spring boot 集成 WebSocket 有两种方式，[参考链接看这里](https://blog.csdn.net/qq_42151956/article/details/124745254?spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-124745254-blog-125384766.235%5Ev30%5Epc_relevant_default_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-124745254-blog-125384766.235%5Ev30%5Epc_relevant_default_base3&utm_relevant_index=14)
 
 ## 集成的步骤
 
