@@ -1,6 +1,7 @@
 ## 简介
 
-spring boot集成 websocket 项目。 spring boot 集成 WebSocket 有两种方式，[参考链接看这里](https://blog.csdn.net/qq_42151956/article/details/124745254?spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-124745254-blog-125384766.235%5Ev30%5Epc_relevant_default_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-124745254-blog-125384766.235%5Ev30%5Epc_relevant_default_base3&utm_relevant_index=14)
+spring boot集成 websocket 项目。 spring boot 集成 WebSocket
+有两种方式，[参考链接看这里](https://blog.csdn.net/qq_42151956/article/details/124745254?spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-124745254-blog-125384766.235%5Ev30%5Epc_relevant_default_base3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-124745254-blog-125384766.235%5Ev30%5Epc_relevant_default_base3&utm_relevant_index=14)
 
 ## 集成的步骤
 
@@ -9,14 +10,17 @@ spring boot集成 websocket 项目。 spring boot 集成 WebSocket 有两种方�
 pom.xml
 
 ```xml
+
 <dependency>
-   <groupId>org.springframework.boot</groupId>
-   <artifactId>spring-boot-starter-websocket</artifactId>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
 </dependency>
 ```
 
 ### 第二步：创建 配置文件类
+
 ```java
+
 @Configuration
 public class WebSocketConfig {
 
@@ -25,14 +29,16 @@ public class WebSocketConfig {
      * 该 Bean会自动注册使用 @ServerEndpoint 注解声明的 websocket endpoint
      */
     @Bean
-    public ServerEndpointExporter serverEndpointExporter(){
+    public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
 }
 ```
 
 ### 第三步：创建 websocket 服务
+
 ```java
+
 @Slf4j
 @Component
 @ServerEndpoint("/websocket/{userId}")
@@ -152,13 +158,14 @@ public class WebSocketServer {
 ```
 
 ### 第四步：新建一个 html 测试ws 连接
+
 ```html
 <!DOCTYPE html>
 <html>
 <head>
     <title>WebSocket 测试</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
 </head>
 
 <body>
@@ -176,9 +183,9 @@ public class WebSocketServer {
 <br>
 
 <div>
-    <input type="button" id="btnConnection" value="连接" />
-    <input type="button" id="btnClose" value="关闭" />
-    <input type="button" id="btnSend" value="发送" />
+    <input type="button" id="btnConnection" value="连接"/>
+    <input type="button" id="btnClose" value="关闭"/>
+    <input type="button" id="btnSend" value="发送"/>
 </div>
 
 <hr>
@@ -188,12 +195,12 @@ public class WebSocketServer {
 <script type="text/javascript">
     var socket;
 
-    document.querySelector("#btnConnection").addEventListener("click", function() {
+    document.querySelector("#btnConnection").addEventListener("click", function () {
         //实现化WebSocket对象，指定要连接的服务器地址与端口
         socket = new WebSocket("ws://127.0.0.1:8080/websocket/wayfreem");
 
         //打开事件
-        socket.onopen = function() {
+        socket.onopen = function () {
             console.log("Socket 已打开");
             socket.send("这是来自客户端的消息" + location.href + new Date());
 
@@ -201,39 +208,148 @@ public class WebSocketServer {
         };
 
         //获得消息事件
-        socket.onmessage = function(msg) {
+        socket.onmessage = function (msg) {
             console.log(msg.data);
-            document.getElementById('messages').innerHTML += '<br />'+ event.data;
+            document.getElementById('messages').innerHTML += '<br />' + event.data;
         };
 
         //关闭事件
-        socket.onclose = function() {
+        socket.onclose = function () {
             console.log("Socket已关闭");
         };
 
         //发生了错误事件
-        socket.onerror = function() {
+        socket.onerror = function () {
             console.log("发生了错误");
         }
     });
 
     //发送消息
-    document.querySelector("#btnSend").addEventListener("click", function() {
+    document.querySelector("#btnSend").addEventListener("click", function () {
         socket.send("这是来自客户端的消息" + location.href + new Date());
     });
 
     //关闭
-    document.querySelector("#btnClose").addEventListener("click", function() {
+    document.querySelector("#btnClose").addEventListener("click", function () {
         socket.close();
     });
 
-    function check(){
+    function check() {
         if (typeof (WebSocket) == "undefined") {
             document.getElementById("checkText").innerHTML = "您的浏览器不支持WebSocket";
-        }else{
+        } else {
             document.getElementById("checkText").innerText = "可以使用 WebSocket";
         }
     }
 </script>
 </html>
+```
+
+集成了 websocket 之后，websocket
+其实可以发送异步消息的，[详细参考这里](https://blog.csdn.net/huangtenglong/article/details/128674790?spm=1001.2014.3001.5502)
+
+```java
+/**
+ * 同步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息（true:可部分发送消息; false:一次性发布全部消息）
+ */
+public void sendBasicMessage(Session session,String message,Boolean flag)throws IOException{
+        log.info("WebsocketServer.sendBasicMessage() is begin, flag is "+flag+" ,message is "+message);
+        session.getBasicRemote().sendText(message,flag);
+        log.info("WebsocketServer.sendBasicMessage() is end. ");
+}
+
+/**
+ * 同步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息（true:可部分发送消息; false:一次性发布全部消息）
+ */
+public void sendBasicBinaryMessage(Session session,ByteBuffer message,Boolean flag)throws IOException{
+        log.info("WebsocketServer.sendBasicMessage() is begin, flag is "+flag+" ,message is "+message);
+        session.getBasicRemote().sendBinary(message,flag);
+        log.info("WebsocketServer.sendBasicMessage() is end. ");
+}
+
+/**
+ * 异步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息
+ */
+public void sendAsyncMessage(Session session,String message)throws IOException{
+        log.info("WebsocketServer.sendAsyncMessage() is begin, message is "+message);
+        session.getAsyncRemote().sendText(message);
+        log.info("WebsocketServer.sendAsyncMessage() is end. ");
+}
+
+/**
+ * 异步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息
+ */
+public void sendAsyncBinaryMessage(Session session,ByteBuffer message)throws IOException{
+        log.info("WebsocketServer.sendAsyncMessage() is begin, message is "+message);
+        session.getAsyncRemote().sendBinary(message);
+        log.info("WebsocketServer.sendAsyncMessage() is end. ");
+}
+
+/**
+ * 同步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息（true:可部分发送消息; false:一次性发布全部消息）
+ */
+public Boolean sendBasicMessage(Session session,List<String> messageList,Boolean flag)throws IOException{
+        if(null==messageList||messageList.size()< 1){
+            return true;
+        }
+        for(int i=0;i<messageList.size();i++){
+            session.getBasicRemote().sendText(messageList.get(i),flag);
+        }
+        return true;
+}
+
+/**
+ * 异步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息
+ */
+public Boolean sendAsyncMessage(Session session,List<String> messageList)throws IOException{
+        if(null==messageList||messageList.size()< 1){
+            return true;
+        }
+        for(int i=0;i<messageList.size();i++){
+            session.getAsyncRemote().sendText(messageList.get(i));
+        }
+        return true;
+}
+
+/**
+ * 同步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息（true:可部分发送消息; false:一次性发布全部消息）
+ */
+public Boolean sendBasicBinaryMessage(Session session,List<ByteBuffer> messageList,Boolean flag)throws IOException{
+        if(null==messageList||messageList.size()< 1){
+            return true;
+        }
+        for(int i=0;i<messageList.size();i++){
+            session.getBasicRemote().sendBinary(messageList.get(i),flag);
+        }
+        return true;
+}
+
+/**
+ * 异步发送消息模式。
+ * message: 待发送的消息
+ * flag: 是否支持发送部分消息
+ */
+public Boolean sendAsyncBinaryMessage(Session session,List<ByteBuffer> messageList)throws IOException{
+        if(null==messageList||messageList.size()< 1){
+            return true;
+        }
+        for(int i=0;i<messageList.size();i++){
+            session.getAsyncRemote().sendBinary(messageList.get(i));
+        }
+        return true;
+}
 ```
