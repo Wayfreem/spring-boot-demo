@@ -8,41 +8,42 @@
     <artifactId>boot-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
+        <module>boot-actuator</module>
+        <module>boot-autoConfig</module>
+        <module>boot-customizeEvent</module>
+        <module>boot-customizeErrorPage</module>
+        <module>boot-conditionAutowire</module>
+        <module>boot-customizeAutowire</module>
+        <module>boot-druid</module>
+        <module>boot-enableAutowire</module>
+        <module>boot-email</module>
+        <module>boot-es</module>
+        <module>boot-flyway</module>
         <module>boot-taskSchedule</module>
+        <module>boot-taskAsync</module>
+        <module>boot-taskAnnotationSchedule</module>
+        <module>boot-redis</module>
+        <module>boot-retry</module>
+        <module>boot-mongoDB</module>
+        <module>boot-webFlux</module>
+        <module>boot-websocket</module>
+        <module>boot-ureport2</module>
+        <module>boot-swagger2</module>
         <module>boot-orm-mybatis</module>
         <module>boot-orm-mybatisPlus</module>
         <module>boot-orm-jpa</module>
-        <module>boot-customizeEvent</module>
-        <module>boot-email</module>
-        <module>boot-redis</module>
-        <module>boot-mongoDB</module>
-        <module>boot-es</module>
-        <module>boot-websocket</module>
-        <module>boot-ureport2</module>
-        <module>boot-flyway</module>
-        <module>boot-taskAsync</module>
-        <module>boot-taskAnnotationSchedule</module>
-        <module>boot-customizeErrorPage</module>
-        <module>boot-actuator</module>
-        <module>boot-autoConfig</module>
-        <module>boot-enableAutowire</module>
-        <module>boot-conditionAutowire</module>
-        <module>boot-customizeAutowire</module>
-        <module>boot-swagger2</module>
         <module>boot-orm-mybatis-dynamic-datasource</module>
-        <module>boot-undertow</module>
         <module>boot-orm-mybatis-multi-datasource</module>
         <module>boot-orm-jpa-dynamic-datasource</module>
         <module>boot-orm-jpa-multi-datasource</module>
-        <module>boot-retry</module>
-        <module>boot-servlet-filter</module>
-        <module>boot-servlet-listener</module>
         <module>boot-orm-jpa-domainEvents</module>
         <module>boot-orm-jpa-completableFuture</module>
-        <module>boot-webFlux</module>
+        <module>boot-servlet-filter</module>
+        <module>boot-servlet-listener</module>
         <module>boot-sse</module>
+        <module>boot-undertow</module>
         <module>boot-http-rereadHttpRequest</module>
-        <module>boot-druid</module>
+        <module>boot-mq-rocketMQ</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -1,0 +1,9 @@
+## rocker config
+
+rocketmq:
+  name-server: 192.168.152.130:9876
+  producer:
+    group: SpringBoot_Group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 3
+    retry-times-when-send-async-failed: 3

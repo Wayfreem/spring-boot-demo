@@ -53,14 +53,16 @@
 | boot-webFlux                        | 在 Spring boot 项目中集成 `WebFlux`                           |
 | boot-sse                            | 在 Spring boot 项目中集成 `sse` 实现后端主动推送数据                    |
 | boot-http-rereadHttpRequest         | Spring boot 之重复读取 `Request Body` 内容                     |
+| boot-druid                          | 在 Spring boot 项目中集成 `druid` 进行数据连接监控                    |
+| boot-rocketMQ                       | 在 Spring boot 集成 RocketMQ                               |
+
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目：
 
-| 模块            | 说明                                    |
-|:--------------|:--------------------------------------|
-| boot-rocketMQ | 在 Spring boot 集成 RocketMQ             |
-| boot-https    | 在 Spring boot 项目中实现 https 进行接口调用      |
-| boot-quartz   | 在 Spring boot 项目中集成 quartz 实现任务调度     |
-| boot-okHttp   | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
-| boot-druid    | 在 Spring boot 项目中集成 druid 进行数据连接监控    |
-| boot-kaptcha  | 在 Spring boot 项目中集成 kaptcha 实现验证码功能   |
+| 模块           | 说明                                    |
+|:-------------|:--------------------------------------|
+| boot-https   | 在 Spring boot 项目中实现 https 进行接口调用      |
+| boot-quartz  | 在 Spring boot 项目中集成 quartz 实现任务调度     |
+| boot-okHttp  | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
+| boot-kaptcha | 在 Spring boot 项目中集成 kaptcha 实现验证码功能   |
+| boot-xxl-job | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
