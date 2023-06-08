@@ -44,6 +44,7 @@
         <module>boot-undertow</module>
         <module>boot-http-rereadHttpRequest</module>
         <module>boot-mq-rocketMQ</module>
+        <module>boot-ftp-commons-net</module>
     </modules>
 
     <packaging>pom</packaging>
