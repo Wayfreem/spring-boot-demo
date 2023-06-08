@@ -49,7 +49,7 @@ public class FileUploadController {
 
             try {
                 InputStream inputStream = uploadFile.getInputStream();
-                ftpClientService.upload(inputStream, fileOriginalName, "download");
+                ftpClientService.upload(inputStream, fileOriginalName, fileName);
             } catch (IOException e) {
                 e.printStackTrace();
                 log.error("文件传换位输入流报错！");

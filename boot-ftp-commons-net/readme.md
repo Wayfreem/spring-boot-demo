@@ -23,6 +23,7 @@ ftp.password=123456
 ftp.filepath=/home/upload
 
 # http请求路径。http://192.168.3.127:82
+## 例如文件服务器上面存在一个图片路径为： 2023/1.jpg,  那么访问就是 http://192.168.3.127:22/2023/004.jpg
 ftp.web.host=192.168.3.127
 ftp.web.port=22
 ```
