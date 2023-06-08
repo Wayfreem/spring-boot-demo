@@ -2,6 +2,7 @@ package com.demo.ftp.commonsNet.config;
 
 import com.demo.ftp.commonsNet.model.FileEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class FtpConfig {
         FTPClient ftpClient = new FTPClient();
         ftpClient.setConnectTimeout(1000 * 30);//设置连接超时时间
         ftpClient.setControlEncoding("utf-8");//设置ftp字符集
-//        ftpClient.enterLocalPassiveMode();//设置被动模式，文件传输端口设置
+        ftpClient.enterLocalPassiveMode();//设置被动模式，文件传输端口设置
 
         try {
 //            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);  //设置文件传输模式为二进制，可以保证传输的内容不会被改变

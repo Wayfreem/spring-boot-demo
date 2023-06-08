@@ -38,7 +38,10 @@ public class FTPClientServiceImpl implements FTPClientService {
      */
     public ResponseEntity<Object> download(String remoteFileName, String localFileName, String remoteDir) throws Exception {
         try {
-            ftpClient.changeWorkingDirectory(fileEntity.getFtpFilepath());  // 转移到FTP服务器目录
+            boolean flag = ftpClient.changeWorkingDirectory("./files");
+            if (flag) {
+                System.out.println("-------切换成功");
+            }
 
             FTPFile[] ftpFiles = ftpClient.listFiles("./files", file -> file.isFile() && file.getName().equals(remoteFileName));
             for (FTPFile ftpFile: ftpFiles){
@@ -79,11 +82,12 @@ public class FTPClientServiceImpl implements FTPClientService {
      */
     @Override
     public boolean upload(InputStream inputStream, String originName, String remoteDir) {
-        if (ftpClient == null) return false;
-
         try {
             // 由于是单列模式，每次切换了之后如果不进入根目录的话，就会在上一次的目录继续创建文件
-            ftpClient.changeWorkingDirectory(fileEntity.getFtpFilepath());
+            boolean flag = ftpClient.changeWorkingDirectory("/");
+            if (flag) {
+                System.out.println("-------切换成功");
+            }
             boolean isChange = ftpClient.changeWorkingDirectory(remoteDir); //进入到文件保存的目录
             if (!isChange) {// 判断文件夹是否存在，不存在就需要创建
                 ftpClient.makeDirectory(remoteDir);

@@ -30,6 +30,7 @@ public class FileUploadController {
 
     /**
      * 多文件上传
+     *
      * @param file 前端传入一个文件列表
      * @return map
      */
@@ -37,6 +38,9 @@ public class FileUploadController {
     @ResponseBody
     public Map<String, Object> upload(@RequestParam("files") MultipartFile[] file) {
         Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("msg", "上传文件上传成功");
+        returnMap.put("code", "success");
+
         if (file.length == 0) {
             log.error("上传文件为空");
             returnMap.put("msg", "上传文件为空");
@@ -44,21 +48,23 @@ public class FileUploadController {
             return returnMap;
         }
 
-        for (MultipartFile uploadFile : file  ) {
+        for (MultipartFile uploadFile : file) {
             String fileName = uploadFile.getName();
             String fileOriginalName = uploadFile.getOriginalFilename();
 
             try {
                 InputStream inputStream = uploadFile.getInputStream();
                 ftpClientService.upload(inputStream, fileOriginalName, fileName);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 log.error("文件传换位输入流报错！");
+
+                returnMap.put("msg", "上传文件上传失败");
+                returnMap.put("code", "fail");
             }
         }
 
-        returnMap.put("msg", "上传文件上传成功");
-        returnMap.put("code", "success");
+
         return returnMap;
     }
 
