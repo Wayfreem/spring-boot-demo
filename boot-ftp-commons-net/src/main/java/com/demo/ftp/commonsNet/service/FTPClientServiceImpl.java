@@ -4,12 +4,19 @@ import com.demo.ftp.commonsNet.model.FileEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.time.LocalDate;
 
 
 @Service
@@ -22,9 +29,45 @@ public class FTPClientServiceImpl implements FTPClientService {
     @Autowired
     private FileEntity fileEntity;
 
-    @Override
-    public void download(String remoteFileName, String localFileName, String remoteDir) {
+    /**
+     * 下载
+     *
+     * @param remoteFileName 远程的文件名称
+     * @param localFileName  下载之后的文件名称
+     * @param remoteDir      文件存放的地址
+     */
+    public ResponseEntity<Object> download(String remoteFileName, String localFileName, String remoteDir) throws Exception {
+        try {
+            ftpClient.changeWorkingDirectory(fileEntity.getFtpFilepath());  // 转移到FTP服务器目录
 
+            FTPFile[] ftpFiles = ftpClient.listFiles("./files", file -> file.isFile() && file.getName().equals(remoteFileName));
+            for (FTPFile ftpFile: ftpFiles){
+                System.out.println(ftpFile.getName());
+            }
+
+            InputStream inputStream = ftpClient.retrieveFileStream(remoteDir);  // 找到获取对应的文件
+            if (inputStream == null) throw new RuntimeException("没有找到文件");
+
+            try (FastByteArrayOutputStream out = new FastByteArrayOutputStream()) {
+                int len;
+                byte[] buffer = new byte[1024];                     // 缓冲区
+                while ((len = inputStream.read(buffer)) != -1) {    // 将接受的数据写入缓冲区数组buffer
+                    out.write(buffer, 0, len);               // 将缓冲区buffer写入byte数组输出流
+                }
+                inputStream.close();
+
+                return ResponseEntity
+                        .ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=\"" + URLEncoder.encode(LocalDate.now() + localFileName + ".xls", "UTF-8") + "\"")
+                        .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+                        .header(HttpHeaders.CONTENT_LENGTH, out.size() + "")
+                        .header("Connection", "close")
+                        .body(out.toByteArray());
+            }
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(("文件下载失败！" + e.getMessage()).getBytes("UTF-8"));
+        }
     }
 
     /**

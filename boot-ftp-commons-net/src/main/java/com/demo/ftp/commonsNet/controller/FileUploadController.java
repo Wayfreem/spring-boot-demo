@@ -3,6 +3,7 @@ package com.demo.ftp.commonsNet.controller;
 import com.demo.ftp.commonsNet.service.FTPClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,15 +63,34 @@ public class FileUploadController {
     }
 
     @RequestMapping("uploadWithPath")
-    public Map<String, Object> upload(@RequestParam("file") MultipartFile file,
-                                      @RequestParam(value="value",required=false) String value){
-        if (file.isEmpty()) {
+    public Map<String, Object> upload(@RequestParam("file") MultipartFile[] file,
+                                      @RequestParam(value = "value", required = false) String value) {
+        if (file.length == 0) {
             log.error("上传文件为空");
             return null;
         }
-        String fileName = file.getName();
-        String fileOriginalName = file.getOriginalFilename();
+        for (MultipartFile uploadFile : file) {
+            String fileOriginalName = uploadFile.getOriginalFilename();
+
+            try {
+                InputStream inputStream = uploadFile.getInputStream();
+                ftpClientService.upload(inputStream, fileOriginalName, value);
+            } catch (IOException e) {
+                e.printStackTrace();
+                log.error("文件传换位输入流报错！");
+            }
+
+            return null;
+        }
         return null;
     }
 
+    @RequestMapping("download")
+    public ResponseEntity<Object> download() throws Exception {
+        String fileName = "tmp001.xls";
+        String localName = "测试下载文件";
+        String path = "./files/tmp001.xls";
+
+        return ftpClientService.download(fileName, localName, path);
+    }
 }
