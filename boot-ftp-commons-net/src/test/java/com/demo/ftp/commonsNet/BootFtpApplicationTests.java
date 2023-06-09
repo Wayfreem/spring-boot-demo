@@ -1,6 +1,5 @@
 package com.demo.ftp.commonsNet;
 
-import com.demo.ftp.commonsNet.service.FTPClientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,8 +1,7 @@
 package com.demo.ftp.commonsNet.controller;
 
-import com.demo.ftp.commonsNet.service.FTPClientService;
+import com.demo.ftp.commonsNet.utils.FtpUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,18 +17,17 @@ import java.util.Map;
 
 /**
  * @author wuq
- * @create 2019-12-05 18:02
+ * @Time 2023-6-9 9:16
+ * @Description
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @Slf4j
-public class FileUploadController {
-
-    @Autowired
-    private FTPClientService ftpClientService;
+public class FileController {
 
     /**
      * 多文件上传
+     *
      * @param file 前端传入一个文件列表
      * @return map
      */
@@ -44,13 +42,12 @@ public class FileUploadController {
             return returnMap;
         }
 
-        for (MultipartFile uploadFile : file  ) {
-            String fileName = uploadFile.getName();
+        for (MultipartFile uploadFile : file) {
             String fileOriginalName = uploadFile.getOriginalFilename();
 
             try {
                 InputStream inputStream = uploadFile.getInputStream();
-                ftpClientService.upload(inputStream, fileOriginalName, fileName);
+                FtpUtil.uploadFile(fileOriginalName, inputStream);
             } catch (IOException e) {
                 e.printStackTrace();
                 log.error("文件传换位输入流报错！");
@@ -62,35 +59,12 @@ public class FileUploadController {
         return returnMap;
     }
 
-    @RequestMapping("uploadWithPath")
-    public Map<String, Object> upload(@RequestParam("file") MultipartFile[] file,
-                                      @RequestParam(value = "value", required = false) String value) {
-        if (file.length == 0) {
-            log.error("上传文件为空");
-            return null;
-        }
-        for (MultipartFile uploadFile : file) {
-            String fileOriginalName = uploadFile.getOriginalFilename();
-
-            try {
-                InputStream inputStream = uploadFile.getInputStream();
-                ftpClientService.upload(inputStream, fileOriginalName, value);
-            } catch (IOException e) {
-                e.printStackTrace();
-                log.error("文件传换位输入流报错！");
-            }
-
-            return null;
-        }
-        return null;
-    }
-
     @RequestMapping("download")
     public ResponseEntity<Object> download() throws Exception {
         String fileName = "tmp001.xls";
         String localName = "测试下载文件";
         String path = "./files/tmp001.xls";
 
-        return ftpClientService.download(fileName, localName, path);
+        return FtpUtil.download(fileName, localName, path);
     }
 }
