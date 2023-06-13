@@ -45,6 +45,7 @@
         <module>boot-http-rereadHttpRequest</module>
         <module>boot-mq-rocketMQ</module>
         <module>boot-ftp-commons-net</module>
+        <module>boot-mq-disruptor</module>
     </modules>
 
     <packaging>pom</packaging>
