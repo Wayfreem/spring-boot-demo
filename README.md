@@ -68,3 +68,4 @@
 | boot-xxl-job            | 在 Spring boot 项目中集成 xxl-job 实现任务调度        |
 | boot-ftp-messageChannel | 在 Spring boot 项目中使用 MessageChannel 实现文件上传 |
 | boot-mq-disruptor       | 在 Spring boot 项目中使用 disruptor 作为消息队列      |
+| boot-ftp-pool           | 在 Spring boot 集成 ftp 连接池                  |
