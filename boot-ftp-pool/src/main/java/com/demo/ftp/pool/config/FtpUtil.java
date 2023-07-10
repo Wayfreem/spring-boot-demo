@@ -36,7 +36,4 @@ public class FtpUtil {
         }
     }
 
-    public static ResponseEntity<Object> download(String fileName, String localName, String path) {
-        return null;
-    }
 }

@@ -84,13 +84,4 @@ public class FileUploadController {
         return null;
     }
 
-    @RequestMapping("download")
-    public ResponseEntity<Object> download() throws Exception {
-        String fileName = "tmp001.xls";
-        String localName = "测试下载文件";
-        String path = "./files/tmp001.xls";
-
-        return ftpUtil.download(fileName, localName, path);
-    }
-
 }

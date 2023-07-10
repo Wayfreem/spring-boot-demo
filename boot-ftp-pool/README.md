@@ -282,4 +282,135 @@ public class FtpPool implements DisposableBean {
 
 ### 第五步：提供 FtpUtils 工具类
 
-这里是有一个上传的方法，下载的方法可以参看下 ``
+这里是有一个上传的方法，下载的方法可以参看下 `boot-ftp-commons-net` 工程的代码
+
+```java
+@Component
+public class FtpUtil {
+    private final FtpPool pool;
+
+    public FtpUtil(FtpPool pool) {
+        this.pool = pool;
+    }
+
+    public boolean upload(InputStream inputStream, String originName, String remoteDir) {
+        FTPClient ftpClient = pool.getFTPClient();
+        try {
+            Boolean isSuccess = ftpClient.storeFile(originName, inputStream);//保存文件
+            if (!isSuccess) {
+                throw new IOException("文件上传失败！");
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            /** 归还资源 **/
+            pool.returnFTPClient(ftpClient);
+        }
+    }
+
+}
+```
+
+
+### 第六步：创建一个 Controller 用于测试
+
+```java
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Controller
+public class FileUploadController {
+
+    @Autowired
+    FtpUtil ftpUtil;
+
+    /**
+     * 多文件上传
+     *
+     * @param file 前端传入一个文件列表
+     * @return map
+     */
+    @RequestMapping("upload")
+    @ResponseBody
+    public Map<String, Object> upload(@RequestParam("files") MultipartFile[] file) {
+        Map<String, Object> returnMap = new HashMap<>();
+        if (file.length == 0) {
+            System.out.println("上传文件为空");
+            returnMap.put("msg", "上传文件为空");
+            returnMap.put("code", "error");
+            return returnMap;
+        }
+
+        for (MultipartFile uploadFile : file) {
+            String fileName = uploadFile.getName();
+            String fileOriginalName = uploadFile.getOriginalFilename();
+
+            try {
+                InputStream inputStream = uploadFile.getInputStream();
+                ftpUtil.upload(inputStream, fileOriginalName, fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("文件传换位输入流报错！");
+            }
+        }
+
+        returnMap.put("msg", "上传文件上传成功");
+        returnMap.put("code", "success");
+        return returnMap;
+    }
+
+    @RequestMapping("uploadWithPath")
+    public Map<String, Object> upload(@RequestParam("file") MultipartFile[] file,
+                                      @RequestParam(value = "value", required = false) String value) {
+        if (file.length == 0) {
+            System.out.println("上传文件为空");
+            return null;
+        }
+        for (MultipartFile uploadFile : file) {
+            String fileOriginalName = uploadFile.getOriginalFilename();
+
+            try {
+                InputStream inputStream = uploadFile.getInputStream();
+                ftpUtil.upload(inputStream, fileOriginalName, value);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("文件传换位输入流报错！");
+            }
+
+            return null;
+        }
+        return null;
+    }
+
+}
+```
+
+到此整个工程我们搭建完了。然后整一个静态页面来测试下上传就好：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+</head>
+<body>
+
+<form action="http://127.0.0.1:8080/upload" method="post" enctype="multipart/form-data">
+
+    <div>
+        <label for="value">文件名路径：</label>
+        <input id="value" name="value" type="text" placeholder="请输入文件路径"/>
+    </div>
+
+    <div style="margin-top: 20px">
+        <input type="file" name="files" />
+    </div>
+    <div style="margin-top: 20px">
+        <input type="submit" value="提交"/>
+    </div>
+</form>
+
+</body>
+</html>
+```
