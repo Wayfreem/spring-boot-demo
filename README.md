@@ -68,5 +68,4 @@
 | boot-okHttp             | 在 Spring boot 项目中集成 okHttp 进行 Http 调用     |
 | boot-kaptcha            | 在 Spring boot 项目中集成 kaptcha 实现验证码功能       |
 | boot-xxl-job            | 在 Spring boot 项目中集成 xxl-job 实现任务调度        |
-| boot-ftp-messageChannel | 在 Spring boot 项目中使用 MessageChannel 实现文件上传 |
 | boot-mq-disruptor       | 在 Spring boot 项目中使用 disruptor 作为消息队列      |
