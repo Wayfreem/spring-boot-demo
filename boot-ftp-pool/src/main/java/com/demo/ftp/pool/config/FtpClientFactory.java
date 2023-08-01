@@ -62,10 +62,10 @@ public class FtpClientFactory implements PooledObjectFactory<FTPClient> {
     @Override
     public void activateObject(PooledObject<FTPClient> pooledObject) throws Exception {
         FTPClient ftpClient = pooledObject.getObject();
+        ftpClient.setControlEncoding(config.getEncoding());     // 需要在连接之前设置，测试的时候发现存在文件名乱码的问题
         ftpClient.connect(config.getHost(), config.getPort());
         ftpClient.login(config.getUserName(), config.getPassWord());
-        ftpClient.setControlEncoding(config.getEncoding());
-        String pathname = new String(config.getWorkDir().getBytes(), FTP.DEFAULT_CONTROL_ENCODING);
+        String pathname = new String(config.getWorkDir().getBytes(), config.getEncoding());
         changeDir(ftpClient, pathname);
         ftpClient.enterLocalPassiveMode(); //设为被动模式
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);//设置上传文件类型为二进制，否则将无法打开文件
@@ -89,7 +89,7 @@ public class FtpClientFactory implements PooledObjectFactory<FTPClient> {
     public void passivateObject(PooledObject<FTPClient> pooledObject) {
         FTPClient ftpClient = pooledObject.getObject();
         try {
-            String pathname = new String(config.getRoot().getBytes(), FTP.DEFAULT_CONTROL_ENCODING);
+            String pathname = new String(config.getRoot().getBytes(), config.getEncoding());
             ftpClient.changeWorkingDirectory(pathname);
             ftpClient.logout();
             if (ftpClient.isConnected()) {
