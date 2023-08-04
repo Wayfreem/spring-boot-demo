@@ -41,15 +41,16 @@ public class SqlReportProvider implements ReportProvider {
 
     /**
      * 根据报表名加载报表文件
+     *
      * @param fileName 报表名称
      * @return
      */
     @Override
     public InputStream loadReport(String fileName) {
         try {
-            UReportFile uReportFile= reportService.findByName(getCorrectName(fileName));
-            if (uReportFile==null) return null;
-            return IOUtils.toInputStream(uReportFile.getContent(),"utf-8");
+            UReportFile uReportFile = reportService.findByName(removePrefix(fileName));
+            if (uReportFile == null) return null;
+            return IOUtils.toInputStream(uReportFile.getContent(), "utf-8");
         } catch (Exception e) {
             throw new ReportException(e);
         }
@@ -57,37 +58,30 @@ public class SqlReportProvider implements ReportProvider {
 
     @Override
     public void deleteReport(String fileName) {
-        reportService.deleteByName(getCorrectName(fileName));
+        reportService.deleteByName(removePrefix(fileName));
     }
 
     @Override
     public List<ReportFile> getReportFiles() {
         List<UReportFile> uReportFiles = reportService.findAll();
         return uReportFiles.stream()
-                .map( uReportFile -> new ReportFile(uReportFile.getName(), uReportFile.getCreateTime()))
+                .map(uReportFile -> new ReportFile(getPrefix() + uReportFile.getName(), uReportFile.getCreateTime()))
                 .collect(Collectors.toList());
     }
 
     /**
      * 保存打印模板
+     *
      * @param fileName 报表名称
-     * @param content 报表的XML内容
+     * @param content  报表的XML内容
      */
     @Override
     public void saveReport(String fileName, String content) {
         deleteReport(fileName);
-        reportService.save(fileName, content);
+        reportService.save(removePrefix(fileName), content);
     }
 
-    /**
-     * file
-     * @param name 文件名
-     * @return name
-     */
-    private String getCorrectName(String name){
-        if(name.startsWith(prefix)){
-            name = name.substring(prefix.length());
-        }
-        return name;
+    private String removePrefix(String file) {
+        return file.replace("report:", "");
     }
 }
