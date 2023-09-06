@@ -22,6 +22,7 @@ public class FtpUtil {
     public boolean upload(InputStream inputStream, String originName, String remoteDir) {
         FTPClient ftpClient = pool.getFTPClient();
         try {
+            originName = new String(originName.getBytes(), "UTF-8");    // 防止文件名 乱麻
             Boolean isSuccess = ftpClient.storeFile(originName, inputStream);//保存文件
             if (!isSuccess) {
                 throw new IOException("文件上传失败！");

@@ -61,12 +61,12 @@
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目：
 
-| 模块                      | 说明                                        |
-|:------------------------|:------------------------------------------|
-| boot-https              | 在 Spring boot 项目中实现 https 进行接口调用          |
-| boot-quartz             | 在 Spring boot 项目中集成 quartz 实现任务调度         |
-| boot-okHttp             | 在 Spring boot 项目中集成 okHttp 进行 Http 调用     |
-| boot-kaptcha            | 在 Spring boot 项目中集成 kaptcha 实现验证码功能       |
-| boot-xxl-job            | 在 Spring boot 项目中集成 xxl-job 实现任务调度        |
-| boot-ftp-messageChannel | 在 Spring boot 项目中使用 MessageChannel 实现文件上传 |
-| boot-mq-disruptor       | 在 Spring boot 项目中使用 disruptor 作为消息队列      |
+| 模块                 | 说明                                    |
+|:-------------------|:--------------------------------------|
+| boot-https         | 在 Spring boot 项目中实现 https 进行接口调用      |
+| boot-quartz        | 在 Spring boot 项目中集成 quartz 实现任务调度     |
+| boot-okHttp        | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
+| boot-kaptcha       | 在 Spring boot 项目中集成 kaptcha 实现验证码功能   |
+| boot-xxl-job       | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
+| boot-mq-disruptor  | 在 Spring boot 项目中使用 disruptor 作为消息队列  |
+| boot-auth-security | 在 Spring boot 项目中使用 security 作为安全校验框架 |
