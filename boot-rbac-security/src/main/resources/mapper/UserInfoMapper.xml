@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.security.mapper.UserInfoMapper">
+
+    <!--根据用户 Id 查询角色信息-->
+    <select id="selectRoleByUserId" resultType="com.demo.security.entity.Role">
+        SELECT r.id,
+               r.NAME
+        FROM role r
+                 INNER JOIN role_user ru ON ru.rid = r.id
+        WHERE ru.uid = #{0}
+    </select>
+    <!--根据用户 Id 查询权限信息-->
+    <select id="selectMenuByUserId" resultType="com.demo.security.entity.Menu">
+        SELECT m.id,
+               m.NAME,
+               m.url,
+               m.parentid,
+               m.permission
+        FROM menu m
+                 INNER JOIN role_menu rm ON m.id = rm.mid
+                 INNER JOIN role r ON r.id = rm.rid
+                 INNER JOIN role_user ru ON r.id = ru.rid
+        WHERE ru.uid = #{0}
+    </select>
+</mapper>

@@ -69,4 +69,4 @@
 | boot-kaptcha       | 在 Spring boot 项目中集成 kaptcha 实现验证码功能   |
 | boot-xxl-job       | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
 | boot-mq-disruptor  | 在 Spring boot 项目中使用 disruptor 作为消息队列  |
-| boot-auth-security | 在 Spring boot 项目中使用 security 作为安全校验框架 |
+| boot-rbac-security | 在 Spring boot 项目中使用 security 作为安全校验框架 |

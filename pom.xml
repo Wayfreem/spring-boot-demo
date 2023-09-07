@@ -47,6 +47,7 @@
         <module>boot-ftp-commons-net</module>
         <module>boot-mq-disruptor</module>
         <module>boot-ftp-pool</module>
+        <module>boot-rbac-security</module>
     </modules>
 
     <packaging>pom</packaging>
