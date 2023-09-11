@@ -48,6 +48,7 @@
         <module>boot-mq-disruptor</module>
         <module>boot-ftp-pool</module>
         <module>boot-rbac-security</module>
+        <module>boot-rbac-security-jwt</module>
     </modules>
 
     <packaging>pom</packaging>
