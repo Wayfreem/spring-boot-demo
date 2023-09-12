@@ -6,10 +6,10 @@ create table users
 );
 -- 密码 123456 使用了BCrypt加密
 insert into users
-values (1, '张san', '$2a$10$ZglYem2Zs8E4ETbLwaiA4OjXaTZX9w8wJ7x8LZdpGisdtI9VlIfvO');
+values (1, 'admin', '$2a$10$ZglYem2Zs8E4ETbLwaiA4OjXaTZX9w8wJ7x8LZdpGisdtI9VlIfvO');
 -- 密码 123456
 insert into users
-values (2, '李si', '$2a$10$ZglYem2Zs8E4ETbLwaiA4OjXaTZX9w8wJ7x8LZdpGisdtI9VlIfvO');
+values (2, 'user', '$2a$10$ZglYem2Zs8E4ETbLwaiA4OjXaTZX9w8wJ7x8LZdpGisdtI9VlIfvO');
 
 create table role
 (
@@ -63,4 +63,5 @@ CREATE TABLE `persistent_logins`
     `token`     VARCHAR(64) NOT NULL,
     `last_used` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`series`)
-) ENGINE = INNODB DEFAULT CHARSET = utf8;
+) ENGINE = INNODB
+  DEFAULT CHARSET = utf8;
