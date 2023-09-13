@@ -45,13 +45,126 @@ SpringBoot 整合SpringSecurity+JWT+Redis+Mybatis Plus。 这个项目是基于�
 
 在这个项目上面没有自定义页面来测试，我是通过 Post Man 测试的。下面说下测试相关内容。
 
+### 异常的登录请求
+
+**请求示例**
 
 ```http request
-GET /admin HTTP/1.1
+POST /login HTTP/1.1
 Host: localhost:8080
-Authorization: eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjdiYjU0NzRlLTJjYzktNGE4Ny1iZGY0LTY5MzA2YjdiZTIxOSJ9.SkE4hwNpsG74f5voEifcPomrUy_FPoyCUWus2yRhB3ZkwPr4jt58tIAM9ydwnohpcZlc-hSL-e-8YhMAqJdU1Q
+Content-Type: application/json
+Content-Length: 40
+
+{"username":"admin", "password":"admin"}
+```
+
+**返回结果**
+
+```json
+{
+    "msg": "Bad credentials",
+    "code": 500
+}
+```
+
+### 正常的登录请求
+
+**请求示例**
+
+```http request
+POST /login HTTP/1.1
+Host: localhost:8080
 Content-Type: application/json
 Content-Length: 41
 
 {"username":"admin", "password":"123456"}
 ```
+
+**返回结果**
+
+```json
+{
+    "msg": "操作成功",
+    "code": 200,
+    "data": {
+        "token": "eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImM5ZDlmZTgwLWE3NGUtNDcxNy05MDQ3LTAxZmRhYWYwNjgxMyJ9.4m54m7fvL5ZO2Hj3ZZrVBeAoT7wAZyttkc6-9UNTm01lvit9jPLVwKbnDMXvIFaBMHEKX4Z2YxpQW-AwY9OJsA",
+        "username": "admin"
+    }
+}
+```
+
+### 请求访问接口
+
+需要将返回值中的 token 放入到 head 中去
+
+#### 错误的请求
+
+**请求示例**
+```http request
+POST /user/all HTTP/1.1
+Host: localhost:8080
+Authorization: eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjU0OWEyMDE5LTZiMTQtNGNhYi1iOGMwLTBlODEzNzJjNmY4MyJ9.f2Ybhd7fisNjwjtW88MqpzGia5tkyoVu_OQULzvUV2qkmw7UCz29ttQZhzRTMnPKKunbXGaPncK0zCHaIDgbqw
+Content-Type: application/json
+Content-Length: 41
+
+{"username":"admin", "password":"123456"}
+```
+
+**返回结果**
+
+```json
+{
+    "msg": "Request method 'POST' not supported",
+    "code": 500
+}
+```
+
+
+#### 正确的请求
+
+```http request
+GET /user/all HTTP/1.1
+Host: localhost:8080
+Authorization: eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjU0OWEyMDE5LTZiMTQtNGNhYi1iOGMwLTBlODEzNzJjNmY4MyJ9.f2Ybhd7fisNjwjtW88MqpzGia5tkyoVu_OQULzvUV2qkmw7UCz29ttQZhzRTMnPKKunbXGaPncK0zCHaIDgbqw
+Content-Type: application/json
+Content-Length: 41
+
+{"username":"admin", "password":"123456"}
+```
+
+**返回结果**
+
+```json
+{
+    "msg": "操作成功",
+    "code": 200,
+    "data": [
+        {
+            "userId": 6,
+            "userName": "admin",
+            "nickName": "admin",
+            "userType": "00",
+            "password": "$2a$10$ZglYem2Zs8E4ETbLwaiA4OjXaTZX9w8wJ7x8LZdpGisdtI9VlIfvO",
+            "delFlag": "0",
+            "createBy": "",
+            "createTime": null,
+            "updateBy": "",
+            "updateTime": null
+        },
+        {
+            "userId": 7,
+            "userName": "user",
+            "nickName": "user",
+            "userType": "00",
+            "password": "$2a$10$ZglYem2Zs8E4ETbLwaiA4OjXaTZX9w8wJ7x8LZdpGisdtI9VlIfvO",
+            "delFlag": "0",
+            "createBy": "",
+            "createTime": null,
+            "updateBy": "",
+            "updateTime": null
+        }
+    ]
+}
+```
+
+剩下的可以测试下使用 user 用户访问 `/admin` 接口，这个是跨权限访问，是访问不了的。
