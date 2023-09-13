@@ -13,11 +13,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import javax.sql.DataSource;
 
-/**
- * @author wuq
- * @Time 2023-9-6 16:26
- * @Description
- */
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -56,14 +51,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 退出,这里的/logout的请求是和前端的接口约定，是security给我们提供的,退出成功后跳转登录页/login.html
         http.logout().logoutUrl("/logout").logoutSuccessUrl("/login.html").permitAll();
 
-
         // 设置记住我
         http.rememberMe()
                 .tokenRepository(persistentTokenRepository())
                 // 设置有效时长180秒，默认 2 周时间。
                 .tokenValiditySeconds(180)
                 .userDetailsService(myUserDetailsService);
-
 
         //  表单登录
         http.formLogin()
@@ -89,7 +82,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/find").hasAuthority("menu:user")
                 // 任何请求都需要认证
                 .anyRequest().authenticated();
-
         // 关闭 csrf
         http.csrf().disable();
     }
