@@ -8,9 +8,6 @@ spring:
     password: 123456
 
 # 日志打印
-logging:
-  level:
-    root: warn
-    com.wq.security: trace
-  pattern:
-    console: '%p%m%n'
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
