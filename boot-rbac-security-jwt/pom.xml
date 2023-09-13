@@ -70,6 +70,14 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
+
+        <!--  Java 9及更高版本，JAXB已经不再包含在JDK中，因此你可能需要单独下载和安装它    -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
         <!-- Token生成与解析-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
