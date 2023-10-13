@@ -49,6 +49,7 @@
         <module>boot-ftp-pool</module>
         <module>boot-rbac-security</module>
         <module>boot-rbac-security-jwt</module>
+        <module>boot-captcha-kaptcha</module>
     </modules>
 
     <packaging>pom</packaging>
