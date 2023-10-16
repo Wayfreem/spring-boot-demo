@@ -158,7 +158,76 @@ public class KaptchaTextCreator extends DefaultTextCreator {
 
 这里增加一个工具类是为解耦，避免在调用 http 请求的时候直接直接使用下面的代码，
 
+```java
+@Component
+public class KaptchaUtil {
 
-### 第六步：
+    @Value("${captcha.type}")
+    private String captchaType;
+
+    @Resource(name = "captchaProducer")
+    private Producer captchaProducer;
+
+    @Resource(name = "captchaProducerMath")
+    private Producer captchaProducerMath;
+
+    /**
+     * 获取验证码
+     * @return Map {"code": "进行验证的值", "img": "base64 格式的图片"}
+     */
+    public Map getCaptcha() {
+
+        // code 是我们需要验证的值，可以放到 缓存 中方便于验证
+        String capStr = null, code = null;
+        BufferedImage image = null;
+
+        if ("math".equals(captchaType)) {
+            String capText = captchaProducerMath.createText();
+            capStr = capText.substring(0, capText.lastIndexOf("@"));
+            code = capText.substring(capText.lastIndexOf("@") + 1);
+            image = captchaProducerMath.createImage(capStr);
+        } else if ("char".equals(captchaType)) {
+            capStr = code = captchaProducer.createText();
+            image = captchaProducer.createImage(capStr);
+        }
+
+        // 转换流信息写出
+        FastByteArrayOutputStream os = new FastByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "jpg", os);
+        } catch (IOException e) {
+            throw new RuntimeException("获取验证码报错：" + e.getMessage());
+        }
+
+        Map resultMap = new HashMap();
+        resultMap.put("code", code);
+        resultMap.put("img", Base64.encode(os.toByteArray()));
+        return resultMap;
+    }
+}
+```
+
+另外说明一点，由于 `Base64` 在当前的这个 jdk 版本中没有了，所以我偷下懒直接复制了一份出来，具体直接见源码。
+
+### 第六步： 增加 Controller 用于访问
+
+由于我们增加一个了工具类了，所以 controller 写的就会比较简洁，如下：
+
+```java
+@RestController
+public class CaptchaController {
+
+    @Autowired
+    private KaptchaUtil kaptchaUtil;
 
 
+    @GetMapping("getCaptchaImage")
+    public Map getCode(HttpServletRequest request) {
+        return kaptchaUtil.getCaptcha();
+    }
+}
+```
+
+## 测试
+
+通过浏览器访问 http://localhost:8080/getCaptchaImage 会得到 base64 的值，然后将 base64 的值放入到 `static\index.html` 中的 `img标签`中，通过浏览器访问就好了。
