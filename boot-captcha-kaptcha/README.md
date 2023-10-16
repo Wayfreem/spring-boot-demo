@@ -209,6 +209,8 @@ public class KaptchaUtil {
 
 另外说明一点，由于 `Base64` 在当前的这个 jdk 版本中没有了，所以我偷下懒直接复制了一份出来，具体直接见源码。
 
+这里可以看下这个博客：[Base64的替换方案](https://blog.csdn.net/qq_16977023/article/details/103769231)
+
 ### 第六步： 增加 Controller 用于访问
 
 由于我们增加一个了工具类了，所以 controller 写的就会比较简洁，如下：
