@@ -58,7 +58,7 @@
 | boot-ftp-pool                       | 在 Spring boot 集成 `ftp 连接池`                                                     |
 | boot-rbac-security                  | 在 Spring boot 项目中使用 `spring security`  作为安全校验框架                                |
 | boot-rbac-security-jwt              | 在 Spring boot 项目中使用 `spring security`  作为安全校验框架, 整合 JWT + Redis + Mybatis Plus |
-
+| boot-captcha-kaptcha                | 在 Spring boot 项目中集成 `kaptcha` 实现验证码功能                                          |
 
 
 
@@ -69,7 +69,6 @@
 | boot-https         | 在 Spring boot 项目中实现 https 进行接口调用      |
 | boot-quartz        | 在 Spring boot 项目中集成 quartz 实现任务调度     |
 | boot-okHttp        | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
-| boot-kaptcha       | 在 Spring boot 项目中集成 kaptcha 实现验证码功能   |
 | boot-xxl-job       | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
 | boot-mq-disruptor  | 在 Spring boot 项目中使用 disruptor 作为消息队列  |
 
