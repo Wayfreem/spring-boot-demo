@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * 增加额外的属性
+ *
  * @author wuq
  * @create 2019-09-21 15:27
  */
@@ -16,16 +17,16 @@ public class SimpleEvent<T> extends BaseEvent {
         super(source);
     }
 
-    public SimpleEvent(Object source, T eventData){
+    public SimpleEvent(Object source, T eventData) {
         super(source, eventData);
     }
 
-    public SimpleEvent(Object source, T eventData, String  topic){
+    public SimpleEvent(Object source, T eventData, String topic) {
         super(source, eventData);
         this.topic = topic;
     }
 
-    public String getTopic(){
+    public String getTopic() {
         return this.topic;
     }
 
