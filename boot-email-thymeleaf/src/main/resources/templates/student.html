@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        tr {font-size: 15px;}
+        td {text-align: center; line-height: 50px;color:#74787E;font-size: 15px;}
+        th {border-bottom: 0.5px solid #ddd; height: 40px;line-height: 40px;}
+        .bottom_line {border-bottom: 1px solid #74787E; height: 40px;line-height: 40px;}
+        body{ margin: 0;  padding: 0; border: 0; }
+        .buttom_tip {font-size: 13px;color:#74787E;}
+    </style>
+</head>
+<body >
+
+<div align="center" >
+    <div style="width: 48%" align="left">
+
+
+        <h5><span th:text="${year}"></span> 年录取名单</h5>
+
+        <table cellspacing="0" cellpadding="0" style="width: 100%;">
+            <tr >
+                <th  style="text-align: left">姓名</th>
+                <th>年龄</th>
+                <th>性别</th>
+                <th>准考证号</th>
+                <th>成绩</th>
+                <th>排名</th>
+            </tr>
+
+            <tr th:each="std:${datalist}">
+                <td style="text-align: left" th:text="${std.name}"> </td>
+                <td th:text="${std.age}"> </td>
+
+                <td th:if="${std.sex eq '1'}">
+                    <font color="blue">男</font>
+                </td>
+                <td th:if="${std.sex eq '2'}">
+                    <font color="red">女</font>
+                </td>
+                <td th:text="${std.card}"> </td>
+                <td th:text="${std.score}"> </td>
+                <td th:text="${std.order}"> </td>
+
+            </tr>
+        </table>
+        <p style="font-size: 17px;" class="bottom_line">此致</p>
+        <h5>莘县一中</h5>
+        <h5>欢迎第47届新同学入学</h5>
+    </div>
+</div>
+
+<div align="center" >
+    <div style="width: 98%;" >
+        <p class="buttom_tip" style="text-align:left;">&nbsp;</p>
+        <p class="buttom_tip" style="text-align:left;">&nbsp;</p>
+    </div>
+</div>
+
+</body>
+</html>
