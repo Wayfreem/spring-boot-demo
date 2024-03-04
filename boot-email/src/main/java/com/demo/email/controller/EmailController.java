@@ -32,7 +32,7 @@ public class EmailController {
         mail.setSubject("SpringBoot集成JavaMail实现邮件发送");
         mail.setText("SpringBoot集成JavaMail实现简易邮件发送功能");
 
-        String[] toList = {"wayfreem@163.com"};     // 接收方列表
+        String[] toList = {"xxx@163.com"};     // 接收方列表
         mail.setTo(toList);
         emailUtils.sendMail(mail);
     }
@@ -45,7 +45,7 @@ public class EmailController {
         Mail mail = Mail.getMail();
         mail.setSubject("SpringBoot集成JavaMail实现邮件发送");
 
-        String[] toList = {"wayfreem@163.com"};
+        String[] toList = {"xxx@163.com"};
         mail.setTo(toList);
 
         String content = "<!DOCTYPE html>\n" +
@@ -67,7 +67,7 @@ public class EmailController {
         mail.setSubject("SpringBoot集成JavaMail实现邮件发送");
         mail.setText("SpringBoot集成JavaMail实现简易邮件发送功能");
 
-        String[] toList = {"wayfreem@163.com"};
+        String[] toList = {"xxx@163.com"};
         mail.setTo(toList);
 
         List<FileSystemResource> list = new ArrayList<>();
@@ -84,7 +84,7 @@ public class EmailController {
     public void sendImg(){
         Mail mail = Mail.getMail();
         mail.setSubject("SpringBoot集成JavaMail实现邮件发送");
-        String[] toList = {"wayfreem@163.com"};
+        String[] toList = {"xxx@163.com"};
         mail.setTo(toList);
 
         // 设置图片的地址名称
