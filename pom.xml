@@ -51,6 +51,7 @@
         <module>boot-rbac-security-jwt</module>
         <module>boot-captcha-kaptcha</module>
         <module>boot-email-thymeleaf</module>
+        <module>boot-express-sf</module>
     </modules>
 
     <packaging>pom</packaging>
