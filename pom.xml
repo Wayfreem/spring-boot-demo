@@ -52,6 +52,7 @@
         <module>boot-captcha-kaptcha</module>
         <module>boot-email-thymeleaf</module>
         <module>boot-express-sf</module>
+        <module>boot-sms-aliyun</module>
     </modules>
 
     <packaging>pom</packaging>
