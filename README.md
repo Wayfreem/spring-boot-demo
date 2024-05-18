@@ -61,6 +61,7 @@
 | boot-rbac-security-jwt              | 在 Spring boot 项目中使用 `spring security`  作为安全校验框架, 整合 JWT + Redis + Mybatis Plus |
 | boot-captcha-kaptcha                | 在 Spring boot 项目中集成 `kaptcha` 实现验证码功能                                          |
 | boot-express-sf                     | 在 Spring boot 项目中集成 顺丰的接口调用                                                    |
+| boot-sms-aliyun                     | 在 Spring boot 项目中集成 阿里云短信发送的功能                                                 |
 
 
 
