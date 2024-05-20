@@ -50,6 +50,12 @@
             <systemPath>${project.basedir}/src/main/resources/lib/SF-CSIM-EXPRESS-SDK-V2.1.7.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
