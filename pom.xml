@@ -53,6 +53,7 @@
         <module>boot-email-thymeleaf</module>
         <module>boot-express-sf</module>
         <module>boot-sms-aliyun</module>
+        <module>boot-designPattern-simpleDemo</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -62,6 +62,7 @@
 | boot-captcha-kaptcha                | 在 Spring boot 项目中集成 `kaptcha` 实现验证码功能                                          |
 | boot-express-sf                     | 在 Spring boot 项目中集成 顺丰的接口调用                                                    |
 | boot-sms-aliyun                     | 在 Spring boot 项目中集成 阿里云短信发送的功能                                                 |
+| boot-designPattern-simpleDemo       | 在项目上面结合 Spring 框架实现设计模式达到解耦的目的                                                 |
 
 
 
