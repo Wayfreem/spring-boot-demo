@@ -30,6 +30,6 @@ public class WechatOrderProcessor extends AbstractOrderProcessor {
 
     @Override
     public boolean support(String type) {
-        return "wechat".equalsIgnoreCase(type);
+        return "wechatOrder".equalsIgnoreCase(type);
     }
 }

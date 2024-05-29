@@ -26,6 +26,6 @@ public class AlipayOrderProcessor extends AbstractOrderProcessor {
 
     @Override
     public boolean support(String type) {
-        return "alipay".equalsIgnoreCase(type);
+        return "alipayOrder".equalsIgnoreCase(type);
     }
 }

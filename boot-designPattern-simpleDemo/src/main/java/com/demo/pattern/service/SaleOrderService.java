@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class PatternService {
+public class SaleOrderService {
 
 
     public Map test(SaleOrder saleOrder) {

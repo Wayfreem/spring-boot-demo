@@ -13,6 +13,7 @@ import java.util.Objects;
  * 用于获取指定的单据处理器
  * <p>
  * 实现 ApplicationListener 接口，在容器刷新时，获取所有的 OrderProcess 实现类，并存储到 List 中
+ * </p>
  */
 @Component
 public class OrderProcessorFactory implements ApplicationListener<ContextRefreshedEvent> {
@@ -39,6 +40,4 @@ public class OrderProcessorFactory implements ApplicationListener<ContextRefresh
         if (Objects.isNull(result)) throw new RuntimeException(orderType + " 没有找到对应的处理器，请检查");
         return result;
     }
-
-
 }

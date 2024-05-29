@@ -29,6 +29,6 @@ public class UnionPayOrderProcessor extends AbstractOrderProcessor {
 
     @Override
     public boolean support(String type) {
-        return "unionPay".equalsIgnoreCase(type);
+        return "unionPayOrder".equalsIgnoreCase(type);
     }
 }
