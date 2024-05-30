@@ -27,7 +27,7 @@
 | boot-orm-mybatis                    | spring boot 与 `Mybatis` 集成                                                     |
 | boot-orm-mybatis Plus               | spring boot 与 `Mybatis Plus` 集成                                                |
 | boot-email                          | spring boot 集成 邮件，实现发送邮件                                                       |
-| boot-email-thymeleaf                | spring boot 集成 邮件，使用 thymeleaf 作为邮件内容模板，实现发送邮件                                 |
+| boot-email-thymeleaf                | spring boot 集成 邮件，使用 `thymeleaf` 作为邮件内容模板，实现发送邮件                               |
 | boot-webSocket                      | spring boot 集成 `webSocket`，实现双工通信                                              |
 | boot-es                             | spring boot 集成 `elasticsearch`，对搜索引擎的相关操作                                      |
 | boot-ureport2                       | spring boot 集成 `ureport2`，实现打印报表                                               |
@@ -63,6 +63,7 @@
 | boot-express-sf                     | 在 Spring boot 项目中集成 顺丰的接口调用                                                    |
 | boot-sms-aliyun                     | 在 Spring boot 项目中集成 阿里云短信发送的功能                                                 |
 | boot-designPattern-simpleDemo       | 在项目上面结合 Spring 框架实现设计模式达到解耦的目的                                                 |
+| boot-qrcode-zxing                   | 在 Spring boot 项目上面使用 `zxing` 来生成二维码和条形码                                        |
 
 
 
