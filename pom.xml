@@ -54,6 +54,7 @@
         <module>boot-express-sf</module>
         <module>boot-sms-aliyun</module>
         <module>boot-designPattern-simpleDemo</module>
+        <module>boot-qrcode-zxing</module>
     </modules>
 
     <packaging>pom</packaging>
