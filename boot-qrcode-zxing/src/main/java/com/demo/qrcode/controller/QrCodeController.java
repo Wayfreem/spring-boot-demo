@@ -20,7 +20,7 @@ import java.io.OutputStream;
 @RequestMapping(path = "/qrcode")
 public class QrCodeController {
 
-    // http://localhost:8080/qrcode/create?content=www.baidu.com
+    // http://localhost:8080/qrcode/createQrCode?content=www.baidu.com
     @GetMapping(path = "/createQrCode")
     public void createQrCode(HttpServletResponse response, @RequestParam("content") String content) {
         try {
