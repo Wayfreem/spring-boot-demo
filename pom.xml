@@ -55,6 +55,7 @@
         <module>boot-sms-aliyun</module>
         <module>boot-designPattern-simpleDemo</module>
         <module>boot-qrcode-zxing</module>
+        <module>boot-task-xxl-job</module>
     </modules>
 
     <packaging>pom</packaging>
