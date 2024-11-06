@@ -69,11 +69,10 @@
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目：
 
-| 模块                 | 说明                                    |
-|:-------------------|:--------------------------------------|
-| boot-https         | 在 Spring boot 项目中实现 https 进行接口调用      |
-| boot-quartz        | 在 Spring boot 项目中集成 quartz 实现任务调度     |
-| boot-okHttp        | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
-| boot-xxl-job       | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
-| boot-mq-disruptor  | 在 Spring boot 项目中使用 disruptor 作为消息队列  |
+| 模块                | 说明                                    |
+|:------------------|:--------------------------------------|
+| boot-https        | 在 Spring boot 项目中实现 https 进行接口调用      |
+| boot-okHttp       | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
+| boot-xxl-job      | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
+| boot-mq-disruptor | 在 Spring boot 项目中使用 disruptor 作为消息队列  |
 
