@@ -24,13 +24,11 @@ public enum TaskType {
             return getType().equals(type);
         }
     },
-    BILL_EXPORT(0, "账单导出") {
-        @Override
-        public boolean isTrue(Integer type) {
-            return getType().equals(type);
-        }
-    },
     SEND_MSG(1, "发送短信") {
+        @Override
+        public boolean isTrue(Integer type) {return getType().equals(type);}
+    },
+    SEND_EMAIL(2, "发送邮件") {
         @Override
         public boolean isTrue(Integer type) {return getType().equals(type);}
     },

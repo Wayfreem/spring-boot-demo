@@ -21,8 +21,19 @@ public abstract class AbstractTask<T> {
 
     protected abstract TaskType getType();
 
+    /**
+     * 是否需要删除任务
+     * @return Boolean
+     */
     protected abstract boolean clear();
 
+    /**
+     * 执行任务
+     * @param hashCode
+     * @param command
+     * @return
+     * @throws Throwable
+     */
     protected abstract String handle(String hashCode, T command) throws Throwable;
 
     protected boolean lock(Task task){

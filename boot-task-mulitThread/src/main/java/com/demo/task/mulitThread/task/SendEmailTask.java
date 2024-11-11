@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class SendMsgTask extends AbstractTask<String> {
+public class SendEmailTask extends AbstractTask<String> {
 
     @Override
     protected Class<String> typeClass() {
@@ -20,7 +20,7 @@ public class SendMsgTask extends AbstractTask<String> {
 
     @Override
     protected TaskType getType() {
-        return TaskType.SEND_MSG;
+        return TaskType.SEND_EMAIL;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SendMsgTask extends AbstractTask<String> {
     protected String handle(String hashCode, String command) throws Throwable {
         // 模拟任务执行时间
         TimeUnit.SECONDS.sleep(5);
-        log.info("开始执行信息任务");
+        log.info("开始执行发送邮件任务");
         return null;
     }
 }

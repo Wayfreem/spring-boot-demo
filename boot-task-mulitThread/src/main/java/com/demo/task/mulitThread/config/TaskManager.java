@@ -7,7 +7,6 @@ import com.demo.task.mulitThread.entity.Task;
 import com.demo.task.mulitThread.mapper.TaskMapper;
 import com.demo.task.mulitThread.task.AbstractTask;
 
-import com.demo.task.mulitThread.utils.ClassUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.DisposableBean;
@@ -44,7 +43,7 @@ public class TaskManager implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ThreadGroup group =  Thread.currentThread().getThreadGroup();
+        ThreadGroup group = Thread.currentThread().getThreadGroup();
         String namePrefix = String.format("task-exec-%d", poolNumber.getAndIncrement());
         threadPoolExecutor = new ThreadPoolExecutor(
                 8,
@@ -58,7 +57,8 @@ public class TaskManager implements InitializingBean, DisposableBean {
                     t.setDaemon(true);
                     return t;
                 },
-                (r, executor) -> {});
+                (r, executor) -> {
+                });
         threadPoolExecutor.allowCoreThreadTimeOut(false);
         log.info("TaskManager.threadPoolExecutor.init");
     }
@@ -66,13 +66,13 @@ public class TaskManager implements InitializingBean, DisposableBean {
     @Override
     public void destroy() throws Exception {
         threadPoolExecutor.shutdown();
-        while(!threadPoolExecutor.isTerminated()){
+        while (!threadPoolExecutor.isTerminated()) {
             TimeUnit.MILLISECONDS.sleep(100);
         }
         log.info("TaskManager.threadPoolExecutor.shutdown");
     }
 
-    public JSONObject monitor(){
+    public JSONObject monitor() {
         log.info("正在工作的线程数：{}", threadPoolExecutor.getActiveCount());
         log.info("当前存在的线程数：{}", threadPoolExecutor.getPoolSize());
         log.info("历史最大的线程数：{}", threadPoolExecutor.getLargestPoolSize());
@@ -92,7 +92,7 @@ public class TaskManager implements InitializingBean, DisposableBean {
     /**
      * 多线程执行异步任务
      */
-    public void execute(Long id){
+    public void execute(Long id) {
         threadPoolExecutor.execute(() -> distributeTask.handle(null, id));
     }
 
@@ -108,28 +108,34 @@ public class TaskManager implements InitializingBean, DisposableBean {
     /**
      * 构建任务并执行
      */
-    public <T> SingleResult<Long> runTask(Long userId, TaskType taskType, T dto){
-        return build(userId, taskType, dto, true, false);
+    public <T> SingleResult<Long> runTask(TaskType taskType, T dto) {
+        return build(taskType, dto, true, false);
     }
 
     /**
      * 构建任务不执行
      */
-    public <T> SingleResult<Long> noRunTask(Long userId, TaskType taskType, T dto){
-        return build(userId, taskType, dto, false, false);
+    public <T> SingleResult<Long> noRunTask(TaskType taskType, T dto) {
+        return build(taskType, dto, false, false);
     }
 
     /**
      * 构建任务
+     * @param taskType 任务类型
+     * @param dto 任务参数
+     * @param run 是否立即执行任务
+     * @param uuid 是否生成uuid
+     * @return 任务id
+     * @param <T> 任务参数类型
      */
-    private <T> SingleResult<Long> build(Long userId, TaskType taskType, T dto, boolean run, boolean uuid){
-        String generate = ClassUtils.generate(dto);
+    private <T> SingleResult<Long> build(TaskType taskType, T dto, boolean run, boolean uuid) {
+        String generate = UUID.randomUUID().toString();
         Task taskDO = new Task();
         taskDO.setCreateTime(LocalDateTime.now());
         taskDO.setModifiedTime(LocalDateTime.now());
         taskDO.setParams(JSON.toJSONString(dto));
         taskDO.setParamHash(generate);
-        if (uuid){
+        if (uuid) {
             generate = UUID.randomUUID().toString();
             taskDO.setParamHash(generate);
         }
@@ -137,18 +143,18 @@ public class TaskManager implements InitializingBean, DisposableBean {
         taskDO.setStatus(TaskStatus.INIT.getStatus());
         taskDO.setRetries(0);
         taskDO.setDescription(taskType.getMsg());
-        if (BooleanUtils.toBoolean(taskMapper.insertIgnore(taskDO))){
-            if (run){
+        if (BooleanUtils.toBoolean(taskMapper.insertIgnore(taskDO))) {
+            if (run) {
                 // 异步执行任务
                 execute(taskDO.getId());
             }
             return SingleResult.success(taskDO.getId());
         }
-        Long taskId = taskMapper.findByUserHash(generate);
-        if (taskId == null || taskId == 0){
-            return SingleResult.error(9999,"操作失败");
+        Long taskId = taskMapper.findByHash(generate);
+        if (taskId == null || taskId == 0) {
+            return SingleResult.error(9999, "操作失败");
         }
-        if (run){
+        if (run) {
             // 异步执行任务
             execute(taskDO.getId());
         }

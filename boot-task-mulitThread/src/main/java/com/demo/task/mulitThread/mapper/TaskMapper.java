@@ -14,17 +14,17 @@ public interface TaskMapper {
             "WHERE id = #{id} AND (status = 0 OR status = 2) AND retries < 4")
     int updateLock(Task taskDO);
 
-    @SelectKey(statement="SELECT last_insert_id()", keyProperty="id", before=false, resultType=Long.class)
-    @Insert("INSERT IGNORE INTO scm_task (gmt_create, gmt_modified, user_id, " +
+    @SelectKey(statement = "SELECT last_insert_id()", keyProperty = "id", before = false, resultType = Long.class)
+    @Insert("INSERT IGNORE INTO scm_task (create_time, modified_time, " +
             "params, param_hash, type, status, retries, description) " +
-            "VALUES (#{gmtCreate}, #{gmtModified}, #{userId}, #{params}, #{paramHash}, " +
+            "VALUES (#{createTime}, #{modifiedTime}, #{params}, #{paramHash}, " +
             "#{type}, #{status}, 0, #{description})")
     int insertIgnore(Task taskDO);
 
     /**
-     * 查询所有任务
+     * 查询所有任务，这里增加限制，防止未执行的任务过多
      */
-    @Select("select * from task order by ")
+    @Select("select * from task order by create_Time limit 100")
     List<Task> getAllTaskList();
 
     @Update("UPDATE scm_task " +
@@ -39,5 +39,5 @@ public interface TaskMapper {
     Task selectByPrimaryKey(Long id);
 
     @Select("select * from task where param_hash = #{generate}")
-    Long findByUserHash(String generate);
+    Long findByHash(String generate);
 }
