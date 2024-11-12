@@ -24,20 +24,20 @@ public interface TaskMapper {
     /**
      * 查询所有任务，这里增加限制，防止未执行的任务过多
      */
-    @Select("select * from task order by create_Time limit 100")
+    @Select("select * from scm_task order by create_Time limit 100")
     List<Task> getAllTaskList();
 
     @Update("UPDATE scm_task " +
-            "SET gmt_modified = #{gmtModified}, result = #{result}, status = #{status} " +
+            "SET modified_time = now(), result = #{result}, status = #{status} " +
             "WHERE id = #{id}")
     int updateStatus(Task task);
 
-    @Delete("delete from task where id = #{id}")
+    @Delete("delete from scm_task where id = #{id}")
     int deleteByPrimaryKey(Long task);
 
-    @Select("select * from task where id = #{id}")
+    @Select("select * from scm_task where id = #{id}")
     Task selectByPrimaryKey(Long id);
 
-    @Select("select * from task where param_hash = #{generate}")
+    @Select("select * from scm_task where param_hash = #{generate}")
     Long findByHash(String generate);
 }

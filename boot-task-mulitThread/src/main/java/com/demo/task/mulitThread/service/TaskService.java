@@ -21,17 +21,33 @@ public class TaskService {
     /**
      * 模拟发送消息
      */
-    public void sendMsg() {
+    public void sendAsyncMsg() {
         // 构建任务，延时执行
         Map map = Map.of("customer", "Jim", "content", "Hello World! This is a msg!");
         taskManager.noRunTask(TaskType.SEND_MSG, map);
     }
 
-    public void sendEmail() {
+    public void sendSyncMsg(){
+        Map map = Map.of("customer", "Jim", "content", "Hello World! This is a msg!");
+        taskManager.runTask(TaskType.SEND_MSG, map);
+    }
+
+    /**
+     * 模拟邮件消息
+     */
+    public void sendAsyncEmail() {
         // 构建任务，延时执行
         Map map = Map.of("customer", "Tom", "content", "Hello World! This is a email!");
         taskManager.noRunTask(TaskType.SEND_MSG, map);
     }
+
+    public void sendSyncEmail() {
+        // 构建任务，延时执行
+        Map map = Map.of("customer", "Tom", "content", "Hello World! This is a email!");
+        taskManager.runTask(TaskType.SEND_MSG, map);
+    }
+
+
 
     /**
      * 模拟执行任务

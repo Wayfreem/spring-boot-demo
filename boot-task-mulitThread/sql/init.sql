@@ -1,7 +1,7 @@
 CREATE TABLE scm_task (
                           id BIGINT UNSIGNED auto_increment COMMENT 'primary key' PRIMARY KEY,
                           create_time datetime NOT NULL COMMENT 'create time',
-                          modified_item datetime NOT NULL COMMENT 'modify time',
+                          modified_time datetime NOT NULL COMMENT 'modify time',
                           params text NULL COMMENT '任务参数',
                           param_hash VARCHAR ( 128 ) NULL COMMENT '参数哈希',
                           result text NULL COMMENT '任务结果',

@@ -1,25 +1,48 @@
 package com.demo.task.mulitThread.controller;
 
 import com.demo.task.mulitThread.service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("api")
 public class TaskController {
 
-    @Autowired
+    @Resource
     private TaskService taskService;
 
-    @RequestMapping("sendMsg")
-    public void sendMsg() {
-        taskService.sendMsg();
+    /**
+     * 发送消息，不立即执行
+     */
+    @RequestMapping("sendAsyncMsg")
+    public void sendAsyncMsg() {
+        taskService.sendAsyncMsg();
     }
 
-    @RequestMapping("sendEmail")
-    public void sendEmail() {
-        taskService.sendEmail();
+    /**
+     * 发送邮件，不立即执行
+     */
+    @RequestMapping("sendAsyncEmail")
+    public void sendAsyncEmail() {
+        taskService.sendAsyncEmail();
+    }
+
+    /**
+     * 发送消息，立即执行
+     */
+    @RequestMapping("sendSyncMsg")
+    public void sendSyncMsg() {
+        taskService.sendSyncMsg();
+    }
+
+    /**
+     * 发送邮件，立即执行
+     */
+    @RequestMapping("sendSyncEmail")
+    public void sendSyncEmail() {
+        taskService.sendSyncEmail();
     }
 
 

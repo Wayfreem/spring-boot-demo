@@ -25,14 +25,15 @@ public class SendEmailTask extends AbstractTask<String> {
 
     @Override
     protected boolean clear() {
-        return false;
+        return true;
     }
 
     @Override
     protected String handle(String hashCode, String command) throws Throwable {
         // 模拟任务执行时间
+        log.info("开始执行发送邮件任务....");
         TimeUnit.SECONDS.sleep(5);
-        log.info("开始执行发送邮件任务");
+        log.info("完成执行发送邮件任务....");
         return null;
     }
 }
