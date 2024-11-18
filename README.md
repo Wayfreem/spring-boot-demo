@@ -64,7 +64,7 @@
 | boot-sms-aliyun                     | 在 Spring boot 项目中集成 阿里云短信发送的功能                                                 |
 | boot-designPattern-simpleDemo       | 在项目上面结合 Spring 框架实现设计模式达到解耦的目的                                                 |
 | boot-qrcode-zxing                   | 在 Spring boot 项目上面使用 `zxing` 来生成二维码和条形码                                        |
-| boot-xxl-job      | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
+| boot-xxl-job                        | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
 
 
 
