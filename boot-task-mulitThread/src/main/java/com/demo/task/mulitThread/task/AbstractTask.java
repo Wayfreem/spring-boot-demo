@@ -53,7 +53,9 @@ public abstract class AbstractTask<T> {
                 // 执行任务
                 T command = JSONObject.parseObject(task.getParams(), typeClass());
                 String paramHash = task.getParamHash();
-                String handle = handle(paramHash, command);
+                AbstractTask abstractTask = (AbstractTask) AopContext.currentProxy();
+                String handle = abstractTask.handle(paramHash, command);
+//                String handle = handle(paramHash, command);
                 // 是否需要删除任务
                 if (clear()){
                     delete(task);
