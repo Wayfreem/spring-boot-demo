@@ -17,12 +17,12 @@
 
 
 ### xxl-job 服务
-可以直接去 gitee 或者 github 上面去获取一份代码，然后直接导入到自己的项目中。然后通过 maven 去安装依赖之后，再打包成一个jar 就好了。
+可以直接去 gitee 或者 github 上面去获取一份代码，然后直接导入到自己的项目中。然后通过 maven 去安装依赖之后，再打包成一个jar 就好了。这里打包的时候需要注意修改下数据库的链接地址。
 
 或者直接通过 docker 安装，一键启动就好。
 
 ```shell
-// Docker地址：https://hub.docker.com/r/xuxueli/xxl-job-admin/     (建议指定版本号)
+// Docker地址：https://hub.docker.com/r/xuxueli/xxl-job-admin/       (建议指定版本号)
 docker pull xuxueli/xxl-job-admin
 ```
 
