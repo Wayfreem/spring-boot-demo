@@ -53,9 +53,9 @@ public abstract class AbstractTask<T> {
                 // 执行任务
                 T command = JSONObject.parseObject(task.getParams(), typeClass());
                 String paramHash = task.getParamHash();
+                // 这里需要使用AopContext.currentProxy()来获取代理对象，防止执行的时候事务失效
                 AbstractTask abstractTask = (AbstractTask) AopContext.currentProxy();
                 String handle = abstractTask.handle(paramHash, command);
-//                String handle = handle(paramHash, command);
                 // 是否需要删除任务
                 if (clear()){
                     delete(task);
@@ -78,6 +78,7 @@ public abstract class AbstractTask<T> {
      */
     public void executeSync(T command) throws Throwable {
         if (typeClass().isAssignableFrom(command.getClass()) && TaskType.SYNC_TASK.equals(getType())){
+            // 执行任务，这里需要使用AopContext.currentProxy()来获取代理对象，防止执行的时候事务失效
             AbstractTask abstractTask = (AbstractTask) AopContext.currentProxy();
             abstractTask.handle(null, command);
         }
