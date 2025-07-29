@@ -12,82 +12,100 @@
 
 ## 项目说明
 
-
 二、Disruptor核心机制解析
+
 2.1、环形队列的时空折叠
+```java
 // RingBuffer内存结构
 public final class RingBuffer<E> {
-private final Object[] entries;          // 预分配对象数组
-private final int indexMask;             // 位运算替代取模
-private final Sequence sequencer;        // 序列号管理器
+    private final Object[] entries;          // 预分配对象数组
+    private final int indexMask;             // 位运算替代取模
+    private final Sequence sequencer;        // 序列号管理器
 }
+```
+
 设计精髓：
-
-预分配内存：启动时初始化所有Event对象
-
-位运算优化：indexMask = bufferSize - 1（bufferSize为2^n）
-
-无锁并发：通过Sequence实现原子操作
+- 预分配内存：启动时初始化所有Event对象
+- 位运算优化：indexMask = bufferSize - 1（bufferSize为2^n）
+- 无锁并发：通过Sequence实现原子操作
 
 2.2、消除伪共享的终极方案
+```java
 // Sequence内存布局优化
 public class Sequence extends RhsPadding {
-static final class LhsPadding {
-long p1, p2, p3, p4, p5, p6, p7; // 左填充
+    static final class LhsPadding {
+        long p1, p2, p3, p4, p5, p6, p7; // 左填充
+    }
+
+    private volatile long value;
+
+    static final class RhsPadding {
+        long p9, p10, p11, p12, p13, p14, p15; // 右填充
+    }
 }
-private volatile long value;
-static final class RhsPadding {
-long p9, p10, p11, p12, p13, p14, p15; // 右填充
-}
-}
+```
 缓存行填充：通过左右各56字节填充，确保每个Sequence独占缓存行
+
 三、Spring Boot 集成 Disruptor 的步骤
+
 3.1、添加依赖
 首先，在 Spring Boot 项目的 pom.xml 中添加 Disruptor 的依赖：
-
+```xml
 <dependency>
     <groupId>com.lmax</groupId>
     <artifactId>disruptor</artifactId>
     <version>3.4.4</version>
 </dependency>
+```
+
 3.2、定义事件类
 创建一个简单的事件类，用于在队列中传递数据：
 
 // 定义事件类
+```java
 public class MyEvent {
-private String message;
-public String getMessage() {
-return message;
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
-public void setMessage(String message) {
-this.message = message;
-}
-}
+```
 3.3、定义事件工厂
 事件工厂用于创建事件对象：
 
+```java
 import com.lmax.disruptor.EventFactory;
 // 定义事件工厂
+
 public class MyEventFactory implements EventFactory<MyEvent> {
-@Override
-public MyEvent newInstance() {
-return new MyEvent();
+    @Override
+    public MyEvent newInstance() {
+        return new MyEvent();
+    }
 }
-}
+```
 3.4、定义事件处理器
 事件处理器负责处理从队列中取出的事件：
 
+```java
 import com.lmax.disruptor.EventHandler;
 // 定义事件处理器
 public class MyEventHandler implements EventHandler<MyEvent> {
-@Override
-public void onEvent(MyEvent event, long sequence, boolean endOfBatch) throws Exception {
-System.out.println("Received event: " + event.getMessage());
+    @Override
+    public void onEvent(MyEvent event, long sequence, boolean endOfBatch) throws Exception {
+        System.out.println("Received event: " + event.getMessage());
+    }
 }
-}
+```
 3.5、配置 Disruptor
 在 Spring Boot 中，可以通过配置类来创建和配置 Disruptor：
 
+```java
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -95,64 +113,78 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 @Configuration
 public class DisruptorConfig {
-private static final int BUFFER_SIZE = 1024;
-@Bean
-public Disruptor<MyEvent> disruptor() {
-// 创建线程池
-ExecutorService executor = Executors.newSingleThreadExecutor();
-// 创建事件工厂
-MyEventFactory factory = new MyEventFactory();
-// 创建 Disruptor
-Disruptor<MyEvent> disruptor = new Disruptor<>(factory, BUFFER_SIZE, executor, ProducerType.SINGLE, new BlockingWaitStrategy());
-// 设置事件处理器
-disruptor.handleEventsWith(new MyEventHandler());
-// 启动 Disruptor
-disruptor.start();
-return disruptor;
+    
+    private static final int BUFFER_SIZE = 1024;
+    
+    @Bean
+    public Disruptor<MyEvent> disruptor() {
+        // 创建线程池
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // 创建事件工厂
+        MyEventFactory factory = new MyEventFactory();
+        // 创建 Disruptor
+        Disruptor<MyEvent> disruptor = new Disruptor<>(factory, BUFFER_SIZE, executor, ProducerType.SINGLE, new BlockingWaitStrategy());
+        // 设置事件处理器
+        disruptor.handleEventsWith(new MyEventHandler());
+        // 启动 Disruptor
+        disruptor.start();
+        return disruptor;
+    }
 }
-}
+```
+
 3.6、创建生产者服务
 创建一个生产者服务，用于向 Disruptor 中发布事件：
 
+```java
 import com.lmax.disruptor.RingBuffer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
 public class MyEventProducer {
-private final RingBuffer<MyEvent> ringBuffer;
-@Autowired
-public MyEventProducer(Disruptor<MyEvent> disruptor) {
-this.ringBuffer = disruptor.getRingBuffer();
+    private final RingBuffer<MyEvent> ringBuffer;
+    @Autowired
+    public MyEventProducer(Disruptor<MyEvent> disruptor) {
+        this.ringBuffer = disruptor.getRingBuffer();
+    }
+
+    public void publishEvent(String message) {
+        long sequence = ringBuffer.next();
+        try {
+            MyEvent event = ringBuffer.get(sequence);
+            event.setMessage(message);
+        } finally {
+            ringBuffer.publish(sequence);
+        }
+    }
 }
-public void publishEvent(String message) {
-long sequence = ringBuffer.next();
-try {
-MyEvent event = ringBuffer.get(sequence);
-event.setMessage(message);
-} finally {
-ringBuffer.publish(sequence);
-}
-}
-}
+```
+
 3.7、创建控制器进行测试
 创建一个简单的控制器，用于测试生产者服务：
 
-import org.springframework.beans.factory.annotation.Autowired;
+```java
+import org.springframework.beans.factory.annotation.Autowired;  
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 public class TestController {
-@Autowired
-private MyEventProducer producer;
-@GetMapping("/publish/{message}")
-public String publishMessage(@PathVariable String message) {
-producer.publishEvent(message);
-return "Message published: " + message;
+    @Autowired
+    private MyEventProducer producer;
+    
+    @GetMapping("/publish/{message}")
+    public String publishMessage(@PathVariable String message) {
+        producer.publishEvent(message);
+        return "Message published: " + message;
+    }
 }
-}
+```
 四、Disruptor 高性能原理剖析
 4.1、无锁设计
 Disruptor 采用了无锁算法，避免了传统队列中锁竞争带来的性能开销。通过使用 CAS（Compare-And-Swap）操作和序列（Sequence）来保证并发操作的原子性和顺序性。
