@@ -9,9 +9,10 @@
 ## 开发环境
 
 - JDK 17
-- Maven 3.5 
+- Maven 3.5
 - Intellij IDEA
-- MySQL(采用docker 安装) [安装参考链接](https://blog.csdn.net/qq_18948359/article/details/125486934?spm=1001.2014.3001.5502)
+- MySQL(采用docker
+  安装) [安装参考链接](https://blog.csdn.net/qq_18948359/article/details/125486934?spm=1001.2014.3001.5502)
 
 ## 具体模块说明
 
@@ -64,15 +65,15 @@
 | boot-sms-aliyun                     | 在 Spring boot 项目中集成 阿里云短信发送的功能                                                 |
 | boot-designPattern-simpleDemo       | 在项目上面结合 Spring 框架实现设计模式达到解耦的目的                                                 |
 | boot-qrcode-zxing                   | 在 Spring boot 项目上面使用 `zxing` 来生成二维码和条形码                                        |
-| boot-xxl-job                        | 在 Spring boot 项目中集成 xxl-job 实现任务调度    |
-
-
+| boot-xxl-job                        | 在 Spring boot 项目中集成 xxl-job 实现任务调度                                             |
+| boot-mq-disruptor                   | 在 Spring boot 项目中使用 disruptor 作为消息队列                                           |
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目：
 
-| 模块                | 说明                                    |
-|:------------------|:--------------------------------------|
-| boot-https        | 在 Spring boot 项目中实现 https 进行接口调用      |
-| boot-okHttp       | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
-| boot-mq-disruptor | 在 Spring boot 项目中使用 disruptor 作为消息队列  |
-
+| 模块            | 说明                                    |
+|:--------------|:--------------------------------------|
+| boot-https    | 在 Spring boot 项目中实现 https 进行接口调用      |
+| boot-okHttp   | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
+| boot-hutool   | 在 Spring boot 项目中使用 hutool 工具类库 |
+| boot-liteFlow | 在 Spring boot 项目中使用 liteFlow 规则引擎 |
+| boot-sharding | 在 Spring boot 项目中使用 sharding 分库分表 |
