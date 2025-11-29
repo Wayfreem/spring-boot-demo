@@ -15,16 +15,14 @@ public class UnionPayOrderProcessor extends AbstractOrderProcessor {
     @Override
     public void process(SaleOrder saleOrder) {
         // 银联下单逻辑
-        // 微信下单逻辑
-        log.info("---微信订单开始执行---");
+        log.info("---银联订单开始执行---");
 
-
-
-        log.info("---微信订单执行完毕---");
+        log.info("---银联订单执行完毕---");
     }
 
     private void UnionPayBeforeProcess(SaleOrder saleOrder) {
-        // 支付宝下单前的处理
+        // 银联下单前的处理
+        log.info("---银联订单开始前的处理---");
     }
 
     @Override
