@@ -57,6 +57,7 @@
         <module>boot-qrcode-zxing</module>
         <module>boot-task-xxl-job</module>
         <module>boot-task-mulitThread</module>
+        <module>boot-task-mulitThread-simple</module>
     </modules>
 
     <packaging>pom</packaging>
