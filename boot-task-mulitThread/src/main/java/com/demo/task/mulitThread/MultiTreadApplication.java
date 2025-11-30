@@ -6,9 +6,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @EnableAspectJAutoProxy(exposeProxy = true)
 @SpringBootApplication
-public class MulitTreadApplication {
+public class MultiTreadApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MulitTreadApplication.class, args);
+        SpringApplication.run(MultiTreadApplication.class, args);
     }
 }
