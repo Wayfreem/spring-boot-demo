@@ -67,6 +67,7 @@
 | boot-qrcode-zxing                   | 在 Spring boot 项目上面使用 `zxing` 来生成二维码和条形码                                        |
 | boot-xxl-job                        | 在 Spring boot 项目中集成 xxl-job 实现任务调度                                             |
 | boot-mq-disruptor                   | 在 Spring boot 项目中使用 disruptor 作为消息队列                                           |
+| boot-designPattern-decorator        | 在 Spring boot 项目中实现装饰器模式 |
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目：
 
