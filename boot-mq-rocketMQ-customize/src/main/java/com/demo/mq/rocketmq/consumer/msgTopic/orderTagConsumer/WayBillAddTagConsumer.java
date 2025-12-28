@@ -12,7 +12,7 @@ public class WayBillAddTagConsumer implements OrderTagConsumer {
     @Override
     public void consume(MessageExt messageExt) {
         String tags = messageExt.getTags();
-        log.info("====CirroAddWayBillTagConsumer==== 开始消费：tag: {}", tags);
+        log.info("====WayBillAddTagConsumer==== 开始消费：tag: {}", tags);
     }
 
     @Override

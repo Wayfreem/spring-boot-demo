@@ -13,7 +13,7 @@ public class TrackTagConsumer implements OrderTagConsumer{
     @Override
     public void consume(MessageExt messageExt) {
         String tags = messageExt.getTags();
-        log.info("====CirroAddWayBillTagConsumer==== 开始消费：tag: {}", tags);
+        log.info("====TrackTagConsumer==== 开始消费：tag: {}", tags);
     }
 
     @Override
