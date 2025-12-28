@@ -56,7 +56,7 @@
 | boot-sse                            | 在 Spring boot 项目中集成 `sse` 实现后端主动推送数据                                           |
 | boot-http-rereadHttpRequest         | Spring boot 之重复读取 `Request Body` 内容                                            |
 | boot-druid                          | 在 Spring boot 项目中集成 `druid` 进行数据连接监控                                           |
-| boot-rocketMQ                       | 在 Spring boot 集成 `RocketMQ`                                                    |
+| boot-mq-rocketMQ                    | 在 Spring boot 集成 `RocketMQ`                                                    |
 | boot-ftp-pool                       | 在 Spring boot 集成 `ftp 连接池`                                                     |
 | boot-rbac-security                  | 在 Spring boot 项目中使用 `spring security`  作为安全校验框架                                |
 | boot-rbac-security-jwt              | 在 Spring boot 项目中使用 `spring security`  作为安全校验框架, 整合 JWT + Redis + Mybatis Plus |
@@ -67,7 +67,8 @@
 | boot-qrcode-zxing                   | 在 Spring boot 项目上面使用 `zxing` 来生成二维码和条形码                                        |
 | boot-xxl-job                        | 在 Spring boot 项目中集成 xxl-job 实现任务调度                                             |
 | boot-mq-disruptor                   | 在 Spring boot 项目中使用 disruptor 作为消息队列                                           |
-| boot-designPattern-decorator        | 在 Spring boot 项目中实现装饰器模式 |
+| boot-designPattern-decorator        | 在 Spring boot 项目中实现装饰器模式                                                       |
+| boot-mq-rocketMQ-customize         | 在 Spring boot 项目中自定义 RocketMQ 消息队列                                           |
 
 上面是已经集成完了的项目，下面是规划后面慢慢集成进去的项目：
 
@@ -75,6 +76,5 @@
 |:--------------|:--------------------------------------|
 | boot-https    | 在 Spring boot 项目中实现 https 进行接口调用      |
 | boot-okHttp   | 在 Spring boot 项目中集成 okHttp 进行 Http 调用 |
-| boot-hutool   | 在 Spring boot 项目中使用 hutool 工具类库 |
 | boot-liteFlow | 在 Spring boot 项目中使用 liteFlow 规则引擎 |
 | boot-sharding | 在 Spring boot 项目中使用 sharding 分库分表 |

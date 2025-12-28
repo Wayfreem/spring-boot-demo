@@ -59,6 +59,7 @@
         <module>boot-task-mulitThread</module>
         <module>boot-task-mulitThread-simple</module>
         <module>boot-designPattern-decorator</module>
+        <module>boot-mq-rocketMQ-customize</module>
     </modules>
 
     <packaging>pom</packaging>
