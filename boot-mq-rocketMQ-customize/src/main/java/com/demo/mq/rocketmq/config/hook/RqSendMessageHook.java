@@ -1,4 +1,4 @@
-package com.demo.mq.rocketmq.config;
+package com.demo.mq.rocketmq.config.hook;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
