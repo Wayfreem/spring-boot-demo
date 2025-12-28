@@ -3,9 +3,12 @@ package com.demo.mq.rocketmq.config;
 import com.demo.mq.rocketmq.config.hook.RqConsumerMessageHook;
 import com.demo.mq.rocketmq.consumer.RocketMsgListener;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.remoting.RPCHook;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,7 +31,19 @@ public class ConsumerConfig {
     public DefaultMQPushConsumer getRocketMQConsumer() {
         // 获取RocketMQ消费者配置
         RocketMqConfig.Consumer consumerConfig = rocketMqConfig.getConsumer();
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerConfig.getGroupName());
+
+        RPCHook rpcHook = null;
+        if (consumerConfig.getAccessKey() != null && consumerConfig.getSecretKey() != null) {
+            rpcHook = new AclClientRPCHook(new SessionCredentials(consumerConfig.getAccessKey(), consumerConfig.getSecretKey()));
+        }
+
+        DefaultMQPushConsumer consumer;
+        if (rpcHook != null) {
+            consumer = new DefaultMQPushConsumer(consumerConfig.getGroupName(), rpcHook);
+        } else {
+            consumer = new DefaultMQPushConsumer(consumerConfig.getGroupName());
+        }
+
         if (!consumerConfig.getIsOnOff()) {
             return consumer;
         }

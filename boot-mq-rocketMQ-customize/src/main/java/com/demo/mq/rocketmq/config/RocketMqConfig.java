@@ -31,6 +31,17 @@ public class RocketMqConfig {
      */
     @Data
     public static class Producer {
+
+        /**
+         * 访问密钥
+         */
+        private String accessKey;
+
+        /**
+         * 密钥
+         */
+        private String secretKey;
+
         /**
          * 消费者开关 配置 on 开启（true），off 关闭（false）
          */
@@ -67,6 +78,17 @@ public class RocketMqConfig {
      */
     @Data
     public static class Consumer {
+
+        /**
+         * 访问密钥
+         */
+        private String accessKey;
+
+        /**
+         * 密钥
+         */
+        private String secretKey;
+
         /**
          * 消费者开关 配置 on 开启（true），off 关闭（false）
          */

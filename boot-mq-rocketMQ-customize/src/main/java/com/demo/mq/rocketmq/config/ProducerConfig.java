@@ -2,8 +2,11 @@ package com.demo.mq.rocketmq.config;
 
 import com.demo.mq.rocketmq.config.hook.RqSendMessageHook;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.remoting.RPCHook;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,8 +28,20 @@ public class ProducerConfig {
         // 获取生产者配置
         RocketMqConfig.Producer producerConfig = rocketMqConfig.getProducer();
 
+        // 在RocketMQ 4.x版本中，需要通过创建RPCHook来设置访问凭证
+        RPCHook rpcHook = null;
+        if (producerConfig.getAccessKey() != null && producerConfig.getSecretKey() != null) {
+            rpcHook = new AclClientRPCHook(new SessionCredentials(producerConfig.getAccessKey(), producerConfig.getSecretKey()));
+        }
+
         // 初始化生产者
-        DefaultMQProducer producer = new DefaultMQProducer(producerConfig.getGroupName());
+        DefaultMQProducer producer;
+        if (rpcHook != null) {
+            producer = new DefaultMQProducer(producerConfig.getGroupName(), rpcHook);
+        } else {
+            producer = new DefaultMQProducer(producerConfig.getGroupName());
+        }
+
         producer.setNamesrvAddr(producerConfig.getNamesrvAddr());
         producer.getDefaultMQProducerImpl().registerSendMessageHook(new RqSendMessageHook());
 
@@ -42,6 +57,7 @@ public class ProducerConfig {
      * @param producer       生产者实例
      */
     private static void initProducer(RocketMqConfig.Producer producerConfig, DefaultMQProducer producer) {
+
         //如果需要同一个jvm中不同的producer往不同的mq集群发送消息，需要设置不同的instanceName
         if (producerConfig.getMaxMessageSize() != null) {
             producer.setMaxMessageSize(producerConfig.getMaxMessageSize());

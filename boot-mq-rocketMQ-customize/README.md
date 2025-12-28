@@ -37,6 +37,10 @@ server:
 rocketmq:
   # 生产者配置
   producer:
+    # 访问密钥
+    accessKey: rocketmq2
+    # 密钥
+    secretKey: 12345678
     # on（解析之后为 true）或者 off（解析之后为 false）
     isOnOff: on
     # 发送同一类消息的设置为同一个group，保证唯一
@@ -51,6 +55,10 @@ rocketmq:
     retryTimesWhenSendFailed: 2
   # 消费者配置
   consumer:
+    # 访问密钥
+    accessKey: rocketmq2
+    # 密钥
+    secretKey: 12345678
     # on（解析之后为 true）或者 off（解析之后为 false）
     isOnOff: on
     # 官方建议：确保同一组中的每个消费者订阅相同的主题。
@@ -68,7 +76,6 @@ rocketmq:
     consumeThreadMax: 64
     # 设置一次消费消息的条数，默认为1条
     consumeMessageBatchMaxSize: 1
-
 ```
 
 ### 新增 RocketMQ 配置类
